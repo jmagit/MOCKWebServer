@@ -1,0 +1,101 @@
+[
+    {
+        "idLibro":"1",
+        "titulo":"El ingenioso hidalgo don Quijote de la Mancha ",
+        "autor":"Miguel de Cervantes",
+        "pais":"España",
+        "fecha":"1605",
+        "paginas":"377",
+        "wiki":"https://es.wikipedia.org/wiki/Don_Quijote_de_la_Mancha"
+    },
+    {
+        "idLibro":"2",
+        "titulo":"Diario de Ana Frank",
+        "autor":"Anne Frank ",
+        "pais":"Países Bajos",
+        "fecha":"1947",
+        "paginas":"217",
+        "wiki":"https://es.wikipedia.org/wiki/Diario_de_Ana_Frank"
+    },
+    {
+        "idLibro":"3",
+        "titulo":"Cien años de soledad",
+        "autor":"Gabriel García Márquez",
+        "pais":"Colombia",
+        "fecha":"1967",
+        "paginas":"471",
+        "wiki":"https://es.wikipedia.org/wiki/Cien_a%C3%B1os_de_soledad"
+    },
+    {
+        "idLibro":"4",
+        "titulo":"Viaje al centro de la Tierra",
+        "autor":"Julio Verne",
+        "pais":"Francia",
+        "fecha":"1864",
+        "paginas":"360",
+        "wiki":"https://es.wikipedia.org/wiki/Viaje_al_centro_de_la_Tierra"
+    },
+    {
+        "idLibro":"5",
+        "titulo":"Moby-Dick",
+        "autor":"Herman Melville",
+        "pais":"Estados Unidos",
+        "fecha":"1851",
+        "paginas":"823",
+        "wiki":"https://es.wikipedia.org/wiki/Moby-Dick"
+    },
+    {
+        "idLibro":"6",
+        "titulo":"Orgullo y prejuicio",
+        "autor":"Jane Austen",
+        "pais":"Inglaterra",
+        "fecha":"1813",
+        "paginas":"233",
+        "wiki":"https://es.wikipedia.org/wiki/Orgullo_y_prejuicio_(novela)"
+    },
+    {
+        "idLibro":"7",
+        "titulo":"El viejo y el mar",
+        "autor":"Ernest Hemingway",
+        "pais":"Estados Unidos",
+        "fecha":"1952",
+        "paginas":"127",
+        "wiki":"https://es.wikipedia.org/wiki/El_viejo_y_el_mar"
+    },
+    {
+        "idLibro":"8",
+        "titulo":"Los hermanos Karamazov",
+        "autor":"Fiódor Dostoyevski",
+        "pais":"Rusia",
+        "fecha":"1880",
+        "paginas":"1144",
+        "wiki":"https://es.wikipedia.org/wiki/Los_hermanos_Karamazov"
+    },
+    {
+        "idLibro":"9",
+        "titulo":"El tambor de hojalata",
+        "autor":"Günter Grass",
+        "pais":"Alemania",
+        "fecha":"1959",
+        "paginas":"791",
+        "wiki":"https://es.wikipedia.org/wiki/El_tambor_de_hojalata_(novela)"
+    },
+    {
+        "idLibro":"10",
+        "titulo":"Zorba, el griego",
+        "autor":"Nikos Kazantzakis",
+        "pais":"Grecia",
+        "fecha":"1972",
+        "paginas":"346",
+        "wiki":"https://es.wikipedia.org/wiki/Zorba,_el_griego"
+    },
+    {
+        "idLibro":"11",
+        "titulo":"Romancero gitano",
+        "autor":"Federico García Lorca",
+        "pais":"España ",
+        "fecha":"1928",
+        "paginas":"140",
+        "wiki":"https://es.wikipedia.org/wiki/Romancero_gitano"
+    }
+]

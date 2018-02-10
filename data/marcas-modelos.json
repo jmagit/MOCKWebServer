@@ -1,0 +1,748 @@
+[
+    {
+        "marca": "ABARTH",
+        "modelos": [
+            "500C",
+            "500",
+            "124 Spider"
+        ]
+    },
+    {
+        "marca": "ALFA ROMEO",
+        "modelos": [
+            "Giulietta",
+            "MiTo",
+            "4C",
+            "Giulia",
+            "Stelvio"
+        ]
+    },
+    {
+        "marca": "ALFA ROMEO (FIAT)",
+        "modelos": [
+            "4C"
+        ]
+    },
+    {
+        "marca": "ASTON MARTIN",
+        "modelos": [
+            "DB9",
+            "Vantage V8",
+            "Vanquish",
+            "Vantage V12",
+            "Rapide"
+        ]
+    },
+    {
+        "marca": "AUDI",
+        "modelos": [
+            "A4",
+            "A8",
+            "A3",
+            "TT",
+            "A5",
+            "A4 Allroad Quattro",
+            "A6",
+            "A7",
+            "Q3",
+            "Q5",
+            "S5",
+            "A1",
+            "A6 Allroad Quattro",
+            "S7",
+            "S6",
+            "S8",
+            "RS4",
+            "RS5",
+            "R8",
+            "SQ5",
+            "Q7",
+            "RS6",
+            "RS7",
+            "RS Q3",
+            "S3",
+            "S1",
+            "TTS",
+            "S4",
+            "RS3",
+            "SQ7",
+            "Q2",
+            "TTS",
+            "SQ7",
+            "S4"
+        ]
+    },
+    {
+        "marca": "BENTLEY",
+        "modelos": [
+            "Continental GT",
+            "Mulsanne",
+            "Flying Spur",
+            "Continental GTC",
+            "Bentayga"
+        ]
+    },
+    {
+        "marca": "BMW",
+        "modelos": [
+            "Serie 3",
+            "Serie 5",
+            "Serie 4",
+            "Serie 7",
+            "Z4",
+            "X5",
+            "Serie 1",
+            "X3",
+            "Serie 6",
+            "X1",
+            "X6",
+            "i3",
+            "Serie 2",
+            "X4",
+            "i8",
+            "Serie 2 Gran Tourer",
+            "Serie 2 Active Tourer"
+        ]
+    },
+    {
+        "marca": "BYD",
+        "modelos": [
+            "E6"
+        ]
+    },
+    {
+        "marca": "CHEVROLET",
+        "modelos": [
+            "Cruze",
+            "Aveo",
+            "Trax",
+            "Orlando",
+            "Spark",
+            "Camaro"
+        ]
+    },
+    {
+        "marca": "CITROEN",
+        "modelos": [
+            "C4",
+            "C3",
+            "C5",
+            "C3 Picasso",
+            "C4 Picasso",
+            "Grand C4 Picasso",
+            "C4 Aircross",
+            "Nemo",
+            "Berlingo",
+            "C-Elysée",
+            "C4 Cactus",
+            "C1",
+            "C-Zero",
+            "C-Elysée",
+            "Spacetourer",
+            "E-Mehari"
+        ]
+    },
+    {
+        "marca": "DACIA",
+        "modelos": [
+            "Logan",
+            "Lodgy",
+            "Sandero",
+            "Duster",
+            "Dokker"
+        ]
+    },
+    {
+        "marca": "DFSK",
+        "modelos": [
+            "Serie V",
+            "Serie K"
+        ]
+    },
+    {
+        "marca": "DS",
+        "modelos": [
+            "DS 4",
+            "DS 5",
+            "DS 3",
+            "DS 4 Crossback"
+        ]
+    },
+    {
+        "marca": "FERRARI",
+        "modelos": [
+            "488",
+            "GTC4",
+            "California",
+            "F12"
+        ]
+    },
+    {
+        "marca": "FERRARI (FCA)",
+        "modelos": [
+            "458",
+            "FF",
+            "F12",
+            "California",
+            "488"
+        ]
+    },
+    {
+        "marca": "FIAT",
+        "modelos": [
+            "Freemont",
+            "Doblò",
+            "Punto",
+            "Panda",
+            "500",
+            "500L",
+            "500L",
+            "500X",
+            "Qubo",
+            "Fiorino",
+            "Bravo",
+            "Doblò",
+            "Doblò",
+            "500C",
+            "Tipo",
+            "124 Spider"
+        ]
+    },
+    {
+        "marca": "FIAT (FIAT)",
+        "modelos": [
+            "Bravo",
+            "Fiorino"
+        ]
+    },
+    {
+        "marca": "FORD",
+        "modelos": [
+            "C-Max",
+            "Fiesta",
+            "Focus",
+            "Mondeo",
+            "Ka",
+            "S-MAX",
+            "B-MAX",
+            "Grand C-Max",
+            "Tourneo Custom",
+            "Kuga",
+            "Galaxy",
+            "Grand Tourneo Connect",
+            "Tourneo Connect",
+            "EcoSport",
+            "Tourneo Courier",
+            "Mustang",
+            "Transit Connect",
+            "Edge",
+            "Ka+"
+        ]
+    },
+    {
+        "marca": "HONDA",
+        "modelos": [
+            "Accord",
+            "Jazz",
+            "Civic",
+            "CR-V",
+            "HR-V"
+        ]
+    },
+    {
+        "marca": "HYUNDAI",
+        "modelos": [
+            "i20",
+            "ix35",
+            "ix20",
+            "i10",
+            "Santa Fe",
+            "Veloster",
+            "i40",
+            "Elantra",
+            "i30",
+            "Grand Santa Fe",
+            "Genesis",
+            "H-1 Travel",
+            "Tucson",
+            "i20 Active",
+            "IONIQ"
+        ]
+    },
+    {
+        "marca": "INFINITI",
+        "modelos": [
+            "Q70",
+            "Q50",
+            "QX70",
+            "QX50",
+            "Q60",
+            "Q30",
+            "QX30"
+        ]
+    },
+    {
+        "marca": "ISUZU",
+        "modelos": [
+            "D-Max"
+        ]
+    },
+    {
+        "marca": "JAGUAR",
+        "modelos": [
+            "XF",
+            "Serie XK",
+            "F-Type",
+            "XJ",
+            "XE",
+            "F-Pace"
+        ]
+    },
+    {
+        "marca": "JEEP",
+        "modelos": [
+            "Grand Cherokee",
+            "Wrangler Unlimited",
+            "Cherokee",
+            "Wrangler",
+            "Renegade",
+            "Compass",
+            "Renegade"
+        ]
+    },
+    {
+        "marca": "JEEP (FIAT)",
+        "modelos": [
+            "Wrangler Unlimited",
+            "Wrangler",
+            "Cherokee"
+        ]
+    },
+    {
+        "marca": "KIA",
+        "modelos": [
+            "Picanto",
+            "Rio",
+            "Sportage",
+            "Venga",
+            "Optima",
+            "cee'd",
+            "cee'd Sportswagon",
+            "Carens",
+            "pro_cee'd",
+            "Sorento",
+            "Soul",
+            "Niro",
+            "Soul EV",
+            "pro_cee'd GT"
+        ]
+    },
+    {
+        "marca": "LADA",
+        "modelos": [
+            "4X4",
+            "Priora"
+        ]
+    },
+    {
+        "marca": "LAMBORGHINI",
+        "modelos": [
+            "Aventador",
+            "Huracán"
+        ]
+    },
+    {
+        "marca": "LANCIA",
+        "modelos": [
+            "Ypsilon",
+            "Voyager",
+            "Delta"
+        ]
+    },
+    {
+        "marca": "LANCIA (FIAT)",
+        "modelos": [
+            "Thema",
+            "Delta"
+        ]
+    },
+    {
+        "marca": "LAND ROVER",
+        "modelos": [
+            "Defender",
+            "Discovery 4",
+            "Range Rover",
+            "Range Rover Evoque",
+            "Freelander",
+            "Range Rover Sport",
+            "Discovery Sport",
+            "Discovery",
+            "Range Rover Velar"
+        ]
+    },
+    {
+        "marca": "LEXUS",
+        "modelos": [
+            "GS",
+            "RX",
+            "CT",
+            "IS",
+            "NX",
+            "RC",
+            "LS",
+            "LC"
+        ]
+    },
+    {
+        "marca": "MAHINDRA",
+        "modelos": [
+            "XUV500"
+        ]
+    },
+    {
+        "marca": "MASERATI",
+        "modelos": [
+            "GranCabrio",
+            "Quattroporte",
+            "Ghibli",
+            "GranTurismo",
+            "Levante"
+        ]
+    },
+    {
+        "marca": "MAZDA",
+        "modelos": [
+            "Mazda2",
+            "CX-5",
+            "Mazda6",
+            "MX-5",
+            "Mazda3",
+            "Mazda5",
+            "CX-9",
+            "CX-3"
+        ]
+    },
+    {
+        "marca": "MERCEDES",
+        "modelos": [
+            "Clase SL",
+            "Clase SLK",
+            "Clase V",
+            "Clase C",
+            "Clase M",
+            "Clase G",
+            "Clase E",
+            "Clase CL",
+            "Clase S",
+            "Clase GLK",
+            "SLS AMG",
+            "Clase B",
+            "Clase A",
+            "Clase GL",
+            "Clase CLS",
+            "Clase CLA",
+            "Clase GLA",
+            "AMG GT",
+            "Vito",
+            "Clase GLE Coupé",
+            "Clase GLE",
+            "Clase GLE Coupé",
+            "Clase GLK",
+            "Clase GLC",
+            "Citan",
+            "Clase GLS",
+            "Clase SLC",
+            "GLC Coupé",
+            "Mercedes-AMG GT"
+        ]
+    },
+    {
+        "marca": "MINI",
+        "modelos": [
+            "MINI",
+            "COUNTRYMAN",
+            "PACEMAN",
+            "CLUBMAN"
+        ]
+    },
+    {
+        "marca": "MITSUBISHI",
+        "modelos": [
+            "Montero",
+            "i-MiEV",
+            "ASX",
+            "Outlander",
+            "Space Star",
+            "L200"
+        ]
+    },
+    {
+        "marca": "MORGAN",
+        "modelos": [
+            "Roadster",
+            "Plus 8",
+            "Plus 4",
+            "4/4"
+        ]
+    },
+    {
+        "marca": "NISSAN",
+        "modelos": [
+            "X-TRAIL",
+            "QASHQAI",
+            "NOTE",
+            "LEAF",
+            "Pathfinder",
+            "EVALIA",
+            "Navara",
+            "Micra",
+            "JUKE",
+            "370Z",
+            "NV200",
+            "GT-R",
+            "PULSAR",
+            "Murano",
+            "NV200 EVALIA",
+            "e-NV200 EVALIA"
+        ]
+    },
+    {
+        "marca": "OPEL",
+        "modelos": [
+            "Corsa",
+            "Astra",
+            "Meriva",
+            "Zafira Tourer",
+            "Zafira",
+            "Insignia",
+            "Combo",
+            "Ampera",
+            "Mokka",
+            "Adam",
+            "Cabrio",
+            "Antara",
+            "Karl",
+            "GTC",
+            "GTC",
+            "Mokka",
+            "Zafira",
+            "Crossland X",
+            "Mokka X"
+        ]
+    },
+    {
+        "marca": "PEUGEOT",
+        "modelos": [
+            "308",
+            "807",
+            "Bipper",
+            "508",
+            "Partner",
+            "3008",
+            "208",
+            "2008",
+            "RCZ",
+            "5008",
+            "4008",
+            "108",
+            "207",
+            "ion",
+            "Traveller"
+        ]
+    },
+    {
+        "marca": "PORSCHE",
+        "modelos": [
+            "911",
+            "Boxster",
+            "Cayenne",
+            "Panamera",
+            "918",
+            "Macan",
+            "Cayman",
+            "718"
+        ]
+    },
+    {
+        "marca": "RENAULT",
+        "modelos": [
+            "Fluence",
+            "Grand Scénic",
+            "Latitude",
+            "Clio",
+            "Scénic",
+            "Laguna",
+            "Kangoo Combi",
+            "Mégane",
+            "Grand Kangoo Combi",
+            "Captur",
+            "ZOE",
+            "Koleos",
+            "Twingo",
+            "Espace",
+            "Kadjar",
+            "Talisman"
+        ]
+    },
+    {
+        "marca": "ROLLS-ROYCE",
+        "modelos": [
+            "Phantom"
+        ]
+    },
+    {
+        "marca": "SEAT",
+        "modelos": [
+            "Ibiza",
+            "Nuevo León",
+            "Alhambra",
+            "Altea",
+            "Mii",
+            "Toledo",
+            "Altea XL",
+            "Ateca",
+            "León",
+            "Nuevo Ibiza"
+        ]
+    },
+    {
+        "marca": "SKODA",
+        "modelos": [
+            "Octavia",
+            "Fabia",
+            "Roomster",
+            "Yeti",
+            "Superb",
+            "Citigo",
+            "Rapid",
+            "Spaceback",
+            "Scout",
+            "Kodiaq"
+        ]
+    },
+    {
+        "marca": "SMART",
+        "modelos": [
+            "Fortwo",
+            "Forfour"
+        ]
+    },
+    {
+        "marca": "SSANGYONG",
+        "modelos": [
+            "Rexton",
+            "Rodius",
+            "Korando",
+            "Actyon Sports Pick Up",
+            "Tivoli",
+            "XLV"
+        ]
+    },
+    {
+        "marca": "SUBARU",
+        "modelos": [
+            "Forester",
+            "XV",
+            "Outback",
+            "BRZ",
+            "WRX STI",
+            "LEVORG",
+            "WRX STI"
+        ]
+    },
+    {
+        "marca": "SUZUKI",
+        "modelos": [
+            "Grand Vitara",
+            "Swift",
+            "SX4",
+            "Jimny",
+            "SX4 S-Cross",
+            "Celerio",
+            "Kizashi",
+            "Vitara",
+            "Baleno",
+            "Ignis"
+        ]
+    },
+    {
+        "marca": "TATA",
+        "modelos": [
+            "Xenon",
+            "Aria",
+            "Vista"
+        ]
+    },
+    {
+        "marca": "TESLA",
+        "modelos": [
+            "Model X",
+            "Model S"
+        ]
+    },
+    {
+        "marca": "TOYOTA",
+        "modelos": [
+            "Avensis",
+            "Land Cruiser",
+            "Yaris",
+            "Verso",
+            "Auris",
+            "Prius+",
+            "GT86",
+            "Prius",
+            "Rav4",
+            "Aygo",
+            "Hilux",
+            "Land Cruiser 200",
+            "Proace Verso",
+            "C-HR"
+        ]
+    },
+    {
+        "marca": "VOLKSWAGEN",
+        "modelos": [
+            "Polo",
+            "Jetta",
+            "Phaeton",
+            "Golf",
+            "Touran",
+            "Touareg",
+            "Beetle",
+            "Sharan",
+            "Tiguan",
+            "Multivan",
+            "California",
+            "Caravelle",
+            "up!",
+            "CC",
+            "Golf Sportsvan",
+            "Amarok",
+            "Caddy",
+            "Transporter",
+            "Scirocco",
+            "Passat",
+            "Eos",
+            "Arteon"
+        ]
+    },
+    {
+        "marca": "VOLVO",
+        "modelos": [
+            "V70",
+            "S80",
+            "XC70",
+            "V60",
+            "S60",
+            "XC90",
+            "XC60",
+            "V40",
+            "V40 Cross Country",
+            "V60 Cross Country",
+            "S60 Cross Country",
+            "S90",
+            "V90",
+            "V90 Cross Country"
+        ]
+    }
+]

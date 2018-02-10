@@ -1,0 +1,19 @@
+{
+  "name": "ws",
+  "version": "1.0.0",
+  "description": "Servicio Web",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Javier Martín",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.16.0",
+    "express": "^4.14.0"
+  },
+  "devDependencies": {
+    "jsonwebtoken": "^7.4.1"
+  }
+}
