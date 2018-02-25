@@ -38,11 +38,11 @@ function plantillaHTML(titulo, body) {
     <body>
       ${body}
     </body>
-  </html>`  
+  </html>`
 }
 function formatColeccion(titulo, col) {
   var rslt = `<tr><th colspan="2" style="text-align: center">${titulo}</th></tr>`;
-  for(let c in col) 
+  for (let c in col)
     rslt += `<tr><th>${c}</th><td>${col[c]}</td></tr>`
   return rslt
 }
@@ -52,7 +52,7 @@ app.all('/form', function (req, res) {
   peticion['Method'] = req.method + ' ' + req.protocol + ' ' + req.httpVersion
   peticion['AJAX'] = req.xhr
   var volver = ''
-  if(req.header('referer')) 
+  if (req.header('referer'))
     volver = `<center><a href="${req.header('referer')}">Volver</a></center>`
   rslt = `<h1>Datos de la petici&oacute;n</h1>
   <table border="1">
@@ -105,9 +105,40 @@ const lstServicio = [
 lstServicio.forEach(servicio => {
   app.get(servicio.url, function (req, res) {
     fs.readFile(servicio.fich, 'utf8', function (err, data) {
-      console.log(data)
+      let lst = JSON.parse(data)
+      if (Object.keys(req.query).length > 0) {
+        if ('_search' in req.query) {
+          lst = lst.filter(function (item) {
+            return JSON.stringify(item).includes(req.query._search);
+          })
+        } else {
+          const q = Object.keys(req.query).filter(item => !item.startsWith('_'));
+          if (q.length > 0) {
+            lst = lst.filter(function (item) {
+              for (let cmp in q) {
+                if (item[q[cmp]] != req.query[q[cmp]]) return false;
+              }
+              return true;
+            })
+          }
+        }
+      }
+      let cmp = req.query._sort ? req.query._sort : servicio.pk;
+      let dir = 1;
+      if(cmp.startsWith("-")) {
+        cmp = cmp.substring(1);
+        dir = -1;
+      }
+      lst = lst.sort((a, b) => dir * (a[cmp] == b[cmp] ? 0 : (a[cmp] < b[cmp] ? -1 : 1)));
+      if (req.query._page != undefined || req.query._rows != undefined) {
+        const page = req.query._page && !isNaN(+req.query._page) ? Math.abs(+req.query._page) : 0;
+        const rows = req.query._rows && !isNaN(+req.query._rows) ? Math.abs(+req.query._rows) : 20;
+        lst = lst.slice(page * rows, page * rows + rows)
+      }
+      let rslt = JSON.stringify(lst);
+      console.log(rslt)
       res.cookie('XSRF-TOKEN', '123456790ABCDEF')
-      res.end(data)
+      res.end(rslt)
     })
   })
   app.get(servicio.url + '/:id', function (req, res) {
@@ -124,12 +155,16 @@ lstServicio.forEach(servicio => {
     fs.readFile(servicio.fich, 'utf8', function (err, data) {
       var lst = JSON.parse(data)
       var ele = req.body
-      lst.push(ele)
-      console.log(lst)
-      fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
-        res.status(500).end()
-      })
-      res.status(200).end(JSON.stringify(lst))
+      if (lst.find(item => item[servicio.pk] == ele[servicio.pk]) == undefined) {
+        lst.push(ele)
+        console.log(lst)
+        fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
+          res.status(500).end('Error de escritura')
+        })
+        res.status(201).end(JSON.stringify(lst))
+      } else {
+        res.status(500).end('Clave duplicada.')
+      }
     })
   })
   app.put(servicio.url, function (req, res) {
@@ -138,12 +173,16 @@ lstServicio.forEach(servicio => {
       var lst = JSON.parse(data)
       var ele = req.body
       var ind = lst.findIndex(row => row[servicio.pk] == ele.id)
-      lst[ind] = ele
-      console.log(lst)
-      fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
-        res.status(500).end()
-      })
-      res.status(200).end(JSON.stringify(lst))
+      if (ind == -1) {
+        res.status(404).end()
+      } else {
+        lst[ind] = ele
+        console.log(lst)
+        fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
+          res.status(500).end('Error de escritura')
+        })
+        res.status(200).end(JSON.stringify(lst))
+      }
     })
   })
   app.put(servicio.url + '/:id', function (req, res) {
@@ -152,12 +191,16 @@ lstServicio.forEach(servicio => {
       var lst = JSON.parse(data)
       var ele = req.body
       var ind = lst.findIndex(row => row[servicio.pk] == req.params.id)
-      lst[ind] = ele
-      console.log(lst)
-      fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
-        res.status(500).end()
-      })
-      res.status(200).end(JSON.stringify(lst))
+      if (ind == -1) {
+        res.status(404).end()
+      } else {
+        lst[ind] = ele
+        console.log(lst)
+        fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
+          res.status(500).end('Error de escritura')
+        })
+        res.status(200).end(JSON.stringify(lst))
+      }
     })
   })
   app.delete(servicio.url + '/:id', function (req, res) {
@@ -165,12 +208,16 @@ lstServicio.forEach(servicio => {
     fs.readFile(servicio.fich, 'utf8', function (err, data) {
       var lst = JSON.parse(data)
       var ind = lst.findIndex(row => row[servicio.pk] == req.params.id)
-      lst.splice(ind, 1)
-      console.log(lst)
-      fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
-        res.status(500).end()
-      })
-      res.status(200).end(JSON.stringify(lst))
+      if (ind == -1) {
+        res.status(404).end()
+      } else {
+        lst.splice(ind, 1)
+        console.log(lst)
+        fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
+          res.status(500).end('Error de escritura')
+        })
+        res.status(200).end(JSON.stringify(lst))
+      }
     })
   })
   app.options(servicio.url + '/:id', function (req, res) {
@@ -192,8 +239,8 @@ app.get('/', function (req, res) {
     <li><a href='${srv}/form'>Peticion SPY ${srv}/form</a></li>
     <li>Servicios REST<ul>`
   lstServicio.forEach(servicio => {
-      rslt += `<li><a href='${srv}${servicio.url}'>${srv}${servicio.url}</a></li>`
-    })
+    rslt += `<li><a href='${srv}${servicio.url}'>${srv}${servicio.url}</a></li>`
+  })
   rslt += `</ul></li></ul>`
   res.status(200).end(plantillaHTML('MOCK Server', rslt))
 })
