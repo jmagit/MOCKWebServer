@@ -27,6 +27,11 @@ Se han incorporado una serie de parámetros (querystring) para ampliar el contro
 * **_search=*valor*:** Selecciona todos aquellos que alguna de sus propiedades contenga el valor proporcionado. Invalida las búsquedas por propiedades individuales.
 * **_sort=*propiedad*:** Indica la propiedad por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.
 * **_page=*número*:** Número de página empezando en 0 (primera página). Si se omite pero aparece el parámetro *_rows* tomara el valor 0 por defecto.
+* **_page=count:** Devuelve el número de páginas y filas de la fuente de datos. Si se omite el Número de filas por página tomara 20 por defecto. Ej:  
+`{  
+  "pages": 10,
+  "rows": 99
+}`
 * **_rows=*número*:** Número de filas por página, por defecto 20 si se omite pero aparece el parámetro *_page*.
 ### Para añadir nuevos servicios
 1. En el subdirectorio `/data`, añadir un fichero .json con el array de objetos con los valores iniciales del resource.

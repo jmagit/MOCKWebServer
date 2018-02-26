@@ -96,7 +96,7 @@ function isAutenticated(readonly, req, res) {
 // Servicios web
 const lstServicio = [
   { url: '/personas', pk: 'id', fich: __dirname + '/data/personas.json', readonly: false },
-  { url: '/libros', pk: 'id', fich: __dirname + '/data/libros.json', readonly: false },
+  { url: '/libros', pk: 'idLibro', fich: __dirname + '/data/libros.json', readonly: false },
   { url: '/biblioteca', pk: 'id', fich: __dirname + '/data/biblioteca.json', readonly: false },
   { url: '/vehiculos', pk: 'id', fich: __dirname + '/data/vehiculos.json', readonly: false },
   { url: '/marcas', pk: 'marca', fich: __dirname + '/data/marcas-modelos.json', readonly: false }
@@ -131,8 +131,12 @@ lstServicio.forEach(servicio => {
       }
       lst = lst.sort((a, b) => dir * (a[cmp] == b[cmp] ? 0 : (a[cmp] < b[cmp] ? -1 : 1)));
       if (req.query._page != undefined || req.query._rows != undefined) {
-        const page = req.query._page && !isNaN(+req.query._page) ? Math.abs(+req.query._page) : 0;
         const rows = req.query._rows && !isNaN(+req.query._rows) ? Math.abs(+req.query._rows) : 20;
+        if(req.query._page && req.query._page.toUpperCase() == "COUNT") {
+          res.end(`{ "pages": ${Math.ceil(lst.length/rows)}, "rows": ${lst.length}}`)
+          return;
+        }
+        const page = req.query._page && !isNaN(+req.query._page) ? Math.abs(+req.query._page) : 0;
         lst = lst.slice(page * rows, page * rows + rows)
       }
       let rslt = JSON.stringify(lst);
@@ -155,7 +159,9 @@ lstServicio.forEach(servicio => {
     fs.readFile(servicio.fich, 'utf8', function (err, data) {
       var lst = JSON.parse(data)
       var ele = req.body
-      if (lst.find(item => item[servicio.pk] == ele[servicio.pk]) == undefined) {
+      if(ele[servicio.pk] == undefined) {
+        res.status(500).end('Falta clave primaria.')
+      } else if (lst.find(item => item[servicio.pk] == ele[servicio.pk]) == undefined) {
         lst.push(ele)
         console.log(lst)
         fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
