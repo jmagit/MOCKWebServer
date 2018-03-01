@@ -109,7 +109,7 @@ lstServicio.forEach(servicio => {
       if (Object.keys(req.query).length > 0) {
         if ('_search' in req.query) {
           lst = lst.filter(function (item) {
-            return JSON.stringify(item).includes(req.query._search);
+            return JSON.stringify(Object.values(item)).includes(req.query._search);
           })
         } else {
           const q = Object.keys(req.query).filter(item => !item.startsWith('_'));
