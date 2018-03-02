@@ -162,6 +162,14 @@ lstServicio.forEach(servicio => {
       if(ele[servicio.pk] == undefined) {
         res.status(500).end('Falta clave primaria.')
       } else if (lst.find(item => item[servicio.pk] == ele[servicio.pk]) == undefined) {
+        if (ele[servicio.pk] == 0) {
+          if (lst.length == 0)
+            ele[servicio.pk] = 1;
+          else {
+            let newId = +lst.sort((a, b) => (a[servicio.pk] == b[servicio.pk] ? 0 : (a[servicio.pk] < b[servicio.pk] ? -1 : 1)))[lst.length - 1][servicio.pk];
+            ele[servicio.pk] = newId + 1;
+          }
+        }
         lst.push(ele)
         console.log(lst)
         fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
