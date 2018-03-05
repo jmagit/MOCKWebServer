@@ -186,7 +186,7 @@ lstServicio.forEach(servicio => {
     fs.readFile(servicio.fich, 'utf8', function (err, data) {
       var lst = JSON.parse(data)
       var ele = req.body
-      var ind = lst.findIndex(row => row[servicio.pk] == ele.id)
+      var ind = lst.findIndex(row => row[servicio.pk] == ele[servicio.pk])
       if (ind == -1) {
         res.status(404).end()
       } else {
