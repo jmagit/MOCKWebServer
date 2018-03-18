@@ -142,6 +142,7 @@ lstServicio.forEach(servicio => {
       let rslt = JSON.stringify(lst);
       console.log(rslt)
       res.cookie('XSRF-TOKEN', '123456790ABCDEF')
+      res.header('Content-Type', 'application/json')
       res.end(rslt)
     })
   })
@@ -151,6 +152,7 @@ lstServicio.forEach(servicio => {
       var ele = lst.find(ele => ele[servicio.pk] == req.params.id)
       console.log(ele)
       res.cookie('XSRF-TOKEN', '123456790ABCDEF')
+      res.header('Content-Type', 'application/json')
       res.end(JSON.stringify(ele))
     })
   })
@@ -175,6 +177,7 @@ lstServicio.forEach(servicio => {
         fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
           res.status(500).end('Error de escritura')
         })
+        res.header('Content-Type', 'application/json')
         res.status(201).end(JSON.stringify(lst))
       } else {
         res.status(500).end('Clave duplicada.')
@@ -195,6 +198,7 @@ lstServicio.forEach(servicio => {
         fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
           res.status(500).end('Error de escritura')
         })
+        res.header('Content-Type', 'application/json')
         res.status(200).end(JSON.stringify(lst))
       }
     })
@@ -213,6 +217,7 @@ lstServicio.forEach(servicio => {
         fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
           res.status(500).end('Error de escritura')
         })
+        res.header('Content-Type', 'application/json')
         res.status(200).end(JSON.stringify(lst))
       }
     })
@@ -230,6 +235,7 @@ lstServicio.forEach(servicio => {
         fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
           res.status(500).end('Error de escritura')
         })
+        res.header('Content-Type', 'application/json')
         res.status(200).end(JSON.stringify(lst))
       }
     })
