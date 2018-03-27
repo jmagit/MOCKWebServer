@@ -3,10 +3,15 @@ var express = require('express')
 var bodyParser = require('body-parser')
 var jwt = require('jsonwebtoken')
 
-const PUERTO = 4321;
+const PUERTO = 43210;
 const APP_SECRET = 'mysecureapp'
 const USERNAME = 'admin'
 const PASSWORD = 'P@$$w0rd'
+
+const PROP_USERNAME = 'idUsuario'
+const PROP_PASSWORD = 'password'
+const PROP_NAME = 'idUsuario'
+const USR_FILENAME = __dirname + '/data/usuarios.json'
 
 var app = express()
 
@@ -72,12 +77,100 @@ app.options('/login', function (req, res) {
 })
 app.post('/login', function (req, res) {
   var rslt = { success: false }
+  if (req.body && req.body.name && req.body.password) {
+    let usr = req.body.name
+    let pwd = req.body.password
+    fs.readFile(USR_FILENAME, 'utf8', function (err, data) {
+      var lst = JSON.parse(data)
+      var ele = lst.find(ele => ele[PROP_USERNAME] == usr && ele[PROP_PASSWORD])
+      if(ele) {
+        let token = jwt.sign({ data: ele[PROP_USERNAME], expiresIn: '1h' }, APP_SECRET)
+        rslt = { success: true, token: token, name: ele[PROP_NAME] }
+      }
+      res.cookie('XSRF-TOKEN', '123456790ABCDEF')
+      res.status(200).end(JSON.stringify(rslt))
+    })
+  } else {
+    res.status(200).end(JSON.stringify(rslt))
+  }  
+  /*
+  var rslt = { success: false }
   if (req.body != null && req.body.name == USERNAME
     && req.body.password == PASSWORD) {
     let token = jwt.sign({ data: USERNAME, expiresIn: '1h' }, APP_SECRET)
     rslt = { success: true, token: token }
   }
   res.status(200).end(JSON.stringify(rslt))
+  */
+})
+app.get('/register', function (req, res) {
+  let token = req.headers['authorization']
+  try {
+    var decoded = jwt.verify(token, APP_SECRET)
+  } catch (err) { 
+    res.status(401).end()
+    return false
+  }
+  if (!decoded) {
+    res.status(401).end()
+    return false
+  }
+  let usr = decoded.data
+  fs.readFile(USR_FILENAME, 'utf8', function (err, data) {
+    var lst = JSON.parse(data)
+    var ele = lst.find(ele => ele[PROP_USERNAME] == usr)
+    if(ele) {
+      res.status(200).end(JSON.stringify(ele))
+    } else {
+      res.status(401).end()
+    }
+  })
+})
+app.post('/register', function (req, res) {
+  fs.readFile(USR_FILENAME, 'utf8', function (err, data) {
+    var lst = JSON.parse(data)
+    var ele = req.body
+    if (ele[PROP_USERNAME] == undefined) {
+      res.status(500).end('Falta clave primaria.')
+    } else if (lst.find(item => item[PROP_USERNAME] == ele[PROP_USERNAME]) == undefined) {
+      lst.push(ele)
+      console.log(lst)
+      fs.writeFile(USR_FILENAME, JSON.stringify(lst), 'utf8', function (err) {
+        res.status(500).end('Error de escritura')
+      })
+      res.status(201).end()
+    } else {
+      res.status(500).end('Clave duplicada.')
+    }
+  })
+})
+app.put('/register', function (req, res) {
+  let token = req.headers['authorization']
+  let ele = req.body
+  try {
+    var decoded = jwt.verify(token, APP_SECRET)
+  } catch (err) { 
+    res.status(401).end()
+    return false
+  }
+  if (!decoded || decoded.data !== ele[PROP_USERNAME]) {
+    res.status(401).end()
+    return false
+  }
+  fs.readFile(USR_FILENAME, 'utf8', function (err, data) {
+    var lst = JSON.parse(data)
+    var ind = lst.findIndex(row => row[PROP_USERNAME] == ele[PROP_USERNAME])
+    if (ind == -1) {
+      res.status(404).end()
+    } else {
+      lst[ind] = ele
+      console.log(lst)
+      fs.writeFile(USR_FILENAME, JSON.stringify(lst), 'utf8', function (err) {
+        res.status(500).end('Error de escritura')
+      })
+      res.status(200).end()
+    }
+  })
 })
 function isAutenticated(readonly, req, res) {
   if (readonly) {
@@ -85,7 +178,7 @@ function isAutenticated(readonly, req, res) {
     try {
       var decoded = jwt.verify(token, APP_SECRET)
     } catch (err) { }
-    if (!decoded || decoded.data !== USERNAME) {
+    if (!decoded /*|| decoded.data !== USERNAME*/) {
       res.status(401).end()
       return false
     }
@@ -95,11 +188,11 @@ function isAutenticated(readonly, req, res) {
 
 // Servicios web
 const lstServicio = [
-  { url: '/personas', pk: 'id', fich: __dirname + '/data/personas.json', readonly: false },
+  { url: '/personas', pk: 'id', fich: __dirname + '/data/personas.json', readonly: true },
   { url: '/libros', pk: 'idLibro', fich: __dirname + '/data/libros.json', readonly: false },
   { url: '/biblioteca', pk: 'id', fich: __dirname + '/data/biblioteca.json', readonly: false },
   { url: '/vehiculos', pk: 'id', fich: __dirname + '/data/vehiculos.json', readonly: false },
-  { url: '/marcas', pk: 'marca', fich: __dirname + '/data/marcas-modelos.json', readonly: false }
+  { url: '/marcas', pk: 'marca', fich: __dirname + '/data/marcas-modelos.json', readonly: false },
 ]
 
 lstServicio.forEach(servicio => {
@@ -125,15 +218,15 @@ lstServicio.forEach(servicio => {
       }
       let cmp = req.query._sort ? req.query._sort : servicio.pk;
       let dir = 1;
-      if(cmp.startsWith("-")) {
+      if (cmp.startsWith("-")) {
         cmp = cmp.substring(1);
         dir = -1;
       }
       lst = lst.sort((a, b) => dir * (a[cmp] == b[cmp] ? 0 : (a[cmp] < b[cmp] ? -1 : 1)));
       if (req.query._page != undefined || req.query._rows != undefined) {
         const rows = req.query._rows && !isNaN(+req.query._rows) ? Math.abs(+req.query._rows) : 20;
-        if(req.query._page && req.query._page.toUpperCase() == "COUNT") {
-          res.end(`{ "pages": ${Math.ceil(lst.length/rows)}, "rows": ${lst.length}}`)
+        if (req.query._page && req.query._page.toUpperCase() == "COUNT") {
+          res.end(`{ "pages": ${Math.ceil(lst.length / rows)}, "rows": ${lst.length}}`)
           return;
         }
         const page = req.query._page && !isNaN(+req.query._page) ? Math.abs(+req.query._page) : 0;
@@ -142,7 +235,6 @@ lstServicio.forEach(servicio => {
       let rslt = JSON.stringify(lst);
       console.log(rslt)
       res.cookie('XSRF-TOKEN', '123456790ABCDEF')
-      res.header('Content-Type', 'application/json')
       res.end(rslt)
     })
   })
@@ -152,16 +244,18 @@ lstServicio.forEach(servicio => {
       var ele = lst.find(ele => ele[servicio.pk] == req.params.id)
       console.log(ele)
       res.cookie('XSRF-TOKEN', '123456790ABCDEF')
-      res.header('Content-Type', 'application/json')
       res.end(JSON.stringify(ele))
     })
   })
   app.post(servicio.url, function (req, res) {
-    if (!isAutenticated(servicio.readonly, req, res)) return
+    if (!isAutenticated(servicio.readonly, req, res)) {
+      res.status(401).end('No autorizado.')
+      return
+    }
     fs.readFile(servicio.fich, 'utf8', function (err, data) {
       var lst = JSON.parse(data)
       var ele = req.body
-      if(ele[servicio.pk] == undefined) {
+      if (ele[servicio.pk] == undefined) {
         res.status(500).end('Falta clave primaria.')
       } else if (lst.find(item => item[servicio.pk] == ele[servicio.pk]) == undefined) {
         if (ele[servicio.pk] == 0) {
@@ -177,7 +271,6 @@ lstServicio.forEach(servicio => {
         fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
           res.status(500).end('Error de escritura')
         })
-        res.header('Content-Type', 'application/json')
         res.status(201).end(JSON.stringify(lst))
       } else {
         res.status(500).end('Clave duplicada.')
@@ -185,7 +278,10 @@ lstServicio.forEach(servicio => {
     })
   })
   app.put(servicio.url, function (req, res) {
-    if (!isAutenticated(servicio.readonly, req, res)) return
+    if (!isAutenticated(servicio.readonly, req, res)) {
+      res.status(401).end('No autorizado.')
+      return
+    }
     fs.readFile(servicio.fich, 'utf8', function (err, data) {
       var lst = JSON.parse(data)
       var ele = req.body
@@ -198,13 +294,15 @@ lstServicio.forEach(servicio => {
         fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
           res.status(500).end('Error de escritura')
         })
-        res.header('Content-Type', 'application/json')
         res.status(200).end(JSON.stringify(lst))
       }
     })
   })
   app.put(servicio.url + '/:id', function (req, res) {
-    if (!isAutenticated(servicio.readonly, req, res)) return
+    if (!isAutenticated(servicio.readonly, req, res)) {
+      res.status(401).end('No autorizado.')
+      return
+    }
     fs.readFile(servicio.fich, 'utf8', function (err, data) {
       var lst = JSON.parse(data)
       var ele = req.body
@@ -217,13 +315,15 @@ lstServicio.forEach(servicio => {
         fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
           res.status(500).end('Error de escritura')
         })
-        res.header('Content-Type', 'application/json')
         res.status(200).end(JSON.stringify(lst))
       }
     })
   })
   app.delete(servicio.url + '/:id', function (req, res) {
-    if (!isAutenticated(servicio.readonly, req, res)) return
+    if (!isAutenticated(servicio.readonly, req, res)) {
+      res.status(401).end('No autorizado.')
+      return
+    }
     fs.readFile(servicio.fich, 'utf8', function (err, data) {
       var lst = JSON.parse(data)
       var ind = lst.findIndex(row => row[servicio.pk] == req.params.id)
@@ -235,7 +335,6 @@ lstServicio.forEach(servicio => {
         fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
           res.status(500).end('Error de escritura')
         })
-        res.header('Content-Type', 'application/json')
         res.status(200).end(JSON.stringify(lst))
       }
     })
