@@ -188,7 +188,8 @@ function isAutenticated(readonly, req, res) {
 
 // Servicios web
 const lstServicio = [
-  { url: '/personas', pk: 'id', fich: __dirname + '/data/personas.json', readonly: true },
+  { url: '/personas', pk: 'id', fich: __dirname + '/data/personas.json', readonly: false },
+  { url: '/blog', pk: 'id', fich: __dirname + '/data/blog.json', readonly: false },
   { url: '/libros', pk: 'idLibro', fich: __dirname + '/data/libros.json', readonly: false },
   { url: '/biblioteca', pk: 'id', fich: __dirname + '/data/biblioteca.json', readonly: false },
   { url: '/vehiculos', pk: 'id', fich: __dirname + '/data/vehiculos.json', readonly: false },

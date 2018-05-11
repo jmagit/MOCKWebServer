@@ -1,0 +1,11 @@
+[
+    {
+        "id": 1,
+        "titulo": "Saludo",
+        "texto": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores eveniet eum nisi expedita ab dolorum labore similique provident officia ipsa, aliquam recusandae dicta id, praesentium quasi consequatur minus laborum perferendis?",
+        "autor": "Javier",
+        "fecha": "2016-02-29",
+        "megusta": 0,
+        "fotourl": "https://angular.io/assets/images/logos/angular/logo-nav@2x.png"
+      }
+]
