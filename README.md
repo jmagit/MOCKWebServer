@@ -9,7 +9,7 @@ Versión NodeJS del servidor de pruebas para cursos de FrontEnd
 1. Descargar o clonar el repositorio
 2. Ejecutar `npm install` para descargar las dependencias.
 3. Ejecutar `npm start` o `npm serve` para levantar el servidor. 
-4. Navegar a http://localhost:4321/personas y a http://localhost:4321/personas/2 para comprobar el correcto funcionamiento del servicio. 
+4. Navegar a http://localhost:4321/ para comprobar el correcto funcionamiento de los servicios. 
 
 ## Servicios RestFul
 Para no crear dependencias de bases de datos los servicios utilizan ficheros como `data/personas.json`. El fichero se lee completo y se graba completo, no se ha optimizado el proceso. Los resultados de las peticiones se vuelcan a consola para facilitar las comprobaciones.
@@ -41,6 +41,7 @@ Se han incorporado una serie de parámetros (querystring) para ampliar el contro
     * fich: referencia al fichero que actúa de contenedor
     * readonly: true cuando requiera autenticación para los métodos de escritura (POST, PUT, DELETE)
 3. Rearrancar el servidor.
+4. Probar: http://localhost:4321/ws/nuevoservicio
 
 ### Seguridad
 Para evitar conflictos con los navegadores se han habilitado las siguientes cabeceras CORS:
@@ -56,6 +57,16 @@ Para simular la autenticación con token JWT de cabecera está disponible el ser
 * body="name=admin&password=P@$$w0rd"
 #### Respuesta JSON:
 {"success":true,"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiYWRtaW4iLCJleHBpcmVzSW4iOiIxaCIsImlhdCI6MTUxODI2MzM0NX0.hz2Dp3PJ9ryems6IKNAWSwTYu7dzVfT40CPfN7lcKgs"}
+#### Envío del token en la cabecera:
+'Authorization':eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiYWRtaW4iLCJleHBpcmVzSW4iOiIxaCIsImlhdCI6MTUxODI2MzM0NX0.hz2Dp3PJ9ryems6IKNAWSwTYu7dzVfT40CPfN7lcKgs
+### Gestión de usuarios
+En el fichero data/usuarios.json se mantiene la estructura básica de los usuarios registrados que se puede ampliar.
+
+Mediante peticiones AJAX a http://localhost:4321/register se pueden:
+* Registrar usuario (POST).
+* Modificar usuario autenticado (PUT)
+* Consultar usuario autenticado (GET)
+
 
 ## Autorespondedor
 Similar al PHPInfo, genera una página con la información enviada al servidor, generalmente con un formulario, separando la información recibida en cabecera, querystring (GET) y cuerpo (POST).  
@@ -63,3 +74,9 @@ Está disponible en la página http://localhost:4321/form.
 
 ## Servidor de Ficheros
 Se ha habilitado el subdirectorio `/public` para los ficheros que se deben servir directamente. Está mapeado a la raíz del servidor.
+### Subir ficheros
+Se pueden subir ficheros al servidor, mediante peticiones POST AJAX a http://localhost:4321/fileupload, requieren la cabecera **'Content-Type':'multipart/form-data'**.
+
+Los ficheros se almacenan en el subdirectorio `/uploads` y son accesibles mediante la ruta http://localhost:4321/files.
+
+Las peticiones GET a http://localhost:4321/fileupload mostrarán un formulario para subir ficheros.
