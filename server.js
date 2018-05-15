@@ -1,9 +1,14 @@
-var fs = require('fs')
-var express = require('express')
-var bodyParser = require('body-parser')
-var jwt = require('jsonwebtoken')
+const fs = require('fs')
+const util = require('util');
+const express = require('express')
+// var bodyParser = require('body-parser')
+const jwt = require('jsonwebtoken')
+var formidable = require("formidable");
 
-const PUERTO = 43210;
+const readFile = util.promisify(fs.readFile)
+const writeFile = util.promisify(fs.writeFile)
+
+const PUERTO = 4321;
 const APP_SECRET = 'mysecureapp'
 const USERNAME = 'admin'
 const PASSWORD = 'P@$$w0rd'
@@ -15,8 +20,10 @@ const USR_FILENAME = __dirname + '/data/usuarios.json'
 
 var app = express()
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
+// parse application/json
+app.use(express.json())
+// parse application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: false }))
 
 // Cross-origin resource sharing (CORS)
 app.use(function (req, res, next) {
@@ -31,6 +38,26 @@ app.use(function (req, res, next) {
 
 // Ficheros publicos
 app.use(express.static('public'))
+app.use('/files', express.static('uploads'))
+app.get('/fileupload', function (req, res) {
+  res.status(200).end( plantillaHTML('fileupload', `
+    <form action="fileupload" method="post" enctype="multipart/form-data">
+      <input type="file" name="filetoupload"><input type="submit">
+    </form>
+  `))
+})
+app.post('/fileupload', function (req, res) {
+  let form = new formidable.IncomingForm();
+  form.parse(req, function(err, fields, files) {
+    let oldpath = files.filetoupload.path;
+    let newpath = __dirname + "/uploads/" + files.filetoupload.name;
+    fs.rename(oldpath, newpath, function(err) {
+      if (err) throw err;
+      newpath = "files/" + files.filetoupload.name;
+      res.status(200).end(`<a href="${newpath}">${newpath}</a>`);
+    });
+  });
+})
 
 // Autorespondedor de formularios
 function plantillaHTML(titulo, body) {
@@ -188,16 +215,17 @@ function isAutenticated(readonly, req, res) {
 
 // Servicios web
 const lstServicio = [
-  { url: '/personas', pk: 'id', fich: __dirname + '/data/personas.json', readonly: true },
-  { url: '/libros', pk: 'idLibro', fich: __dirname + '/data/libros.json', readonly: false },
-  { url: '/biblioteca', pk: 'id', fich: __dirname + '/data/biblioteca.json', readonly: false },
-  { url: '/vehiculos', pk: 'id', fich: __dirname + '/data/vehiculos.json', readonly: false },
-  { url: '/marcas', pk: 'marca', fich: __dirname + '/data/marcas-modelos.json', readonly: false },
+  { url: '/ws/personas', pk: 'id', fich: __dirname + '/data/personas.json', readonly: true },
+  { url: '/ws/libros', pk: 'idLibro', fich: __dirname + '/data/libros.json', readonly: false },
+  { url: '/ws/biblioteca', pk: 'id', fich: __dirname + '/data/biblioteca.json', readonly: false },
+  { url: '/ws/vehiculos', pk: 'id', fich: __dirname + '/data/vehiculos.json', readonly: false },
+  { url: '/ws/marcas', pk: 'marca', fich: __dirname + '/data/marcas-modelos.json', readonly: false },
 ]
 
 lstServicio.forEach(servicio => {
-  app.get(servicio.url, function (req, res) {
-    fs.readFile(servicio.fich, 'utf8', function (err, data) {
+  app.get(servicio.url, async function (req, res) {
+    try {
+      let data = await readFile(servicio.fich, 'utf8');
       let lst = JSON.parse(data)
       if (Object.keys(req.query).length > 0) {
         if ('_search' in req.query) {
@@ -236,23 +264,34 @@ lstServicio.forEach(servicio => {
       console.log(rslt)
       res.cookie('XSRF-TOKEN', '123456790ABCDEF')
       res.end(rslt)
-    })
+    } catch (error) {
+      res.status(500).end(error)
+    }
   })
-  app.get(servicio.url + '/:id', function (req, res) {
-    fs.readFile(servicio.fich, 'utf8', function (err, data) {
+  app.get(servicio.url + '/:id', async function (req, res) {
+    try {
+      let data = await readFile(servicio.fich, 'utf8');
       var lst = JSON.parse(data)
       var ele = lst.find(ele => ele[servicio.pk] == req.params.id)
-      console.log(ele)
-      res.cookie('XSRF-TOKEN', '123456790ABCDEF')
-      res.end(JSON.stringify(ele))
-    })
+      if(ele) {
+        console.log(ele)
+        res.cookie('XSRF-TOKEN', '123456790ABCDEF')
+        res.status(200).end(JSON.stringify(ele))
+      } else {
+        res.status(404).end()
+      }
+    } catch (err) {
+      res.status(500).end();
+      console.log(err.stack);
+    }
   })
-  app.post(servicio.url, function (req, res) {
+  app.post(servicio.url, async function (req, res) {
     if (!isAutenticated(servicio.readonly, req, res)) {
       res.status(401).end('No autorizado.')
       return
     }
-    fs.readFile(servicio.fich, 'utf8', function (err, data) {
+    let data = await readFile(servicio.fich, 'utf8');
+    try {
       var lst = JSON.parse(data)
       var ele = req.body
       if (ele[servicio.pk] == undefined) {
@@ -275,14 +314,17 @@ lstServicio.forEach(servicio => {
       } else {
         res.status(500).end('Clave duplicada.')
       }
-    })
+    } catch (error) {
+      res.status(500).end(error)
+    }
   })
-  app.put(servicio.url, function (req, res) {
+  app.put(servicio.url, async function (req, res) {
     if (!isAutenticated(servicio.readonly, req, res)) {
       res.status(401).end('No autorizado.')
       return
     }
-    fs.readFile(servicio.fich, 'utf8', function (err, data) {
+    let data = await readFile(servicio.fich, 'utf8');
+    try {
       var lst = JSON.parse(data)
       var ele = req.body
       var ind = lst.findIndex(row => row[servicio.pk] == ele[servicio.pk])
@@ -296,14 +338,17 @@ lstServicio.forEach(servicio => {
         })
         res.status(200).end(JSON.stringify(lst))
       }
-    })
+    } catch (error) {
+      res.status(500).end(error)
+    }
   })
-  app.put(servicio.url + '/:id', function (req, res) {
+  app.put(servicio.url + '/:id', async function (req, res) {
     if (!isAutenticated(servicio.readonly, req, res)) {
       res.status(401).end('No autorizado.')
       return
     }
-    fs.readFile(servicio.fich, 'utf8', function (err, data) {
+    let data = await readFile(servicio.fich, 'utf8');
+    try {
       var lst = JSON.parse(data)
       var ele = req.body
       var ind = lst.findIndex(row => row[servicio.pk] == req.params.id)
@@ -317,14 +362,17 @@ lstServicio.forEach(servicio => {
         })
         res.status(200).end(JSON.stringify(lst))
       }
-    })
+    } catch (error) {
+      res.status(500).end(error)
+    }
   })
-  app.delete(servicio.url + '/:id', function (req, res) {
+  app.delete(servicio.url + '/:id', async function (req, res) {
     if (!isAutenticated(servicio.readonly, req, res)) {
       res.status(401).end('No autorizado.')
       return
     }
-    fs.readFile(servicio.fich, 'utf8', function (err, data) {
+    let data = await readFile(servicio.fich, 'utf8');
+    try {
       var lst = JSON.parse(data)
       var ind = lst.findIndex(row => row[servicio.pk] == req.params.id)
       if (ind == -1) {
@@ -337,7 +385,9 @@ lstServicio.forEach(servicio => {
         })
         res.status(200).end(JSON.stringify(lst))
       }
-    })
+    } catch (error) {
+      res.status(500).end(error)
+    }
   })
   app.options(servicio.url + '/:id', function (req, res) {
     res.status(200).end()
@@ -349,18 +399,20 @@ app.get('/', function (req, res) {
   var srv = `http://${server.address().address == '::' ? 'localhost' : server.address().address}:${server.address().port}`
   rslt = `<h1>MOCK Server</h1>
   <ul>
-    <li>Formulario AUTH <br>action=${srv}/login <br>method=post: name=${USERNAME}&password=${PASSWORD}<br>
-    <form action='${srv}/login' method='post'>
-    <label>name: <input type='text' name='name' value='${USERNAME}'></label>
-    <label>password: <input type='text' name='password' value='${PASSWORD}'></label>
-    <input type='submit' value='Log In'>
-    </form></li>
     <li><a href='${srv}/form'>Peticion SPY ${srv}/form</a></li>
-    <li>Servicios REST<ul>`
+    <li><a href='${srv}/fileupload'>Subir ficheros ${srv}/fileupload</a></li>
+    <li><b>Servicios REST</b><ul>`
   lstServicio.forEach(servicio => {
     rslt += `<li><a href='${srv}${servicio.url}'>${srv}${servicio.url}</a></li>`
   })
-  rslt += `</ul></li></ul>`
+  rslt += `</ul></li>
+    <li><b>Formulario AUTH</b> <br>action=${srv}/login <br>method=post: name=${USERNAME}&password=${PASSWORD}<br><br>
+    <form action='${srv}/login' method='post'>
+    <label>Name: <input type='text' name='name' value='${USERNAME}'></label><br>
+    <label>Password: <input type='text' name='password' value='${PASSWORD}'></label><br>
+    <input type='submit' value='Log In'>
+    </form></li>
+    </ul>`
   res.status(200).end(plantillaHTML('MOCK Server', rslt))
 })
 
