@@ -1,1 +1,20 @@
-[{"idUsuario":"admin","password":"P@$$w0rd","nombre":"Administrador","role":"Administradores"},{"idUsuario":"adm@kk.kk","password":"P@$$w0rd","nombre":"Administrador","role":"Administradores"},{"idUsuario":"usr@kk.kk","password":"P@$$w0rd","nombre":"Usuario registrado","role":"Usuarios"}]
+[
+  {
+    "idUsuario": "admin",
+    "password": "P@$$w0rd",
+    "nombre": "Administrador",
+    "roles": [{ "role": "Administradores" }]
+  },
+  {
+    "idUsuario": "adm@kk.kk",
+    "password": "P@$$w0rd",
+    "nombre": "Administrador",
+    "roles": [{ "role": "Administradores" }]
+  },
+  {
+    "idUsuario": "usr@kk.kk",
+    "password": "P@$$w0rd",
+    "nombre": "Usuario registrado",
+    "roles": [{ "role": "Usuarios" }]
+  }
+]
