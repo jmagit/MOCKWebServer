@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "idCliente": "admin",
+    "numero": "1234567890",
+    "caducida": "10/2019",
+    "tipo": "VISA"
+  },
+  {
+    "id": 2,
+    "idCliente": "usr@kk.kk",
+    "numero": "0987654321",
+    "caducida": "03/2020",
+    "tipo": "AMEX"
+  }
+]
