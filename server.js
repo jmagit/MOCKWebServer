@@ -216,6 +216,7 @@ function isAutenticated(readonly, req, res) {
 // Servicios web
 const lstServicio = [
   { url: '/ws/personas', pk: 'id', fich: __dirname + '/data/personas.json', readonly: true },
+  { url: '/ws/tarjetas', pk: 'id', fich: __dirname + '/data/tarjetas.json', readonly: true },
   { url: '/ws/blog', pk: 'id', fich: __dirname + '/data/blog.json', readonly: false },
   { url: '/ws/libros', pk: 'idLibro', fich: __dirname + '/data/libros.json', readonly: false },
   { url: '/ws/biblioteca', pk: 'id', fich: __dirname + '/data/biblioteca.json', readonly: false },
