@@ -18,6 +18,16 @@ const PROP_PASSWORD = 'password'
 const PROP_NAME = 'idUsuario'
 const USR_FILENAME = __dirname + '/data/usuarios.json'
 
+const lstServicio = [
+  { url: '/ws/personas', pk: 'id', fich: __dirname + '/data/personas.json', readonly: false },
+  { url: '/ws/tarjetas', pk: 'id', fich: __dirname + '/data/tarjetas.json', readonly: false },
+  { url: '/ws/blog', pk: 'id', fich: __dirname + '/data/blog.json', readonly: false },
+  { url: '/ws/libros', pk: 'idLibro', fich: __dirname + '/data/libros.json', readonly: false },
+  { url: '/ws/biblioteca', pk: 'id', fich: __dirname + '/data/biblioteca.json', readonly: false },
+  { url: '/ws/vehiculos', pk: 'id', fich: __dirname + '/data/vehiculos.json', readonly: false },
+  { url: '/ws/marcas', pk: 'marca', fich: __dirname + '/data/marcas-modelos.json', readonly: false },
+]
+
 var app = express()
 
 // parse application/json
@@ -214,16 +224,6 @@ function isAutenticated(readonly, req, res) {
 }
 
 // Servicios web
-const lstServicio = [
-  { url: '/ws/personas', pk: 'id', fich: __dirname + '/data/personas.json', readonly: true },
-  { url: '/ws/tarjetas', pk: 'id', fich: __dirname + '/data/tarjetas.json', readonly: true },
-  { url: '/ws/blog', pk: 'id', fich: __dirname + '/data/blog.json', readonly: false },
-  { url: '/ws/libros', pk: 'idLibro', fich: __dirname + '/data/libros.json', readonly: false },
-  { url: '/ws/biblioteca', pk: 'id', fich: __dirname + '/data/biblioteca.json', readonly: false },
-  { url: '/ws/vehiculos', pk: 'id', fich: __dirname + '/data/vehiculos.json', readonly: false },
-  { url: '/ws/marcas', pk: 'marca', fich: __dirname + '/data/marcas-modelos.json', readonly: false },
-]
-
 lstServicio.forEach(servicio => {
   app.get(servicio.url, async function (req, res) {
     try {
