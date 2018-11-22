@@ -1,1 +1,46 @@
-[{"id":1,"marca":"AUDI","modelo":"A3","matricula":"1234ABC","edad":2,"propietario":{"nombre":" Penélope","apellidos":"Glamour","dni":"12345678Z","email":"pglamour@example.com"},"direcciones":[{"id":"1","calle":"Compact Pussycat","localidad":"Rota","cp":"11080","provincia":"11"}]},{"id":2,"marca":"CITROEN","modelo":"C3 Picasso","matricula":"0001KKK","edad":3,"propietario":{"nombre":"Pedro","apellidos":"Pica Piedra","dni":"00000001R","email":"ppicap@flintstone.kk"},"direcciones":[{"id":1,"calle":"Yabba dabba doo","localidad":"Piedradura","cp":"01111","provincia":1}]}]
+[
+  {
+    "id": 1,
+    "marca": "AUDI",
+    "modelo": "A3",
+    "matricula": "1234ABC",
+    "edad": 2,
+    "propietario": {
+      "nombre": " Penélope",
+      "apellidos": "Glamour",
+      "dni": "12345678Z",
+      "email": "pglamour@example.com"
+    },
+    "direcciones": [
+      {
+        "id": "1",
+        "calle": "Compact Pussycat",
+        "localidad": "Rota",
+        "cp": "11080",
+        "provincia": "11"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "marca": "CITROEN",
+    "modelo": "C3 Picasso",
+    "matricula": "0001KKK",
+    "edad": 3,
+    "propietario": {
+      "nombre": "Pedro",
+      "apellidos": "Pica Piedra",
+      "dni": "00000001R",
+      "email": "ppicap@flintstone.kk"
+    },
+    "direcciones": [
+      {
+        "id": 1,
+        "calle": "Yabba dabba doo",
+        "localidad": "Piedradura",
+        "cp": "01111",
+        "provincia": 1
+      }
+    ]
+  }
+]
