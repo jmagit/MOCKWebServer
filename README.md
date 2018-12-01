@@ -56,9 +56,9 @@ Para simular la autenticación con token JWT de cabecera está disponible el ser
 * method="post"
 * body="name=admin&password=P@$$w0rd"
 #### Respuesta JSON:
-{"success":true,"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiYWRtaW4iLCJleHBpcmVzSW4iOiIxaCIsImlhdCI6MTUxODI2MzM0NX0.hz2Dp3PJ9ryems6IKNAWSwTYu7dzVfT40CPfN7lcKgs"}
+{"success":true,"token":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiYWRtaW4iLCJleHBpcmVzSW4iOiIxaCIsImlhdCI6MTU0MzY5NjE0MH0.0KTIt4AGDM377AwBnrVS7woWyC-dEW0vUIcPBvJAbfg"}
 #### Envío del token en la cabecera:
-'Authorization':eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiYWRtaW4iLCJleHBpcmVzSW4iOiIxaCIsImlhdCI6MTUxODI2MzM0NX0.hz2Dp3PJ9ryems6IKNAWSwTYu7dzVfT40CPfN7lcKgs
+'Authorization':Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiYWRtaW4iLCJleHBpcmVzSW4iOiIxaCIsImlhdCI6MTU0MzY5NjE0MH0.0KTIt4AGDM377AwBnrVS7woWyC-dEW0vUIcPBvJAbfg
 ### Gestión de usuarios
 En el fichero data/usuarios.json se mantiene la estructura básica de los usuarios registrados que se puede ampliar.
 

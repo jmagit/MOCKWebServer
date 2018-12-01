@@ -9,7 +9,8 @@ const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(fs.writeFile)
 
 const PUERTO = 4321;
-const APP_SECRET = 'mysecureapp'
+const APP_SECRET = 'Es segura al 99%'
+const AUTHENTICATION_SCHEME = 'Bearer'
 const USERNAME = 'admin'
 const PASSWORD = 'P@$$w0rd'
 
@@ -20,7 +21,7 @@ const USR_FILENAME = __dirname + '/data/usuarios.json'
 
 const lstServicio = [
   { url: '/ws/personas', pk: 'id', fich: __dirname + '/data/personas.json', readonly: false },
-  { url: '/ws/tarjetas', pk: 'id', fich: __dirname + '/data/tarjetas.json', readonly: false },
+  { url: '/ws/tarjetas', pk: 'id', fich: __dirname + '/data/tarjetas.json', readonly: true },
   { url: '/ws/blog', pk: 'id', fich: __dirname + '/data/blog.json', readonly: false },
   { url: '/ws/libros', pk: 'idLibro', fich: __dirname + '/data/libros.json', readonly: false },
   { url: '/ws/biblioteca', pk: 'id', fich: __dirname + '/data/biblioteca.json', readonly: false },
@@ -108,6 +109,24 @@ app.all('/form', function (req, res) {
   res.status(200).end(plantillaHTML('Petici&oacute;n', rslt))
 })
 
+// Autenticación
+function decodeToken(token) {
+  return jwt.verify(token.substr(AUTHENTICATION_SCHEME.length + 1), APP_SECRET);
+}
+function isAutenticated(readonly, req, res) {
+  if (readonly) {
+    let token = req.headers['authorization']
+    try {
+      var decoded = decodeToken(token)
+    } catch (err) { }
+    if (!decoded /*|| decoded.data !== USERNAME*/) {
+      res.status(401).end()
+      return false
+    }
+  }
+  return true
+}
+
 // Control de acceso
 app.options('/login', function (req, res) {
   res.status(200).end()
@@ -122,7 +141,7 @@ app.post('/login', function (req, res) {
       var ele = lst.find(ele => ele[PROP_USERNAME] == usr && ele[PROP_PASSWORD])
       if(ele) {
         let token = jwt.sign({ data: ele[PROP_USERNAME], expiresIn: '1h' }, APP_SECRET)
-        rslt = { success: true, token: token, name: ele[PROP_NAME] }
+        rslt = { success: true, token: `${AUTHENTICATION_SCHEME} ${token}`, name: ele[PROP_NAME] }
       }
       res.cookie('XSRF-TOKEN', '123456790ABCDEF')
       res.status(200).end(JSON.stringify(rslt))
@@ -143,7 +162,7 @@ app.post('/login', function (req, res) {
 app.get('/register', function (req, res) {
   let token = req.headers['authorization']
   try {
-    var decoded = jwt.verify(token, APP_SECRET)
+    var decoded = decodeToken(token)
   } catch (err) { 
     res.status(401).end()
     return false
@@ -185,7 +204,7 @@ app.put('/register', function (req, res) {
   let token = req.headers['authorization']
   let ele = req.body
   try {
-    var decoded = jwt.verify(token, APP_SECRET)
+    var decoded = decodeToken(token)
   } catch (err) { 
     res.status(401).end()
     return false
@@ -209,19 +228,6 @@ app.put('/register', function (req, res) {
     }
   })
 })
-function isAutenticated(readonly, req, res) {
-  if (readonly) {
-    let token = req.headers['authorization']
-    try {
-      var decoded = jwt.verify(token, APP_SECRET)
-    } catch (err) { }
-    if (!decoded /*|| decoded.data !== USERNAME*/) {
-      res.status(401).end()
-      return false
-    }
-  }
-  return true
-}
 
 // Servicios web
 lstServicio.forEach(servicio => {
