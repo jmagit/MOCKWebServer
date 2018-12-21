@@ -4,6 +4,7 @@ const express = require('express')
 // var bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken')
 var formidable = require("formidable");
+var cookieParser = require('cookie-parser')
 
 const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(fs.writeFile)
@@ -19,14 +20,50 @@ const PROP_PASSWORD = 'password'
 const PROP_NAME = 'idUsuario'
 const USR_FILENAME = __dirname + '/data/usuarios.json'
 
-const lstServicio = [
-  { url: '/ws/personas', pk: 'id', fich: __dirname + '/data/personas.json', readonly: false },
-  { url: '/ws/tarjetas', pk: 'id', fich: __dirname + '/data/tarjetas.json', readonly: true },
-  { url: '/ws/blog', pk: 'id', fich: __dirname + '/data/blog.json', readonly: false },
-  { url: '/ws/libros', pk: 'idLibro', fich: __dirname + '/data/libros.json', readonly: false },
-  { url: '/ws/biblioteca', pk: 'id', fich: __dirname + '/data/biblioteca.json', readonly: false },
-  { url: '/ws/vehiculos', pk: 'id', fich: __dirname + '/data/vehiculos.json', readonly: false },
-  { url: '/ws/marcas', pk: 'marca', fich: __dirname + '/data/marcas-modelos.json', readonly: false },
+const VALIDATE_XSRF_TOKEN = false;
+
+const lstServicio = [{
+    url: '/ws/personas',
+    pk: 'id',
+    fich: __dirname + '/data/personas.json',
+    readonly: false
+  },
+  {
+    url: '/ws/tarjetas',
+    pk: 'id',
+    fich: __dirname + '/data/tarjetas.json',
+    readonly: true
+  },
+  {
+    url: '/ws/blog',
+    pk: 'id',
+    fich: __dirname + '/data/blog.json',
+    readonly: false
+  },
+  {
+    url: '/ws/libros',
+    pk: 'idLibro',
+    fich: __dirname + '/data/libros.json',
+    readonly: false
+  },
+  {
+    url: '/ws/biblioteca',
+    pk: 'id',
+    fich: __dirname + '/data/biblioteca.json',
+    readonly: false
+  },
+  {
+    url: '/ws/vehiculos',
+    pk: 'id',
+    fich: __dirname + '/data/vehiculos.json',
+    readonly: false
+  },
+  {
+    url: '/ws/marcas',
+    pk: 'marca',
+    fich: __dirname + '/data/marcas-modelos.json',
+    readonly: false
+  },
 ]
 
 var app = express()
@@ -34,16 +71,32 @@ var app = express()
 // parse application/json
 app.use(express.json())
 // parse application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: false }))
+app.use(express.urlencoded({
+  extended: false
+}))
+// parse header/cookies
+app.use(cookieParser())
 
 // Cross-origin resource sharing (CORS)
 app.use(function (req, res, next) {
   var origen = req.header("Origin")
   if (!origen) origen = '*'
   res.header('Access-Control-Allow-Origin', origen)
-  res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization, X-Requested-With, X-SRF-TOKEN')
+  res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization, X-Requested-With, X-XSRF-TOKEN')
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
   res.header('Access-Control-Allow-Credentials', 'true')
+  next()
+})
+
+// Cookie-to-Header Token
+app.use(function (req, res, next) {
+  if (VALIDATE_XSRF_TOKEN) {
+    if ('POST|PUT|DELETE'.indexOf(req.method.toUpperCase()) >=0 && req.cookies['XSRF-TOKEN'] !== req.headers['x-xsrf-token']) {
+      res.status(401).end('No autorizado.')
+      return
+    }
+    res.cookie('XSRF-TOKEN', '123456790ABCDEF')
+  }
   next()
 })
 
@@ -51,7 +104,7 @@ app.use(function (req, res, next) {
 app.use(express.static('public'))
 app.use('/files', express.static('uploads'))
 app.get('/fileupload', function (req, res) {
-  res.status(200).end( plantillaHTML('fileupload', `
+  res.status(200).end(plantillaHTML('fileupload', `
     <form action="fileupload" method="post" enctype="multipart/form-data">
       <input type="file" name="filetoupload"><input type="submit">
     </form>
@@ -59,10 +112,10 @@ app.get('/fileupload', function (req, res) {
 })
 app.post('/fileupload', function (req, res) {
   let form = new formidable.IncomingForm();
-  form.parse(req, function(err, fields, files) {
+  form.parse(req, function (err, fields, files) {
     let oldpath = files.filetoupload.path;
     let newpath = __dirname + "/uploads/" + files.filetoupload.name;
-    fs.rename(oldpath, newpath, function(err) {
+    fs.rename(oldpath, newpath, function (err) {
       if (err) throw err;
       newpath = "files/" + files.filetoupload.name;
       res.status(200).end(`<a href="${newpath}">${newpath}</a>`);
@@ -83,6 +136,7 @@ function plantillaHTML(titulo, body) {
     </body>
   </html>`
 }
+
 function formatColeccion(titulo, col) {
   var rslt = `<tr><th colspan="2" style="text-align: center">${titulo}</th></tr>`;
   for (let c in col)
@@ -113,13 +167,14 @@ app.all('/form', function (req, res) {
 function decodeToken(token) {
   return jwt.verify(token.substr(AUTHENTICATION_SCHEME.length + 1), APP_SECRET);
 }
+
 function isAutenticated(readonly, req, res) {
   if (readonly) {
     let token = req.headers['authorization']
     try {
       var decoded = decodeToken(token)
-    } catch (err) { }
-    if (!decoded /*|| decoded.data !== USERNAME*/) {
+    } catch (err) {}
+    if (!decoded /*|| decoded.data !== USERNAME*/ ) {
       res.status(401).end()
       return false
     }
@@ -132,23 +187,31 @@ app.options('/login', function (req, res) {
   res.status(200).end()
 })
 app.post('/login', function (req, res) {
-  var rslt = { success: false }
+  var rslt = {
+    success: false
+  }
   if (req.body && req.body.name && req.body.password) {
     let usr = req.body.name
     let pwd = req.body.password
     fs.readFile(USR_FILENAME, 'utf8', function (err, data) {
       var lst = JSON.parse(data)
       var ele = lst.find(ele => ele[PROP_USERNAME] == usr && ele[PROP_PASSWORD])
-      if(ele) {
-        let token = jwt.sign({ data: ele[PROP_USERNAME], expiresIn: '1h' }, APP_SECRET)
-        rslt = { success: true, token: `${AUTHENTICATION_SCHEME} ${token}`, name: ele[PROP_NAME] }
+      if (ele) {
+        let token = jwt.sign({
+          data: ele[PROP_USERNAME],
+          expiresIn: '1h'
+        }, APP_SECRET)
+        rslt = {
+          success: true,
+          token: `${AUTHENTICATION_SCHEME} ${token}`,
+          name: ele[PROP_NAME]
+        }
       }
-      res.cookie('XSRF-TOKEN', '123456790ABCDEF')
       res.status(200).end(JSON.stringify(rslt))
     })
   } else {
     res.status(200).end(JSON.stringify(rslt))
-  }  
+  }
   /*
   var rslt = { success: false }
   if (req.body != null && req.body.name == USERNAME
@@ -163,7 +226,7 @@ app.get('/register', function (req, res) {
   let token = req.headers['authorization']
   try {
     var decoded = decodeToken(token)
-  } catch (err) { 
+  } catch (err) {
     res.status(401).end()
     return false
   }
@@ -175,7 +238,7 @@ app.get('/register', function (req, res) {
   fs.readFile(USR_FILENAME, 'utf8', function (err, data) {
     var lst = JSON.parse(data)
     var ele = lst.find(ele => ele[PROP_USERNAME] == usr)
-    if(ele) {
+    if (ele) {
       res.status(200).end(JSON.stringify(ele))
     } else {
       res.status(401).end()
@@ -205,7 +268,7 @@ app.put('/register', function (req, res) {
   let ele = req.body
   try {
     var decoded = decodeToken(token)
-  } catch (err) { 
+  } catch (err) {
     res.status(401).end()
     return false
   }
@@ -270,7 +333,6 @@ lstServicio.forEach(servicio => {
       }
       let rslt = JSON.stringify(lst);
       console.log(rslt)
-      res.cookie('XSRF-TOKEN', '123456790ABCDEF')
       res.end(rslt)
     } catch (error) {
       res.status(500).end(error)
@@ -281,9 +343,8 @@ lstServicio.forEach(servicio => {
       let data = await readFile(servicio.fich, 'utf8');
       var lst = JSON.parse(data)
       var ele = lst.find(ele => ele[servicio.pk] == req.params.id)
-      if(ele) {
+      if (ele) {
         console.log(ele)
-        res.cookie('XSRF-TOKEN', '123456790ABCDEF')
         res.status(200).end(JSON.stringify(ele))
       } else {
         res.status(404).end()
