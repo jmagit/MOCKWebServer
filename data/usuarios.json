@@ -19,9 +19,4 @@
     "roles": [{
         "role": "Usuarios"
     }]
-}, {
-    "idUsuario": "kk@kk.kk",
-    "password": "kk",
-    "nombre": "kk",
-    "roles": []
 }]
