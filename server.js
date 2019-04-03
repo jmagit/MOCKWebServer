@@ -10,6 +10,8 @@ const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(fs.writeFile)
 
 const PUERTO = 4321;
+const DIR_API_REST = '/ws/'
+const DIR_API_AUTH = '/' // DIR_API_REST
 const APP_SECRET = 'Es segura al 99%'
 const AUTHENTICATION_SCHEME = 'Bearer'
 const USERNAME = 'admin'
@@ -23,43 +25,43 @@ const USR_FILENAME = __dirname + '/data/usuarios.json'
 const VALIDATE_XSRF_TOKEN = false;
 
 const lstServicio = [{
-    url: '/ws/personas',
+    url: DIR_API_REST + 'personas',
     pk: 'id',
     fich: __dirname + '/data/personas.json',
     readonly: false
   },
   {
-    url: '/ws/tarjetas',
+    url: DIR_API_REST + 'tarjetas',
     pk: 'id',
     fich: __dirname + '/data/tarjetas.json',
     readonly: true
   },
   {
-    url: '/ws/blog',
+    url: DIR_API_REST + 'blog',
     pk: 'id',
     fich: __dirname + '/data/blog.json',
     readonly: false
   },
   {
-    url: '/ws/libros',
+    url: DIR_API_REST + 'libros',
     pk: 'idLibro',
     fich: __dirname + '/data/libros.json',
     readonly: false
   },
   {
-    url: '/ws/biblioteca',
+    url: DIR_API_REST + 'biblioteca',
     pk: 'id',
     fich: __dirname + '/data/biblioteca.json',
     readonly: false
   },
   {
-    url: '/ws/vehiculos',
+    url: DIR_API_REST + 'vehiculos',
     pk: 'id',
     fich: __dirname + '/data/vehiculos.json',
     readonly: false
   },
   {
-    url: '/ws/marcas',
+    url: DIR_API_REST + 'marcas',
     pk: 'marca',
     fich: __dirname + '/data/marcas-modelos.json',
     readonly: false
@@ -76,6 +78,9 @@ app.use(express.urlencoded({
 }))
 // parse header/cookies
 app.use(cookieParser())
+function generateXsrfTokenCookie(res) {
+    res.cookie('XSRF-TOKEN', '123456790ABCDEF', { httpOnly: false })
+}
 
 // Cross-origin resource sharing (CORS)
 app.use(function (req, res, next) {
@@ -85,17 +90,19 @@ app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization, X-Requested-With, X-XSRF-TOKEN')
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
   res.header('Access-Control-Allow-Credentials', 'true')
+  generateXsrfTokenCookie(res)
   next()
 })
 
 // Cookie-to-Header Token
+
 app.use(function (req, res, next) {
   if (VALIDATE_XSRF_TOKEN) {
     if ('POST|PUT|DELETE'.indexOf(req.method.toUpperCase()) >=0 && req.cookies['XSRF-TOKEN'] !== req.headers['x-xsrf-token']) {
       res.status(401).end('No autorizado.')
       return
     }
-    res.cookie('XSRF-TOKEN', '123456790ABCDEF')
+    generateXsrfTokenCookie(res)
   }
   next()
 })
@@ -183,10 +190,10 @@ function isAutenticated(readonly, req, res) {
 }
 
 // Control de acceso
-app.options('/login', function (req, res) {
+app.options(DIR_API_AUTH + 'login', function (req, res) {
   res.status(200).end()
 })
-app.post('/login', function (req, res) {
+app.post(DIR_API_AUTH + 'login', function (req, res) {
   var rslt = {
     success: false
   }
@@ -222,7 +229,7 @@ app.post('/login', function (req, res) {
   res.status(200).end(JSON.stringify(rslt))
   */
 })
-app.get('/register', function (req, res) {
+app.get(DIR_API_AUTH + 'register', function (req, res) {
   let token = req.headers['authorization']
   try {
     var decoded = decodeToken(token)
@@ -245,7 +252,7 @@ app.get('/register', function (req, res) {
     }
   })
 })
-app.post('/register', function (req, res) {
+app.post(DIR_API_AUTH + 'register', function (req, res) {
   fs.readFile(USR_FILENAME, 'utf8', function (err, data) {
     var lst = JSON.parse(data)
     var ele = req.body
@@ -263,7 +270,7 @@ app.post('/register', function (req, res) {
     }
   })
 })
-app.put('/register', function (req, res) {
+app.put(DIR_API_AUTH + 'register', function (req, res) {
   let token = req.headers['authorization']
   let ele = req.body
   try {
@@ -475,14 +482,15 @@ app.get('/', function (req, res) {
     rslt += `<li><a href='${srv}${servicio.url}'>${srv}${servicio.url}</a></li>`
   })
   rslt += `</ul></li>
-    <li><b>Formulario AUTH</b> <br>action=${srv}/login <br>method=post: name=${USERNAME}&password=${PASSWORD}<br><br>
-    <form action='${srv}/login' method='post'>
+    <li><b>Formulario AUTH</b> <br>action=${srv}${DIR_API_AUTH}login <br>method=post: name=${USERNAME}&password=${PASSWORD}<br><br>
+    <form action='${srv}${DIR_API_AUTH}login' method='post'>
     <label>Name: <input type='text' name='name' value='${USERNAME}'></label><br>
     <label>Password: <input type='text' name='password' value='${PASSWORD}'></label><br>
     <input type='submit' value='Log In'>
     </form></li>
     </ul>`
-  res.status(200).end(plantillaHTML('MOCK Server', rslt))
+    rslt += `<center><a href='https://github.com/jmagit/MOCKWebServer/blob/master/README.md' target='_blank'>Documentaci&oacute;n</center>`
+res.status(200).end(plantillaHTML('MOCK Server', rslt))
 })
 
 
