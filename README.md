@@ -8,8 +8,8 @@ Versión NodeJS del servidor de pruebas para cursos de FrontEnd
 ## Instalación
 1. Descargar o clonar el repositorio
 2. Ejecutar `npm install` para descargar las dependencias.
-3. Ejecutar `npm start` o `npm serve` para levantar el servidor. 
-4. Navegar a http://localhost:4321/ para comprobar el correcto funcionamiento de los servicios. 
+3. Ejecutar `npm start` o `npm serve` para levantar el servidor.
+4. Navegar a http://localhost:4321/ para comprobar el correcto funcionamiento de los servicios.
 
 ## Servicios RestFul
 Para no crear dependencias de bases de datos los servicios utilizan ficheros como `data/personas.json`. El fichero se lee completo y se graba completo, no se ha optimizado el proceso. Los resultados de las peticiones se vuelcan a consola para facilitar las comprobaciones.
@@ -41,7 +41,7 @@ Se han incorporado una serie de parámetros (querystring) para ampliar el contro
     * fich: referencia al fichero que actúa de contenedor
     * readonly: true cuando requiera autenticación para los métodos de escritura (POST, PUT, DELETE)
 3. Rearrancar el servidor.
-4. Probar: http://localhost:4321/ws/nuevoservicio
+4. Probar: http://localhost:4321/api/nuevoservicio
 
 ### Seguridad
 Para evitar conflictos con los navegadores se han habilitado las siguientes cabeceras CORS:

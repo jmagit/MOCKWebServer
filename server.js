@@ -10,7 +10,7 @@ const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(fs.writeFile)
 
 const PUERTO = 4321;
-const DIR_API_REST = '/ws/'
+const DIR_API_REST = '/api/'
 const DIR_API_AUTH = '/' // DIR_API_REST
 const APP_SECRET = 'Es segura al 99%'
 const AUTHENTICATION_SCHEME = 'Bearer'
