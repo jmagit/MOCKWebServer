@@ -34,7 +34,7 @@ Se han incorporado una serie de parámetros (querystring) para ampliar el contro
 }`
 * **_rows=*número*:** Número de filas por página, por defecto 20 si se omite pero aparece el parámetro *_page*.
 ### Para añadir nuevos servicios
-1. En el subdirectorio `/data`, añadir un fichero .json con el array de objetos con los valores iniciales del resource.
+1. En el subdirectorio `/data`, añadir un fichero .json con el array de objetos con los valores iniciales del resource. Para generar el fichero se puede utilizar la herramienta de generación automatizada de juegos de datos http://www.generatedata.com/?lang=es
 2. Dar de alta el servicio añadiendo una entrada en el array lstServicio:
     * url: dirección del servicio
     * pk: propiedad del objeto que actúa como primary key
