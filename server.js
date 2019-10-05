@@ -13,7 +13,7 @@ const PUERTO = 4321;
 const DIR_API_REST = '/api/'
 const DIR_API_AUTH = '/' // DIR_API_REST
 const APP_SECRET = 'Es segura al 99%'
-const AUTHENTICATION_SCHEME = 'Bearer'
+const AUTHENTICATION_SCHEME = 'Bearer '
 const USERNAME = 'admin'
 const PASSWORD = 'P@$$w0rd'
 
@@ -25,47 +25,47 @@ const USR_FILENAME = __dirname + '/data/usuarios.json'
 const VALIDATE_XSRF_TOKEN = false;
 
 const lstServicio = [{
-    url: DIR_API_REST + 'personas',
-    pk: 'id',
-    fich: __dirname + '/data/personas.json',
-    readonly: false
-  },
-  {
-    url: DIR_API_REST + 'tarjetas',
-    pk: 'id',
-    fich: __dirname + '/data/tarjetas.json',
-    readonly: true
-  },
-  {
-    url: DIR_API_REST + 'blog',
-    pk: 'id',
-    fich: __dirname + '/data/blog.json',
-    readonly: false
-  },
-  {
-    url: DIR_API_REST + 'libros',
-    pk: 'idLibro',
-    fich: __dirname + '/data/libros.json',
-    readonly: false
-  },
-  {
-    url: DIR_API_REST + 'biblioteca',
-    pk: 'id',
-    fich: __dirname + '/data/biblioteca.json',
-    readonly: false
-  },
-  {
-    url: DIR_API_REST + 'vehiculos',
-    pk: 'id',
-    fich: __dirname + '/data/vehiculos.json',
-    readonly: false
-  },
-  {
-    url: DIR_API_REST + 'marcas',
-    pk: 'marca',
-    fich: __dirname + '/data/marcas-modelos.json',
-    readonly: false
-  },
+  url: DIR_API_REST + 'personas',
+  pk: 'id',
+  fich: __dirname + '/data/personas.json',
+  readonly: true
+},
+{
+  url: DIR_API_REST + 'tarjetas',
+  pk: 'id',
+  fich: __dirname + '/data/tarjetas.json',
+  readonly: true
+},
+{
+  url: DIR_API_REST + 'blog',
+  pk: 'id',
+  fich: __dirname + '/data/blog.json',
+  readonly: false
+},
+{
+  url: DIR_API_REST + 'libros',
+  pk: 'idLibro',
+  fich: __dirname + '/data/libros.json',
+  readonly: false
+},
+{
+  url: DIR_API_REST + 'biblioteca',
+  pk: 'id',
+  fich: __dirname + '/data/biblioteca.json',
+  readonly: false
+},
+{
+  url: DIR_API_REST + 'vehiculos',
+  pk: 'id',
+  fich: __dirname + '/data/vehiculos.json',
+  readonly: false
+},
+{
+  url: DIR_API_REST + 'marcas',
+  pk: 'marca',
+  fich: __dirname + '/data/marcas-modelos.json',
+  readonly: false
+},
 ]
 
 var app = express()
@@ -79,7 +79,7 @@ app.use(express.urlencoded({
 // parse header/cookies
 app.use(cookieParser())
 function generateXsrfTokenCookie(res) {
-    res.cookie('XSRF-TOKEN', '123456790ABCDEF', { httpOnly: false })
+  res.cookie('XSRF-TOKEN', '123456790ABCDEF', { httpOnly: false })
 }
 
 // Cross-origin resource sharing (CORS)
@@ -88,17 +88,35 @@ app.use(function (req, res, next) {
   if (!origen) origen = '*'
   res.header('Access-Control-Allow-Origin', origen)
   res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization, X-Requested-With, X-XSRF-TOKEN')
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
   res.header('Access-Control-Allow-Credentials', 'true')
   generateXsrfTokenCookie(res)
   next()
 })
+// Autenticación
+app.use(function (req, res, next) {
+  res.locals.isAutenticated = false;
+  if (!req.headers['authorization']) {
+    next();
+    return;
+  }
+  let token = req.headers['authorization'].substr(AUTHENTICATION_SCHEME.length)
+  try {
+    var decoded = jwt.verify(token, APP_SECRET);
+    res.locals.isAutenticated = true;
+    res.locals.usr = decoded.usr;
+    res.locals.name = decoded.name;
+    res.locals.roles = decoded.roles;
+    next();
+  } catch (err) {
+    res.status(401).end();
+  }
+})
 
 // Cookie-to-Header Token
-
 app.use(function (req, res, next) {
   if (VALIDATE_XSRF_TOKEN) {
-    if ('POST|PUT|DELETE'.indexOf(req.method.toUpperCase()) >=0 && req.cookies['XSRF-TOKEN'] !== req.headers['x-xsrf-token']) {
+    if ('POST|PUT|DELETE|PATCH'.indexOf(req.method.toUpperCase()) >= 0 && req.cookies['XSRF-TOKEN'] !== req.headers['x-xsrf-token']) {
       res.status(401).end('No autorizado.')
       return
     }
@@ -170,24 +188,7 @@ app.all('/form', function (req, res) {
   res.status(200).end(plantillaHTML('Petici&oacute;n', rslt))
 })
 
-// Autenticación
-function decodeToken(token) {
-  return jwt.verify(token.substr(AUTHENTICATION_SCHEME.length + 1), APP_SECRET);
-}
 
-function isAutenticated(readonly, req, res) {
-  if (readonly) {
-    let token = req.headers['authorization']
-    try {
-      var decoded = decodeToken(token)
-    } catch (err) {}
-    if (!decoded /*|| decoded.data !== USERNAME*/ ) {
-      res.status(401).end()
-      return false
-    }
-  }
-  return true
-}
 
 // Control de acceso
 app.options(DIR_API_AUTH + 'login', function (req, res) {
@@ -202,15 +203,16 @@ app.post(DIR_API_AUTH + 'login', function (req, res) {
     let pwd = req.body.password
     fs.readFile(USR_FILENAME, 'utf8', function (err, data) {
       var lst = JSON.parse(data)
-      var ele = lst.find(ele => ele[PROP_USERNAME] == usr && ele[PROP_PASSWORD])
+      var ele = lst.find(ele => ele[PROP_USERNAME] == usr && ele[PROP_PASSWORD] == pwd)
       if (ele) {
         let token = jwt.sign({
-          data: ele[PROP_USERNAME],
-          expiresIn: '1h'
-        }, APP_SECRET)
+          usr: ele[PROP_USERNAME],
+          name: ele.nombre,
+          roles: ele.roles
+        }, APP_SECRET, { expiresIn: '1h' })
         rslt = {
           success: true,
-          token: `${AUTHENTICATION_SCHEME} ${token}`,
+          token: AUTHENTICATION_SCHEME + token,
           name: ele[PROP_NAME]
         }
       }
@@ -230,18 +232,7 @@ app.post(DIR_API_AUTH + 'login', function (req, res) {
   */
 })
 app.get(DIR_API_AUTH + 'register', function (req, res) {
-  let token = req.headers['authorization']
-  try {
-    var decoded = decodeToken(token)
-  } catch (err) {
-    res.status(401).end()
-    return false
-  }
-  if (!decoded) {
-    res.status(401).end()
-    return false
-  }
-  let usr = decoded.data
+  let usr = res.locals.usr;
   fs.readFile(USR_FILENAME, 'utf8', function (err, data) {
     var lst = JSON.parse(data)
     var ele = lst.find(ele => ele[PROP_USERNAME] == usr)
@@ -271,16 +262,8 @@ app.post(DIR_API_AUTH + 'register', function (req, res) {
   })
 })
 app.put(DIR_API_AUTH + 'register', function (req, res) {
-  let token = req.headers['authorization']
-  let ele = req.body
-  try {
-    var decoded = decodeToken(token)
-  } catch (err) {
-    res.status(401).end()
-    return false
-  }
-  if (!decoded || decoded.data !== ele[PROP_USERNAME]) {
-    res.status(401).end()
+  if (res.locals.usr !== ele[PROP_USERNAME]) {
+    res.status(403).end()
     return false
   }
   fs.readFile(USR_FILENAME, 'utf8', function (err, data) {
@@ -297,6 +280,9 @@ app.put(DIR_API_AUTH + 'register', function (req, res) {
       res.status(200).end()
     }
   })
+})
+app.get(DIR_API_AUTH + 'auth', function (req, res) {
+  res.status(200).json({ isAutenticated: res.locals.isAutenticated, usr: res.locals.usr, name: res.locals.name })
 })
 
 // Servicios web
@@ -362,7 +348,7 @@ lstServicio.forEach(servicio => {
     }
   })
   app.post(servicio.url, async function (req, res) {
-    if (!isAutenticated(servicio.readonly, req, res)) {
+    if (servicio.readonly && !res.locals.isAutenticated) {
       res.status(401).end('No autorizado.')
       return
     }
@@ -395,7 +381,7 @@ lstServicio.forEach(servicio => {
     }
   })
   app.put(servicio.url, async function (req, res) {
-    if (!isAutenticated(servicio.readonly, req, res)) {
+    if (servicio.readonly && !res.locals.isAutenticated) {
       res.status(401).end('No autorizado.')
       return
     }
@@ -419,7 +405,7 @@ lstServicio.forEach(servicio => {
     }
   })
   app.put(servicio.url + '/:id', async function (req, res) {
-    if (!isAutenticated(servicio.readonly, req, res)) {
+    if (servicio.readonly && !res.locals.isAutenticated) {
       res.status(401).end('No autorizado.')
       return
     }
@@ -442,8 +428,32 @@ lstServicio.forEach(servicio => {
       res.status(500).end(error)
     }
   })
-  app.delete(servicio.url + '/:id', async function (req, res) {
-    if (!isAutenticated(servicio.readonly, req, res)) {
+  app.patch(servicio.url + '/:id', async function (req, res) {
+    if (servicio.readonly && !res.locals.isAutenticated) {
+      res.status(401).end('No autorizado.')
+      return
+    }
+    let data = await readFile(servicio.fich, 'utf8');
+    try {
+      var lst = JSON.parse(data)
+      var ele = req.body
+      var ind = lst.findIndex(row => row[servicio.pk] == req.params.id)
+      if (ind == -1) {
+        res.status(404).end()
+      } else {
+        lst[ind] = Object.assign(lst[ind], ele)
+        console.log(lst)
+        fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
+          res.status(500).end('Error de escritura')
+        })
+        res.status(200).end(JSON.stringify(lst))
+      }
+    } catch (error) {
+      res.status(500).end(error)
+    }
+  })
+app.delete(servicio.url + '/:id', async function (req, res) {
+    if (servicio.readonly && !res.locals.isAutenticated) {
       res.status(401).end('No autorizado.')
       return
     }
@@ -489,14 +499,15 @@ app.get('/', function (req, res) {
     <input type='submit' value='Log In'>
     </form></li>
     </ul>`
-    rslt += `<center><a href='https://github.com/jmagit/MOCKWebServer/blob/master/README.md' target='_blank'>Documentaci&oacute;n</center>`
-res.status(200).end(plantillaHTML('MOCK Server', rslt))
+  rslt += `<center><a href='https://github.com/jmagit/MOCKWebServer/blob/master/README.md' target='_blank'>Documentaci&oacute;n</center>`
+  res.status(200).end(plantillaHTML('MOCK Server', rslt))
 })
 
 
 // Servidor
 var server = app.listen(PUERTO, function () {
   var srv = `http://${server.address().address == '::' ? 'localhost' : server.address().address}:${server.address().port}`
+  console.log('Servidor: %s', srv)
   console.log('Peticion SPY %s/form', srv)
   console.log('Formulario AUTH %s/login post: name=%s&password=%s', srv, USERNAME, PASSWORD)
   lstServicio.forEach(servicio => {
