@@ -469,7 +469,7 @@ app.delete(servicio.url + '/:id', async function (req, res) {
         fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
           res.status(500).end('Error de escritura')
         })
-        res.status(200).end(JSON.stringify(lst))
+        res.status(204).end(JSON.stringify(lst))
       }
     } catch (error) {
       res.status(500).end(error)
