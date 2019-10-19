@@ -9,7 +9,7 @@ var cookieParser = require('cookie-parser')
 //const readFile = util.promisify(fs.readFile)
 //const writeFile = util.promisify(fs.writeFile)
 
-const PUERTO = 4321;
+let PUERTO = process.env.PORT || '4321';
 const DIR_API_REST = '/api/'
 const DIR_API_AUTH = '/' // DIR_API_REST
 const APP_SECRET = 'Es segura al 99%'
@@ -23,6 +23,12 @@ const PROP_NAME = 'idUsuario'
 const USR_FILENAME = __dirname + '/data/usuarios.json'
 
 const VALIDATE_XSRF_TOKEN = false;
+
+process.argv.forEach((val, index) => {
+  if(val.toLocaleLowerCase().startsWith('--port='))
+    PUERTO = val.substr('--port='.length)
+});
+
 
 const lstServicio = [{
   url: DIR_API_REST + 'personas',
@@ -338,9 +344,8 @@ lstServicio.forEach(servicio => {
         const page = req.query._page && !isNaN(+req.query._page) ? Math.abs(+req.query._page) : 0;
         lst = lst.slice(page * rows, page * rows + rows)
       }
-      let rslt = JSON.stringify(lst);
-      console.log(rslt)
-      res.json(rslt).end()
+      console.log(JSON.stringify(lst))
+      res.json(lst).end()
     } catch (error) {
       res.status(500).end(error)
     }
