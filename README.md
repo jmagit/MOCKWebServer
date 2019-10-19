@@ -8,8 +8,10 @@ Versión NodeJS del servidor de pruebas para cursos de FrontEnd
 ## Instalación
 1. Descargar o clonar el repositorio
 2. Ejecutar `npm install` para descargar las dependencias.
-3. Ejecutar `npm start` o `npm serve` para levantar el servidor.
+3. Ejecutar `npm start` o `node server` para levantar el servidor.
 4. Navegar a http://localhost:4321/ para comprobar el correcto funcionamiento de los servicios.
+
+**Nota:** *Se puede configurar el puerto en el entorno con `SET PORT=3000` antes de levantar el servidor o levantarlo con `node server --port=3000`.*
 
 ## Servicios RestFul
 Para no crear dependencias de bases de datos los servicios utilizan ficheros como `data/personas.json`. El fichero se lee completo y se graba completo, no se ha optimizado el proceso. Los resultados de las peticiones se vuelcan a consola para facilitar las comprobaciones.
@@ -53,7 +55,7 @@ Para evitar conflictos con los navegadores se han habilitado las siguientes cabe
 ### ECO
 El servicio ECO se puede usar para probar los clientes REST, hacer llamadas API de muestra y comprobar la información recibida por el servidor.
 
-Ejemplo: http://localhost:4321/eco/personas/1?_page=1&_rows=10
+Por ejemplo: http://localhost:4321/eco/personas/1?_page=1&_rows=10
 
     {
         "url": "/eco/personas/1?_page=1&_rows=10",
