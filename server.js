@@ -218,19 +218,23 @@ app.post(DIR_API_AUTH + 'login', function (req, res) {
           name: ele[PROP_NAME]
         }
       }
-      res.status(200).end(JSON.stringify(rslt))
+      res.status(200).json(rslt).end()
     })
   } else {
-    res.status(200).end(JSON.stringify(rslt))
+    res.status(200).json(rslt).end()
   }
 })
 app.get(DIR_API_AUTH + 'register', function (req, res) {
+  if(!res.locals.isAutenticated) {
+    res.status(401).end()
+    return
+  }
   let usr = res.locals.usr;
   fs.readFile(USR_FILENAME, 'utf8', function (err, data) {
     var lst = JSON.parse(data)
     var ele = lst.find(ele => ele[PROP_USERNAME] == usr)
     if (ele) {
-      res.status(200).end(JSON.stringify(ele))
+      res.status(200).json(ele).end()
     } else {
       res.status(401).end()
     }
@@ -241,7 +245,7 @@ app.post(DIR_API_AUTH + 'register', function (req, res) {
     var lst = JSON.parse(data)
     var ele = req.body
     if (ele[PROP_USERNAME] == undefined) {
-      res.status(500).end('Falta clave primaria.')
+      res.status(400).end('Falta clave primaria.')
     } else if (lst.find(item => item[PROP_USERNAME] == ele[PROP_USERNAME]) == undefined) {
       lst.push(ele)
       console.log(lst)
@@ -252,11 +256,12 @@ app.post(DIR_API_AUTH + 'register', function (req, res) {
           res.status(201).end()
       })
     } else {
-      res.status(500).end('Clave duplicada.')
+      res.status(400).end('Clave duplicada.')
     }
   })
 })
 app.put(DIR_API_AUTH + 'register', function (req, res) {
+  var ele = req.body
   if (res.locals.usr !== ele[PROP_USERNAME]) {
     res.status(403).end()
     return false
@@ -273,7 +278,7 @@ app.put(DIR_API_AUTH + 'register', function (req, res) {
         if (err)
           res.status(500).end('Error de escritura')
         else
-          res.status(200).end()
+          res.status(20).end()
       })
     }
   })
@@ -282,11 +287,23 @@ app.get(DIR_API_AUTH + 'auth', function (req, res) {
   res.status(200).json({ isAutenticated: res.locals.isAutenticated, usr: res.locals.usr, name: res.locals.name })
 })
 
+app.all('/eco(/*)?', function (req, res) {
+  res.status(200).json({
+    url: req.url,
+    method: req.method,
+    headers: req.headers,
+    autentication: res.locals,
+    cookies: req.cookies,
+    params: req.params,
+    query: req.query,
+    body: req.body,
+  }).end();
+});
 // Servicios web
 lstServicio.forEach(servicio => {
   app.get(servicio.url, async function (req, res) {
     try {
-      let data = await readFile(servicio.fich, 'utf8');
+      let data = await fs.promises.readFile(servicio.fich, 'utf8');
       let lst = JSON.parse(data)
       if (Object.keys(req.query).length > 0) {
         if ('_search' in req.query) {
@@ -315,7 +332,7 @@ lstServicio.forEach(servicio => {
       if (req.query._page != undefined || req.query._rows != undefined) {
         const rows = req.query._rows && !isNaN(+req.query._rows) ? Math.abs(+req.query._rows) : 20;
         if (req.query._page && req.query._page.toUpperCase() == "COUNT") {
-          res.end(`{ "pages": ${Math.ceil(lst.length / rows)}, "rows": ${lst.length}}`)
+          res.json({pages: Math.ceil(lst.length / rows), rows: lst.length }).end()
           return;
         }
         const page = req.query._page && !isNaN(+req.query._page) ? Math.abs(+req.query._page) : 0;
@@ -323,19 +340,19 @@ lstServicio.forEach(servicio => {
       }
       let rslt = JSON.stringify(lst);
       console.log(rslt)
-      res.end(rslt)
+      res.json(rslt).end()
     } catch (error) {
       res.status(500).end(error)
     }
   })
   app.get(servicio.url + '/:id', async function (req, res) {
     try {
-      let data = await readFile(servicio.fich, 'utf8');
+      let data = await fs.promises.readFile(servicio.fich, 'utf8');
       var lst = JSON.parse(data)
       var ele = lst.find(ele => ele[servicio.pk] == req.params.id)
       if (ele) {
         console.log(ele)
-        res.status(200).end(JSON.stringify(ele))
+        res.status(200).json(ele).end()
       } else {
         res.status(404).end()
       }
@@ -349,12 +366,12 @@ lstServicio.forEach(servicio => {
       res.status(401).end('No autorizado.')
       return
     }
-    let data = await readFile(servicio.fich, 'utf8');
+    let data = await fs.promises.readFile(servicio.fich, 'utf8');
     try {
       var lst = JSON.parse(data)
       var ele = req.body
       if (ele[servicio.pk] == undefined) {
-        res.status(500).end('Falta clave primaria.')
+        res.status(400).end('Falta clave primaria.')
       } else if (lst.find(item => item[servicio.pk] == ele[servicio.pk]) == undefined) {
         if (ele[servicio.pk] == 0) {
           if (lst.length == 0)
@@ -367,9 +384,9 @@ lstServicio.forEach(servicio => {
         lst.push(ele)
         console.log(lst)
         await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
-        res.status(201).end(JSON.stringify(lst))
+        res.status(201).json(lst).end()
       } else {
-        res.status(500).end('Clave duplicada.')
+        res.status(400).end('Clave duplicada.')
       }
     } catch (error) {
       res.status(500).end(error)
@@ -380,7 +397,7 @@ lstServicio.forEach(servicio => {
       res.status(401).end('No autorizado.')
       return
     }
-    let data = await readFile(servicio.fich, 'utf8');
+    let data = await fs.promises.readFile(servicio.fich, 'utf8');
     try {
       var lst = JSON.parse(data)
       var ele = req.body
@@ -391,7 +408,7 @@ lstServicio.forEach(servicio => {
         lst[ind] = ele
         console.log(lst)
         await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
-        res.status(200).end(JSON.stringify(lst))
+        res.status(200).json(lst).end()
       }
     } catch (error) {
       res.status(500).end(error)
@@ -402,7 +419,7 @@ lstServicio.forEach(servicio => {
       res.status(401).end('No autorizado.')
       return
     }
-    let data = await readFile(servicio.fich, 'utf8');
+    let data = await fs.promises.readFile(servicio.fich, 'utf8');
     try {
       var lst = JSON.parse(data)
       var ele = req.body
@@ -413,7 +430,7 @@ lstServicio.forEach(servicio => {
         lst[ind] = ele
         console.log(lst)
         await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
-        res.status(200).end(JSON.stringify(lst))
+        res.status(200).json(lst).end()
       }
     } catch (error) {
       res.status(500).end(error)
@@ -424,7 +441,7 @@ lstServicio.forEach(servicio => {
       res.status(401).end('No autorizado.')
       return
     }
-    let data = await readFile(servicio.fich, 'utf8');
+    let data = await fs.promises.readFile(servicio.fich, 'utf8');
     try {
       var lst = JSON.parse(data)
       var ele = req.body
@@ -435,18 +452,19 @@ lstServicio.forEach(servicio => {
         lst[ind] = Object.assign(lst[ind], ele)
         console.log(lst)
         await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
-        res.status(200).end(JSON.stringify(lst))
+        res.status(200).json(lst).end()
       }
     } catch (error) {
       res.status(500).end(error)
     }
   })
   app.delete(servicio.url + '/:id', async function (req, res) {
+    let c = { "name": "admin", "password": "P@$$w0rd" }
     if (servicio.readonly && !res.locals.isAutenticated) {
       res.status(401).end('No autorizado.')
       return
     }
-    let data = await readFile(servicio.fich, 'utf8');
+    let data = await fs.promises.readFile(servicio.fich, 'utf8');
     try {
       var lst = JSON.parse(data)
       var ind = lst.findIndex(row => row[servicio.pk] == req.params.id)
@@ -456,7 +474,7 @@ lstServicio.forEach(servicio => {
         lst.splice(ind, 1)
         console.log(lst)
         await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
-        res.status(204).end(JSON.stringify(lst))
+        res.status(204).json(lst).end()
       }
     } catch (error) {
       res.status(500).end(error)
@@ -474,7 +492,7 @@ app.get('/', function (req, res) {
   <ul>
     <li><b>Esp&iacute;a de la Petici&oacute;n</b><ul><a href='${srv}/form'>${srv}/form</a></li></ul></li>
     <li><b>Subir ficheros</b><ul><a href='${srv}/fileupload'>${srv}/fileupload</a></li></ul></li>
-    <li><b>Servicios REST</b><ul>`
+    <li><b>Servicios REST</b><ul><li><a href='${srv}/eco'>${srv}/eco</a></li>`
   lstServicio.forEach(servicio => {
     rslt += `<li><a href='${srv}${servicio.url}'>${srv}${servicio.url}</a></li>`
   })
@@ -497,6 +515,7 @@ var server = app.listen(PUERTO, function () {
   console.log('Servidor: %s', srv)
   console.log('Peticion SPY %s/form', srv)
   console.log('Formulario AUTH %s/login post: name=%s&password=%s', srv, USERNAME, PASSWORD)
+  console.log('Servicio REST %s%s', srv, `/eco`)
   lstServicio.forEach(servicio => {
     console.log('Servicio REST %s%s', srv, servicio.url)
   })

@@ -24,7 +24,7 @@ La estructura de datos del servicio personas:
 ### Filtrado, paginación y ordenación
 Se han incorporado una serie de parámetros (querystring) para ampliar el control de los resultados del GET:
 * ***propiedad=valor*:** Selecciona solo aquellos que el valor de la propiedad dada coincida con el valor proporcionado. Se pueden utilizar varios pares propiedad=valor, en cuyo caso deben cumplirse todos.
-* **_search=*valor*:** Selecciona todos aquellos que alguna de sus propiedades contenga el valor proporcionado. Invalida las búsquedas por propiedades individuales.
+* **_search=*valor*:** Selecciona todos aquellos que en alguna de sus propiedades contenga el valor proporcionado. Invalida las búsquedas por propiedades individuales.
 * **_sort=*propiedad*:** Indica la propiedad por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.
 * **_page=*número*:** Número de página empezando en 0 (primera página). Si se omite pero aparece el parámetro *_rows* tomara el valor 0 por defecto.
 * **_page=count:** Devuelve el número de páginas y filas de la fuente de datos. Si se omite el Número de filas por página tomara 20 por defecto. Ej:  
@@ -34,7 +34,7 @@ Se han incorporado una serie de parámetros (querystring) para ampliar el contro
 }`
 * **_rows=*número*:** Número de filas por página, por defecto 20 si se omite pero aparece el parámetro *_page*.
 ### Para añadir nuevos servicios
-1. En el subdirectorio `/data`, añadir un fichero .json con el array de objetos con los valores iniciales del resource. Para generar el fichero se puede utilizar la herramienta de generación automatizada de juegos de datos http://www.generatedata.com/?lang=es
+1. En el subdirectorio `/data`, añadir un fichero .json con el array de objetos con los valores iniciales del resource. Para generar el fichero se pueden utilizar herramientas de generación automatizada de juegos de datos como http://www.generatedata.com/?lang=es o https://www.mockaroo.com/.
 2. Dar de alta el servicio añadiendo una entrada en el array lstServicio:
     * url: dirección del servicio
     * pk: propiedad del objeto que actúa como primary key
@@ -50,15 +50,70 @@ Para evitar conflictos con los navegadores se han habilitado las siguientes cabe
 * Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS'
 * Access-Control-Allow-Credentials: true
 
+### ECO
+El servicio ECO se puede usar para probar los clientes REST, hacer llamadas API de muestra y comprobar la información recibida por el servidor.
+
+Ejemplo: http://localhost:4321/eco/personas/1?_page=1&_rows=10
+
+    {
+        "url": "/eco/personas/1?_page=1&_rows=10",
+        "method": "PATCH",
+        "headers": {
+            "content-type": "application/json",
+            "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlt7InJvbGUiOiJBZG1pbmlzdHJhZG9yZXMifV0sImlhdCI6MTU3MTQ4MzA2NSwiZXhwIjoxNTcxNDg2NjY1fQ.oabnKfOpoxsokbRwfrM8HG6_BaccWQU8OZ0qu7kb4XA",
+            "user-agent": "PostmanRuntime/7.18.0",
+            "accept": "*/*",
+            "cache-control": "no-cache",
+            "postman-token": "d97b65ed-8407-4838-9f18-def0f51599d0",
+            "host": "localhost:4321",
+            "accept-encoding": "gzip, deflate",
+            "content-length": "14",
+            "cookie": "XSRF-TOKEN=123456790ABCDEF",
+            "connection": "keep-alive"
+        },
+        "autentication": {
+            "isAutenticated": true,
+            "usr": "admin",
+            "name": "Administrador",
+            "roles": [
+                {
+                    "role": "Administradores"
+                }
+            ]
+        },
+        "cookies": {
+            "XSRF-TOKEN": "123456790ABCDEF"
+        },
+        "params": {
+            "0": "/personas/1",
+            "1": "personas/1"
+        },
+        "query": {
+            "_page": "1",
+            "_rows": "10"
+        },
+        "body": {
+            "edad": 10
+        }
+    }
+
 ## Autenticación
 Para simular la autenticación con token JWT de cabecera está disponible el servicio `http://localhost:4321/login` con el método POST.
-* action="http://localhost:4321/login"
-* method="post"
-* body="name=admin&password=P@$$w0rd"
+* **Formularios**
+    * action="http://localhost:4321/login"
+    * method="post"
+    * body="name=admin&password=P@$$w0rd"
+* **API**
+    * Content-Type: application/json
+    * body: { "name": "admin", "password": "P@$$w0rd" }
 #### Respuesta JSON:
-{"success":true,"token":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiYWRtaW4iLCJleHBpcmVzSW4iOiIxaCIsImlhdCI6MTU0MzY5NjE0MH0.0KTIt4AGDM377AwBnrVS7woWyC-dEW0vUIcPBvJAbfg"}
+    {
+        "success": true,
+        "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlt7InJvbGUiOiJBZG1pbmlzdHJhZG9yZXMifV0sImlhdCI6MTU3MTQ4MzA2NSwiZXhwIjoxNTcxNDg2NjY1fQ.oabnKfOpoxsokbRwfrM8HG6_BaccWQU8OZ0qu7kb4XA",
+        "name": "admin"
+    }
 #### Envío del token en la cabecera:
-'Authorization':Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiYWRtaW4iLCJleHBpcmVzSW4iOiIxaCIsImlhdCI6MTU0MzY5NjE0MH0.0KTIt4AGDM377AwBnrVS7woWyC-dEW0vUIcPBvJAbfg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiYWRtaW4iLCJleHBpcmVzSW4iOiIxaCIsImlhdCI6MTU0MzY5NjE0MH0.0KTIt4AGDM377AwBnrVS7woWyC-dEW0vUIcPBvJAbfg
 ### Gestión de usuarios
 En el fichero data/usuarios.json se mantiene la estructura básica de los usuarios registrados que se puede ampliar.
 
