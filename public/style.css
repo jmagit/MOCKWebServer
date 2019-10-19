@@ -1,3 +1,9 @@
+h1 {
+  background-color: royalblue;
+  color: #ffffff;
+  margin: 0;
+  padding: 1em;  
+}
 table {
     font-family: arial, sans-serif;
     border-collapse: collapse;

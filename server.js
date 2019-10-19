@@ -6,8 +6,8 @@ const jwt = require('jsonwebtoken')
 var formidable = require("formidable");
 var cookieParser = require('cookie-parser')
 
-const readFile = util.promisify(fs.readFile)
-const writeFile = util.promisify(fs.writeFile)
+//const readFile = util.promisify(fs.readFile)
+//const writeFile = util.promisify(fs.writeFile)
 
 const PUERTO = 4321;
 const DIR_API_REST = '/api/'
@@ -28,13 +28,13 @@ const lstServicio = [{
   url: DIR_API_REST + 'personas',
   pk: 'id',
   fich: __dirname + '/data/personas.json',
-  readonly: true
+  readonly: false
 },
 {
   url: DIR_API_REST + 'tarjetas',
   pk: 'id',
   fich: __dirname + '/data/tarjetas.json',
-  readonly: true
+  readonly: false
 },
 {
   url: DIR_API_REST + 'blog',
@@ -137,14 +137,18 @@ app.get('/fileupload', function (req, res) {
 })
 app.post('/fileupload', function (req, res) {
   let form = new formidable.IncomingForm();
-  form.parse(req, function (err, fields, files) {
-    let oldpath = files.filetoupload.path;
-    let newpath = __dirname + "/uploads/" + files.filetoupload.name;
-    fs.rename(oldpath, newpath, function (err) {
+  form.uploadDir = __dirname + "/uploads/";
+  form.parse(req, async function (err, fields, files) {
+    try {
       if (err) throw err;
+      let oldpath = files.filetoupload.path;
+      let newpath = __dirname + "/uploads/" + files.filetoupload.name;
+      await fs.promises.rename(oldpath, newpath);
       newpath = "files/" + files.filetoupload.name;
       res.status(200).end(`<a href="${newpath}">${newpath}</a>`);
-    });
+    } catch (error) {
+      res.status(500).end(error);
+    }
   });
 })
 
@@ -188,8 +192,6 @@ app.all('/form', function (req, res) {
   res.status(200).end(plantillaHTML('Petici&oacute;n', rslt))
 })
 
-
-
 // Control de acceso
 app.options(DIR_API_AUTH + 'login', function (req, res) {
   res.status(200).end()
@@ -221,15 +223,6 @@ app.post(DIR_API_AUTH + 'login', function (req, res) {
   } else {
     res.status(200).end(JSON.stringify(rslt))
   }
-  /*
-  var rslt = { success: false }
-  if (req.body != null && req.body.name == USERNAME
-    && req.body.password == PASSWORD) {
-    let token = jwt.sign({ data: USERNAME, expiresIn: '1h' }, APP_SECRET)
-    rslt = { success: true, token: token }
-  }
-  res.status(200).end(JSON.stringify(rslt))
-  */
 })
 app.get(DIR_API_AUTH + 'register', function (req, res) {
   let usr = res.locals.usr;
@@ -253,9 +246,11 @@ app.post(DIR_API_AUTH + 'register', function (req, res) {
       lst.push(ele)
       console.log(lst)
       fs.writeFile(USR_FILENAME, JSON.stringify(lst), 'utf8', function (err) {
-        res.status(500).end('Error de escritura')
+        if (err)
+          res.status(500).end('Error de escritura')
+        else
+          res.status(201).end()
       })
-      res.status(201).end()
     } else {
       res.status(500).end('Clave duplicada.')
     }
@@ -275,9 +270,11 @@ app.put(DIR_API_AUTH + 'register', function (req, res) {
       lst[ind] = ele
       console.log(lst)
       fs.writeFile(USR_FILENAME, JSON.stringify(lst), 'utf8', function (err) {
-        res.status(500).end('Error de escritura')
+        if (err)
+          res.status(500).end('Error de escritura')
+        else
+          res.status(200).end()
       })
-      res.status(200).end()
     }
   })
 })
@@ -369,9 +366,7 @@ lstServicio.forEach(servicio => {
         }
         lst.push(ele)
         console.log(lst)
-        fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
-          res.status(500).end('Error de escritura')
-        })
+        await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
         res.status(201).end(JSON.stringify(lst))
       } else {
         res.status(500).end('Clave duplicada.')
@@ -395,9 +390,7 @@ lstServicio.forEach(servicio => {
       } else {
         lst[ind] = ele
         console.log(lst)
-        fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
-          res.status(500).end('Error de escritura')
-        })
+        await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
         res.status(200).end(JSON.stringify(lst))
       }
     } catch (error) {
@@ -419,9 +412,7 @@ lstServicio.forEach(servicio => {
       } else {
         lst[ind] = ele
         console.log(lst)
-        fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
-          res.status(500).end('Error de escritura')
-        })
+        await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
         res.status(200).end(JSON.stringify(lst))
       }
     } catch (error) {
@@ -443,16 +434,14 @@ lstServicio.forEach(servicio => {
       } else {
         lst[ind] = Object.assign(lst[ind], ele)
         console.log(lst)
-        fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
-          res.status(500).end('Error de escritura')
-        })
+        await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
         res.status(200).end(JSON.stringify(lst))
       }
     } catch (error) {
       res.status(500).end(error)
     }
   })
-app.delete(servicio.url + '/:id', async function (req, res) {
+  app.delete(servicio.url + '/:id', async function (req, res) {
     if (servicio.readonly && !res.locals.isAutenticated) {
       res.status(401).end('No autorizado.')
       return
@@ -466,9 +455,7 @@ app.delete(servicio.url + '/:id', async function (req, res) {
       } else {
         lst.splice(ind, 1)
         console.log(lst)
-        fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8', function (err) {
-          res.status(500).end('Error de escritura')
-        })
+        await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
         res.status(204).end(JSON.stringify(lst))
       }
     } catch (error) {
@@ -485,8 +472,8 @@ app.get('/', function (req, res) {
   var srv = `http://${server.address().address == '::' ? 'localhost' : server.address().address}:${server.address().port}`
   rslt = `<h1>MOCK Server</h1>
   <ul>
-    <li><a href='${srv}/form'>Peticion SPY ${srv}/form</a></li>
-    <li><a href='${srv}/fileupload'>Subir ficheros ${srv}/fileupload</a></li>
+    <li><b>Esp&iacute;a de la Petici&oacute;n</b><ul><a href='${srv}/form'>${srv}/form</a></li></ul></li>
+    <li><b>Subir ficheros</b><ul><a href='${srv}/fileupload'>${srv}/fileupload</a></li></ul></li>
     <li><b>Servicios REST</b><ul>`
   lstServicio.forEach(servicio => {
     rslt += `<li><a href='${srv}${servicio.url}'>${srv}${servicio.url}</a></li>`
