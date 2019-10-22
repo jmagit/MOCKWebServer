@@ -153,7 +153,7 @@ app.post('/fileupload', function (req, res) {
       newpath = "files/" + files.filetoupload.name;
       res.status(200).end(`<a href="${newpath}">${newpath}</a>`);
     } catch (error) {
-      res.status(500).end(error);
+      res.status(500).json(error).end();
     }
   });
 })
@@ -347,7 +347,7 @@ lstServicio.forEach(servicio => {
       console.log(JSON.stringify(lst))
       res.json(lst).end()
     } catch (error) {
-      res.status(500).end(error)
+      res.status(500).json(error).end()
     }
   })
   app.get(servicio.url + '/:id', async function (req, res) {
@@ -394,7 +394,7 @@ lstServicio.forEach(servicio => {
         res.status(400).end('Clave duplicada.')
       }
     } catch (error) {
-      res.status(500).end(error)
+      res.status(500).json(error).end()
     }
   })
   app.put(servicio.url, async function (req, res) {
@@ -416,7 +416,7 @@ lstServicio.forEach(servicio => {
         res.status(200).json(lst).end()
       }
     } catch (error) {
-      res.status(500).end(error)
+      res.status(500).json(error).end()
     }
   })
   app.put(servicio.url + '/:id', async function (req, res) {
@@ -438,7 +438,7 @@ lstServicio.forEach(servicio => {
         res.status(200).json(lst).end()
       }
     } catch (error) {
-      res.status(500).end(error)
+      res.status(500).json(error).end()
     }
   })
   app.patch(servicio.url + '/:id', async function (req, res) {
@@ -460,7 +460,7 @@ lstServicio.forEach(servicio => {
         res.status(200).json(lst).end()
       }
     } catch (error) {
-      res.status(500).end(error)
+      res.status(500).json(error).end()
     }
   })
   app.delete(servicio.url + '/:id', async function (req, res) {
@@ -482,7 +482,7 @@ lstServicio.forEach(servicio => {
         res.status(204).json(lst).end()
       }
     } catch (error) {
-      res.status(500).end(error)
+      res.status(500).json(error).end()
     }
   })
   app.options(servicio.url + '/:id', function (req, res) {
@@ -512,6 +512,10 @@ app.get('/', function (req, res) {
   rslt += `<center><a href='https://github.com/jmagit/MOCKWebServer/blob/master/README.md' target='_blank'>Documentaci&oacute;n</center>`
   res.status(200).end(plantillaHTML('MOCK Server', rslt))
 })
+
+app.use(function (err, req, res, next) {
+  res.status(500).json(err).end();
+});
 
 
 // Servidor
