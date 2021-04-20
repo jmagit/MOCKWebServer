@@ -37,6 +37,12 @@ const lstServicio = [{
   readonly: false
 },
 {
+  url: DIR_API_REST + 'contactos',
+  pk: 'id',
+  fich: __dirname + '/data/contactos.json',
+  readonly: false
+},
+{
   url: DIR_API_REST + 'tarjetas',
   pk: 'id',
   fich: __dirname + '/data/tarjetas.json',
