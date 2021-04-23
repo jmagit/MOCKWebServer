@@ -99,7 +99,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Roles"
+                $ref: "#/components/schemas/Articulo"
         "404":
           description: "Articulo no encontrado"
         "500":
@@ -143,7 +143,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Roles"
+                $ref: "#/components/schemas/Articulo"
         "404":
           description: "Articulo no encontrado"
         "500":
