@@ -99,7 +99,8 @@ app.use(function (req, res, next) {
   var origen = req.header("Origin")
   if (!origen) origen = '*'
   res.header('Access-Control-Allow-Origin', origen)
-  res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization, X-Requested-With, X-XSRF-TOKEN')
+  res.header('Access-Control-Allow-Headers', '*')
+//  res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization, X-Requested-With, X-XSRF-TOKEN')
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
   res.header('Access-Control-Allow-Credentials', 'true')
   generateXsrfTokenCookie(res)
