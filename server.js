@@ -520,6 +520,8 @@ app.get('/', function (req, res) {
   rslt += `<center><a href='https://github.com/jmagit/MOCKWebServer/blob/master/README.md' target='_blank'>Documentaci&oacute;n</center>`
   res.status(200).end(plantillaHTML('MOCK Server', rslt))
 })
+
+// PushState de HTML5
 app.all('/*', function(req, res, next) {
   if (fs.existsSync(DIR_PUBLIC + '/index.html')) {
     res.sendFile('index.html', { root: DIR_PUBLIC });
