@@ -12,6 +12,7 @@ var cookieParser = require('cookie-parser')
 let PUERTO = process.env.PORT || '4321';
 const DIR_API_REST = '/api/'
 const DIR_API_AUTH = '/' // DIR_API_REST
+const DIR_PUBLIC = 'public'
 const APP_SECRET = 'Es segura al 99%'
 const AUTHENTICATION_SCHEME = 'Bearer '
 const USERNAME = 'admin'
@@ -99,7 +100,7 @@ app.use(function (req, res, next) {
   var origen = req.header("Origin")
   if (!origen) origen = '*'
   res.header('Access-Control-Allow-Origin', origen)
-  // res.header('Access-Control-Allow-Headers', '*')
+//    res.header('Access-Control-Allow-Headers', '*')
   res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization, X-Requested-With, X-XSRF-TOKEN')
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
   res.header('Access-Control-Allow-Credentials', 'true')
@@ -139,7 +140,7 @@ app.use(function (req, res, next) {
 })
 
 // Ficheros publicos
-app.use(express.static('public'))
+app.use(express.static(DIR_PUBLIC))
 app.use('/files', express.static('uploads'))
 app.get('/fileupload', function (req, res) {
   res.status(200).end(plantillaHTML('fileupload', `
@@ -519,6 +520,13 @@ app.get('/', function (req, res) {
   rslt += `<center><a href='https://github.com/jmagit/MOCKWebServer/blob/master/README.md' target='_blank'>Documentaci&oacute;n</center>`
   res.status(200).end(plantillaHTML('MOCK Server', rslt))
 })
+app.all('/*', function(req, res, next) {
+  if (fs.existsSync(DIR_PUBLIC + '/index.html')) {
+    res.sendFile('index.html', { root: DIR_PUBLIC });
+  } else {
+    res.status(404).end();
+  }
+});
 
 app.use(function (err, req, res, next) {
   res.status(500).json(err).end();
