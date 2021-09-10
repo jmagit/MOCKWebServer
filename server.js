@@ -10,6 +10,7 @@ var cookieParser = require('cookie-parser')
 //const writeFile = util.promisify(fs.writeFile)
 
 let PUERTO = process.env.PORT || '4321';
+const _DATALOG = false 
 const DIR_API_REST = '/api/'
 const DIR_API_AUTH = '/' // DIR_API_REST
 const DIR_PUBLIC = 'public'
@@ -100,7 +101,7 @@ app.use(function (req, res, next) {
   var origen = req.header("Origin")
   if (!origen) origen = '*'
   res.header('Access-Control-Allow-Origin', origen)
-//    res.header('Access-Control-Allow-Headers', '*')
+  // res.header('Access-Control-Allow-Headers', '*')
   res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization, X-Requested-With, X-XSRF-TOKEN')
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
   res.header('Access-Control-Allow-Credentials', 'true')
@@ -352,7 +353,7 @@ lstServicio.forEach(servicio => {
         const page = req.query._page && !isNaN(+req.query._page) ? Math.abs(+req.query._page) : 0;
         lst = lst.slice(page * rows, page * rows + rows)
       }
-      console.log(JSON.stringify(lst))
+      if(_DATALOG) console.log(JSON.stringify(lst))
       res.json(lst).end()
     } catch (error) {
       res.status(500).json(error).end()
@@ -364,7 +365,7 @@ lstServicio.forEach(servicio => {
       var lst = JSON.parse(data)
       var ele = lst.find(ele => ele[servicio.pk] == req.params.id)
       if (ele) {
-        console.log(ele)
+        if(_DATALOG) console.log(ele)
         res.status(200).json(ele).end()
       } else {
         res.status(404).end()
@@ -395,7 +396,7 @@ lstServicio.forEach(servicio => {
           }
         }
         lst.push(ele)
-        console.log(lst)
+        if(_DATALOG) console.log(lst)
         await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
         res.status(201).json(lst).end()
       } else {
@@ -419,7 +420,7 @@ lstServicio.forEach(servicio => {
         res.status(404).end()
       } else {
         lst[ind] = ele
-        console.log(lst)
+        if(_DATALOG) console.log(lst)
         await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
         res.status(200).json(lst).end()
       }
@@ -441,7 +442,7 @@ lstServicio.forEach(servicio => {
         res.status(404).end()
       } else {
         lst[ind] = ele
-        console.log(lst)
+        if(_DATALOG) console.log(lst)
         await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
         res.status(200).json(lst).end()
       }
@@ -463,7 +464,7 @@ lstServicio.forEach(servicio => {
         res.status(404).end()
       } else {
         lst[ind] = Object.assign(lst[ind], ele)
-        console.log(lst)
+        if(_DATALOG) console.log(lst)
         await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
         res.status(200).json(lst).end()
       }
@@ -485,7 +486,7 @@ lstServicio.forEach(servicio => {
         res.status(404).end()
       } else {
         lst.splice(ind, 1)
-        console.log(lst)
+        if(_DATALOG) console.log(lst)
         await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
         res.status(204).json(lst).end()
       }
@@ -522,15 +523,17 @@ app.get('/', function (req, res) {
 })
 
 // PushState de HTML5
-app.all('/*', function(req, res, next) {
+app.get('/*', function(req, res, next) {
+  console.log('NOT FOUND: %s', req.originalUrl)
   if (fs.existsSync(DIR_PUBLIC + '/index.html')) {
     res.sendFile('index.html', { root: DIR_PUBLIC });
   } else {
-    res.status(404).end();
+    next();
   }
-});
+}); 
 
 app.use(function (err, req, res, next) {
+  console.log('ERROR: %s', req.originalUrl)
   res.status(500).json(err).end();
 });
 
