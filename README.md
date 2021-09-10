@@ -138,6 +138,9 @@ Los ficheros se almacenan en el subdirectorio `/uploads` y son accesibles median
 
 Las peticiones GET a http://localhost:4321/fileupload mostrarán un formulario para subir ficheros.
 
+## Redirección a index.html
+Para las aplicaciones SPA que se publiquen en `/public`, que implementen el enrutado utilizando el PushState de HTML5, las rutas no encontradas se redirigen a `/public/index.html`. Si no existe dicha página se devuelve directamente el error 404.
+
 ## Docker
 Esta disponible el fichero **Dockerfile** para crear una imagen Docker del servidor, utiliza como base la versión *node:alpine* por ser la de ocupación mínima.
 
