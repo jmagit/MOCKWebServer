@@ -132,7 +132,7 @@ Está disponible en la página http://localhost:4321/form.
 ## Servidor de Ficheros
 Se ha habilitado el subdirectorio `/public` para los ficheros que se deben servir directamente. Está mapeado a la raíz del servidor.
 ### Subir ficheros
-Se pueden subir ficheros al servidor, mediante peticiones POST AJAX a http://localhost:4321/fileupload, requieren la cabecera **'Content-Type':'multipart/form-data'**.
+Se pueden subir ficheros al servidor, mediante peticiones POST AJAX a http://localhost:4321/fileupload, requieren la cabecera **'Content-Type':'multipart/form-data'** y se envían en el campo **filetoupload** del formulario (acepta múltiples ficheros).
 
 Los ficheros se almacenan en el subdirectorio `/uploads` y son accesibles mediante la ruta http://localhost:4321/files.
 
