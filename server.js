@@ -152,15 +152,37 @@ app.get('/fileupload', function (req, res) {
 })
 app.post('/fileupload', function (req, res) {
   let form = new formidable.IncomingForm();
+  form.multiples = true
   form.uploadDir = __dirname + "/uploads/";
   form.parse(req, async function (err, fields, files) {
     try {
       if (err) throw err;
-      let oldpath = files.filetoupload.path;
-      let newpath = __dirname + "/uploads/" + files.filetoupload.name;
-      await fs.promises.rename(oldpath, newpath);
-      newpath = "files/" + files.filetoupload.name;
-      res.status(200).end(`<a href="${newpath}">${newpath}</a>`);
+      let rutas = []
+      let ficheros = []
+      if (files.filetoupload instanceof Array)
+        ficheros = files.filetoupload
+      else
+        ficheros.push(files.filetoupload);
+      for (let file of ficheros) {
+        let oldpath = file.path;
+        let newpath = __dirname + "/uploads/" + file.name;
+        try {
+          await fs.promises.unlink(path)
+        } catch (err) {
+        }
+        await fs.promises.rename(oldpath, newpath);
+        rutas.push({ url: `${URL_SERVER}/files/${file.name}` });
+      }
+      if (req.headers?.accept?.includes('application/json'))
+        res.status(200).json(rutas).end();
+      else {
+        let body = '<ol>'
+        for (let ruta of rutas) {
+          body += `<li><a href="${ruta.url}">${ruta.url}</a></li>`
+        }
+        body += '</ol>'
+        res.status(200).end(plantillaHTML('Ficheros', body));
+      }
     } catch (error) {
       res.status(500).json(error).end();
     }
