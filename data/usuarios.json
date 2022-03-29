@@ -22,8 +22,7 @@
         "password": "P@$$w0rd",
         "nombre": "Usuario registrado",
         "roles": [
-            "Usuarios",
-            "Administradores"
+            "Usuarios"
         ]
     },
     {
