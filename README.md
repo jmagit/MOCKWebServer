@@ -62,7 +62,7 @@ Por ejemplo: http://localhost:4321/eco/personas/1?_page=1&_rows=10
         "method": "PATCH",
         "headers": {
             "content-type": "application/json",
-            "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlt7InJvbGUiOiJBZG1pbmlzdHJhZG9yZXMifV0sImlhdCI6MTU3MTQ4MzA2NSwiZXhwIjoxNTcxNDg2NjY1fQ.oabnKfOpoxsokbRwfrM8HG6_BaccWQU8OZ0qu7kb4XA",
+            "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ4NTc4NTYxLCJleHAiOjE2NDg1ODIxNjF9.WF-z8UHEOtqh0NSttxkV4VSp8evKEKLvW1fIh4CwEJ0",
             "user-agent": "PostmanRuntime/7.18.0",
             "accept": "*/*",
             "cache-control": "no-cache",
@@ -78,9 +78,8 @@ Por ejemplo: http://localhost:4321/eco/personas/1?_page=1&_rows=10
             "usr": "admin",
             "name": "Administrador",
             "roles": [
-                {
-                    "role": "Administradores"
-                }
+                "Usuarios",
+                "Administradores"
             ]
         },
         "cookies": {
@@ -111,11 +110,15 @@ Para simular la autenticación con token JWT de cabecera está disponible el ser
 #### Respuesta JSON:
     {
         "success": true,
-        "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlt7InJvbGUiOiJBZG1pbmlzdHJhZG9yZXMifV0sImlhdCI6MTU3MTQ4MzA2NSwiZXhwIjoxNTcxNDg2NjY1fQ.oabnKfOpoxsokbRwfrM8HG6_BaccWQU8OZ0qu7kb4XA",
-        "name": "admin"
+        "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ4NTc4NTYxLCJleHAiOjE2NDg1ODIxNjF9.WF-z8UHEOtqh0NSttxkV4VSp8evKEKLvW1fIh4CwEJ0",
+        "name": "admin",
+        "roles": [
+            "Usuarios",
+            "Administradores"
+        ]
     }
 #### Envío del token en la cabecera:
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiYWRtaW4iLCJleHBpcmVzSW4iOiIxaCIsImlhdCI6MTU0MzY5NjE0MH0.0KTIt4AGDM377AwBnrVS7woWyC-dEW0vUIcPBvJAbfg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ4NTc4NTYxLCJleHAiOjE2NDg1ODIxNjF9.WF-z8UHEOtqh0NSttxkV4VSp8evKEKLvW1fIh4CwEJ0
 ### Gestión de usuarios
 En el fichero data/usuarios.json se mantiene la estructura básica de los usuarios registrados que se puede ampliar.
 

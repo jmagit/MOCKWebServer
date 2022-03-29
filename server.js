@@ -252,7 +252,8 @@ app.post(DIR_API_AUTH + 'login', function (req, res) {
         rslt = {
           success: true,
           token: AUTHENTICATION_SCHEME + token,
-          name: ele[PROP_NAME]
+          name: ele[PROP_NAME],
+          roles: ele.roles
         }
       }
       res.status(200).json(rslt).end()
@@ -564,7 +565,7 @@ app.use(function (err, req, res, next) {
 var server = app.listen(PUERTO, function () {
   var srv = `http://${server.address().address == '::' ? 'localhost' : server.address().address}:${server.address().port}`
   console.log('Servidor: %s', srv)
-  console.log('Peticion SPY %s/form', srv)
+  console.log('Petición SPY %s/form', srv)
   console.log('Formulario AUTH %s/login post: name=%s&password=%s', srv, USERNAME, PASSWORD)
   console.log('Servicio REST %s%s', srv, `/eco`)
   lstServicio.forEach(servicio => {
