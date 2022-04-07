@@ -3,6 +3,7 @@ const util = require('util');
 const express = require('express')
 // var bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 var formidable = require("formidable");
 var cookieParser = require('cookie-parser')
 
@@ -22,6 +23,7 @@ const PASSWORD = 'P@$$w0rd'
 const PROP_USERNAME = 'idUsuario'
 const PROP_PASSWORD = 'password'
 const PROP_NAME = 'idUsuario'
+const PASSWORD_PATTERN = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/
 const USR_FILENAME = __dirname + '/data/usuarios.json'
 
 const VALIDATE_XSRF_TOKEN = false;
@@ -230,6 +232,13 @@ app.all('/form', function (req, res) {
 })
 
 // Control de acceso
+async function encriptaPassword(password) {
+  const salt = await bcrypt.genSalt(10)
+  const hash = await bcrypt.hash(password, salt)
+  console.log(hash)
+  return hash
+}
+
 app.options(DIR_API_AUTH + 'login', function (req, res) {
   res.status(200).end()
 })
@@ -240,10 +249,14 @@ app.post(DIR_API_AUTH + 'login', function (req, res) {
   if (req.body && req.body.name && req.body.password) {
     let usr = req.body.name
     let pwd = req.body.password
-    fs.readFile(USR_FILENAME, 'utf8', function (err, data) {
+    if (!PASSWORD_PATTERN.test(pwd)) {
+      res.status(200).json(rslt).end()      
+      return
+    } 
+    fs.readFile(USR_FILENAME, 'utf8', async function (err, data) {
       var lst = JSON.parse(data)
-      var ele = lst.find(ele => ele[PROP_USERNAME] == usr && ele[PROP_PASSWORD] == pwd)
-      if (ele) {
+      var ele = lst.find(ele => ele[PROP_USERNAME] == usr)
+      if (ele && await bcrypt.compare(pwd, ele[PROP_PASSWORD])) {
         let token = jwt.sign({
           usr: ele[PROP_USERNAME],
           name: ele.nombre,
@@ -272,6 +285,7 @@ app.get(DIR_API_AUTH + 'register', function (req, res) {
     var lst = JSON.parse(data)
     var ele = lst.find(ele => ele[PROP_USERNAME] == usr)
     if (ele) {
+      delete ele[PROP_PASSWORD]
       res.status(200).json(ele).end()
     } else {
       res.status(401).end()
@@ -279,12 +293,15 @@ app.get(DIR_API_AUTH + 'register', function (req, res) {
   })
 })
 app.post(DIR_API_AUTH + 'register', function (req, res) {
-  fs.readFile(USR_FILENAME, 'utf8', function (err, data) {
+  fs.readFile(USR_FILENAME, 'utf8', async function (err, data) {
     var lst = JSON.parse(data)
     var ele = req.body
     if (ele[PROP_USERNAME] == undefined) {
       res.status(400).end('Falta clave primaria.')
-    } else if (lst.find(item => item[PROP_USERNAME] == ele[PROP_USERNAME]) == undefined) {
+    } else if (lst.find(item => item[PROP_USERNAME] == ele[PROP_USERNAME])) {
+      res.status(400).end('Clave duplicada.')
+    } else if (PASSWORD_PATTERN.test(ele[PROP_PASSWORD])) {
+      ele[PROP_PASSWORD] = await encriptaPassword(ele[PROP_PASSWORD])
       lst.push(ele)
       console.log(lst)
       fs.writeFile(USR_FILENAME, JSON.stringify(lst), 'utf8', function (err) {
@@ -294,7 +311,7 @@ app.post(DIR_API_AUTH + 'register', function (req, res) {
           res.status(201).end()
       })
     } else {
-      res.status(400).end('Clave duplicada.')
+      res.status(400).end('Formato incorrecto de la password.')
     }
   })
 })
@@ -310,19 +327,45 @@ app.put(DIR_API_AUTH + 'register', function (req, res) {
     if (ind == -1) {
       res.status(404).end()
     } else {
+      ele[PROP_PASSWORD] = lst[ind][PROP_PASSWORD]
       lst[ind] = ele
       console.log(lst)
       fs.writeFile(USR_FILENAME, JSON.stringify(lst), 'utf8', function (err) {
         if (err)
           res.status(500).end('Error de escritura')
         else
-          res.status(20).end()
+          res.status(200).end()
       })
     }
   })
 })
+app.put(DIR_API_AUTH + 'register/password', function (req, res) {
+  var ele = req.body
+  if(!res.locals.isAutenticated) {
+    res.status(401).end()
+    return false
+  }
+  fs.readFile(USR_FILENAME, 'utf8', async function (err, data) {
+    var lst = JSON.parse(data)
+    var ind = lst.findIndex(row => row[PROP_USERNAME] == res.locals.usr)
+    if (ind == -1) {
+      res.status(404).end()
+    } else if(PASSWORD_PATTERN.test(ele.newPassword) && await bcrypt.compare(ele.oldPassword, lst[ind][PROP_PASSWORD])) {
+      lst[ind][PROP_PASSWORD] = await encriptaPassword(ele.newPassword)
+      console.log(lst)
+      fs.writeFile(USR_FILENAME, JSON.stringify(lst), 'utf8', function (err) {
+        if (err)
+          res.status(500).end('Error de escritura')
+        else
+          res.status(200).end()
+      })
+    } else {
+      res.status(400).end()
+    }
+  })
+})
 app.get(DIR_API_AUTH + 'auth', function (req, res) {
-  res.status(200).json({ isAutenticated: res.locals.isAutenticated, usr: res.locals.usr, name: res.locals.name })
+  res.status(200).json({ isAutenticated: res.locals.isAutenticated, usr: res.locals.usr, name: res.locals.name, roles: res.locals.roles })
 })
 
 app.all('/eco(/*)?', function (req, res) {

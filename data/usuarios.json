@@ -1,7 +1,7 @@
 [
     {
         "idUsuario": "admin",
-        "password": "P@$$w0rd",
+        "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
         "nombre": "Administrador",
         "roles": [
             "Usuarios",
@@ -10,7 +10,7 @@
     },
     {
         "idUsuario": "adm@kk.kk",
-        "password": "P@$$w0rd",
+        "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
         "nombre": "Administrador",
         "roles": [
             "Usuarios",
@@ -19,7 +19,7 @@
     },
     {
         "idUsuario": "usr@kk.kk",
-        "password": "P@$$w0rd",
+        "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
         "nombre": "Usuario registrado",
         "roles": [
             "Usuarios"
@@ -27,7 +27,7 @@
     },
     {
         "idUsuario": "emp@kk.kk",
-        "password": "P@$$w0rd",
+        "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
         "nombre": "Empleado",
         "roles": [
             "Usuarios",

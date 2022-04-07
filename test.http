@@ -1,0 +1,53 @@
+POST http://localhost:4321/login
+Content-Type: application/json
+
+{
+    "name": "admin", 
+    "password": "P@$$w0rd" 
+}
+###
+GET http://localhost:4321/auth
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ5MzM0MDQzLCJleHAiOjE2NDkzMzc2NDN9._KrvnPd7CnvcwoQiwO0ztIRMvFVVVM2Nrbex_2OGKxo
+
+###
+
+GET http://localhost:4321/register
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ5MzM3NTQ2LCJleHAiOjE2NDkzNDExNDZ9.C5TN0iEEmdhlKrcIs-IjfRC9pd334pWKt6wzF36-3eg
+
+###
+POST http://localhost:4321/register
+Content-Type: application/json
+
+{
+  "idUsuario": "kk@kk",
+  "password": "P@$$w0rd",
+  "nombre": "demo",
+  "roles": [
+    "Usuarios"
+  ]
+}
+
+###
+PUT http://localhost:4321/register
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJra0BrayIsIm5hbWUiOiJkZW1vIiwicm9sZXMiOlsiVXN1YXJpb3MiXSwiaWF0IjoxNjQ5MzM1NDgwLCJleHAiOjE2NDkzMzkwODB9._xdLYBEPGAQL2rLdUQKW522RJYorSckPASfkw5Ztlxw
+
+{
+  "idUsuario": "kk@kk",
+  "password": "sss",
+  "nombre": "demoss",
+  "roles": [
+    "Usuarios"
+  ]
+}
+
+###
+PUT http://localhost:4321/register/password
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ5MzM5MDgwLCJleHAiOjE2NDkzNDI2ODB9.1XAvQTzCSgEjs6NVhA0rgFt5NeEb_DMMVIn4DfNOjvg
+
+{
+  "oldPassword": "P@$$w0rd",
+  "newPassword": "P@$$w0rd"
+}
+
