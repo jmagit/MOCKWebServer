@@ -85,8 +85,8 @@ Por ejemplo: http://localhost:4321/eco/personas/1?_page=1&_rows=10
             "cookie": "XSRF-TOKEN=123456790ABCDEF",
             "connection": "keep-alive"
         },
-        "autentication": {
-            "isAutenticated": true,
+        "authentication": {
+            "isAuthenticated": true,
             "usr": "admin",
             "name": "Administrador",
             "roles": [
