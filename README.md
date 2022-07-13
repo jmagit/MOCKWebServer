@@ -46,7 +46,7 @@ Se han incorporado una serie de parámetros (querystring) para ampliar el contro
 ### Para añadir nuevos servicios
 
 1. En el subdirectorio `/data`, añadir un fichero .json con el array de objetos con los valores iniciales del resource. Para generar el fichero se pueden utilizar herramientas de generación automatizada de juegos de datos como http://www.generatedata.com/?lang=es o https://www.mockaroo.com/.
-2. Dar de alta el servicio añadiendo una entrada en el array lstServicio:
+2. Dar de alta el servicio añadiendo una entrada en el fichero `data/__servicios.json` indicando:
     * url: dirección del servicio
     * pk: propiedad del objeto que actúa como primary key
     * fich: referencia al fichero que actúa de contenedor
