@@ -1,0 +1,32 @@
+h1 {
+  background-color: royalblue;
+  color: #ffffff;
+  margin: 0;
+  padding: 1em;  
+}
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    max-width: 100vw;
+}
+td, th {
+    border: 1px solid #e6e6ff;
+    text-align: left;
+    padding: 8px;
+}
+th {
+    max-width: 20vw;
+}
+td {
+    max-width: 80vw;
+    word-wrap: break-word;
+}
+
+tr:nth-child(even) {
+    background-color: #e6e6ff;
+}
+th[colspan] {
+    text-align: center;
+    background-color: #0033cc;
+    color: #ffffff;
+}

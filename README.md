@@ -60,7 +60,7 @@ Para evitar conflictos con los navegadores se han habilitado las siguientes cabe
 
 * Access-Control-Allow-Origin: _dominio-origen-de-la-petición_
 * Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With, X-SRF-TOKEN
-* Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS'
+* Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS
 * Access-Control-Allow-Credentials: true
 
 ### ECO
@@ -71,19 +71,17 @@ Por ejemplo: http://localhost:4321/eco/personas/1?_page=1&_rows=10
 
     {
         "url": "/eco/personas/1?_page=1&_rows=10",
-        "method": "PATCH",
+        "method": "GET",
         "headers": {
-            "content-type": "application/json",
-            "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ4NTc4NTYxLCJleHAiOjE2NDg1ODIxNjF9.WF-z8UHEOtqh0NSttxkV4VSp8evKEKLvW1fIh4CwEJ0",
-            "user-agent": "PostmanRuntime/7.18.0",
+            "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjU3NzA1MDA1LCJleHAiOjE2NTc3MDg2MDV9.XoILsNhjT8sr8-rM30urR5hZsj6Kg19cwoczLb3tM7E",
+            "user-agent": "PostmanRuntime/7.29.0",
             "accept": "*/*",
             "cache-control": "no-cache",
-            "postman-token": "d97b65ed-8407-4838-9f18-def0f51599d0",
+            "postman-token": "5487649e-23a6-4db8-9c12-e8d1c86c2143",
             "host": "localhost:4321",
-            "accept-encoding": "gzip, deflate",
-            "content-length": "14",
-            "cookie": "XSRF-TOKEN=123456790ABCDEF",
-            "connection": "keep-alive"
+            "accept-encoding": "gzip, deflate, br",
+            "connection": "keep-alive",
+            "cookie": "XSRF-TOKEN=5TW6CW/Yimdgr3gqB5C3w+m4hN6kb8DLURthY8uE4DM="
         },
         "authentication": {
             "isAuthenticated": true,
@@ -94,8 +92,9 @@ Por ejemplo: http://localhost:4321/eco/personas/1?_page=1&_rows=10
                 "Administradores"
             ]
         },
+        "XSRF-TOKEN": "5TW6CW/Yimdgr3gqB5C3w+m4hN6kb8DLURthY8uE4DM=",
         "cookies": {
-            "XSRF-TOKEN": "123456790ABCDEF"
+            "XSRF-TOKEN": "5TW6CW/Yimdgr3gqB5C3w+m4hN6kb8DLURthY8uE4DM="
         },
         "params": {
             "0": "/personas/1",
@@ -105,12 +104,18 @@ Por ejemplo: http://localhost:4321/eco/personas/1?_page=1&_rows=10
             "_page": "1",
             "_rows": "10"
         },
-        "body": {
-            "edad": 10
+        "body": {},
+        "path": {
+            "root": "",
+            "dir": "",
+            "base": "..",
+            "ext": "",
+            "name": ".."
         }
     }
 
-## Autenticación
+## Seguridad
+### Autenticación
 
 Para simular la autenticación con token JWT de cabecera está disponible el servicio `http://localhost:4321/login` con el método POST.
 
@@ -160,12 +165,31 @@ La contraseñas sigue el patrón /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/
         "newPassword": "Pa$$w0rd"
     }
 
+### Cross-Site Request Forgery (XSRF o CSRF)
+La **falsificación de solicitud entre sitios** (XSRF) es una técnica de ataque mediante la cual un sitio web malicioso puede engañar a un usuario autenticado en otro dominio para que, sin saberlo, se ejecuten acciones en el otro sitio web, explotando la confianza del servidor en la cookie de un usuario.
+
+La protección puede establecerse a nivel de formulario y requerir solo intervención del servidor, enviando un token al cliente en el formulario que se verifica al recibir la devolución del formulario:
+
+    <input type="hidden" name="xsrftoken" value="5TW6CW/Yimdgr3gqB5C3w+m4hN6kb8DLURthY8uE4DM=">
+
+El mecanismo **“Cookie-to-Header Token”** para prevenir ataques XSRF consiste en:
+
+* El servidor establece un token en una cookie de sesión legible en JavaScript, llamada XSRF-TOKEN, en la carga de la página o en la primera solicitud GET.
+* En las solicitudes posteriores, el cliente debe incluir el encabezado HTTP X-XSRF-TOKEN con el valor recibido en la cookie.
+* El servidor verifica que el valor en la cookie coincide con el del encabezado HTTP, que un valor valido y, por lo tanto, que sólo el código que se ejecutó en su dominio pudo haber enviado la solicitud.
+
+Para habilitar la protección:
+
+    node server --xsrf
+
+El token esta basado en la IP remota para ser único para cada usuario y es verificado por el servidor. Las verificaciones solo se aplican a las peticiones  POST, PUT, DELETE y PATCH. El mecanismo *“Cookie-to-Header Token”* solo puede utilizase cuando el front-end se aloje en el propio servidor (ver sección *Servidor de web*).
+
 ## Autorespondedor
 
 Similar al PHPInfo, genera una página con la información enviada al servidor, generalmente con un formulario, separando la información recibida en cabecera, querystring (GET) y cuerpo (POST).  
 Está disponible en la página http://localhost:4321/form.
 
-## Servidor de Ficheros
+## Servidor web y de ficheros
 
 Se ha habilitado el subdirectorio `/public` para los ficheros que se deben servir directamente. Está mapeado a la raíz del servidor.
 
@@ -177,7 +201,7 @@ Los ficheros se almacenan en el subdirectorio `/uploads` y son accesibles median
 
 Las peticiones GET a http://localhost:4321/fileupload mostrarán un formulario para subir ficheros.
 
-## Redirección a index.html
+### Redirección a index.html
 
 Para las aplicaciones SPA que se publiquen en `/public`, que implementen el enrutado utilizando el PushState de HTML5, las rutas no encontradas se redirigen a `/public/index.html`. Si no existe dicha página se devuelve directamente el error 404.
 
