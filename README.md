@@ -214,3 +214,9 @@ Para construir la imagen:
 
 Para crear el contenedor:  
     `docker run -d -p 4321:4321 --name mock-web-server mock-web-server:latest`
+
+Volúmenes disponibles:
+
+* /app/data
+* /app/public
+* /app/uploads
