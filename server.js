@@ -17,6 +17,7 @@ const _DATALOG = false
 const DIR_API_REST = '/api/'
 const DIR_API_AUTH = '/' // DIR_API_REST
 const DIR_PUBLIC = 'public'
+const DIR_UPLOADS = 'uploads/' // __dirname + "/uploads/"
 const APP_SECRET = 'Es segura al 99%'
 const AUTHENTICATION_SCHEME = 'Bearer '
 const USERNAME = 'admin'
@@ -110,20 +111,39 @@ app.get('/fileupload', function (_req, res) {
     <h1>Multiple file uploads</h1>
     <form action="fileupload" method="post" enctype="multipart/form-data">
       <p>
-        <input type="file" name="filetoupload" required><br>
-        <input type="file" name="filetoupload"><br>
-        <input type="file" name="filetoupload"><br>
+        <input type="file" name="filetoupload" multiple="multiple" required><br>
         <input type="submit">
       </p>
     </form>
   `))
 })
+// const formMiddleWare = (req, res, next) => {
+//   const form = formidable({});
+
+//   form.parse(req, (err, fields, files) => {
+//     if (err) {
+//       next(err);
+//       return;
+//     }
+//     req.fields = fields;
+//     req.files = files;
+//     next();
+//   });
+// };
+// app.post('/fileupload', formMiddleWare, (req, res, next) => {
+//   res.json({ 
+//       fields: req.fields,
+//       files: req.files,
+//   });
+// });
+
 app.post('/fileupload', function (req, res) {
   const form = new Formidable();
   form.maxFileSize = 2000000; // 2mb
-  form.uploadDir = __dirname + "/uploads/";
+  form.uploadDir = DIR_UPLOADS;
   form.keepExtensions = false;
   form.multiples = true;
+  form.minFileSize = 1;
 
   form.parse(req, async function (err, _fields, files) {
     try {
@@ -137,7 +157,7 @@ app.post('/fileupload', function (req, res) {
       for (let file of ficheros) {
         let oldpath = file.path;
         if (file.name) {
-          let newpath = __dirname + "/uploads/" + file.name;
+          let newpath = DIR_UPLOADS + file.name;
           try {
             await fs.unlink(newpath)
           } catch {
@@ -678,7 +698,7 @@ app.get('/', function (req, res) {
     rslt += `<li><a href='${srv}${servicio.url}'>${srv}${servicio.url}</a></li>`
   })
   let token = ''
-  if(VALIDATE_XSRF_TOKEN) {
+  if (VALIDATE_XSRF_TOKEN) {
     token = `<input type="hidden" name="xsrftoken" value="${generateXsrfToken(req)}">`
   }
   rslt += `</ul></li>
@@ -707,7 +727,7 @@ app.get('/*', async function (req, res, next) {
 
 app.use(function (err, req, res, _next) {
   console.log('ERROR: %s', req.originalUrl, err)
-  res.status(500).json({message: err.message}).end();
+  res.status(500).json({ message: err.message }).end();
 });
 
 
