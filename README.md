@@ -3,9 +3,9 @@
 Versión NodeJS del servidor de pruebas para cursos de FrontEnd
 
 * Servicios RestFul para probar las conexiones AJAX
-* Servicio de Autenticación JWT
+* Servicio de Autenticación JWT y protección XSRF
 * Autorespondedor de formularios.
-* Servidor de ficheros
+* Servidor web y de ficheros
 
 ## Instalación
 
