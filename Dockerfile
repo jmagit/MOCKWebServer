@@ -1,7 +1,8 @@
 FROM node:alpine
+ENV NODE_ENV=production
 WORKDIR /usr/src/app
 COPY package*.json ./
-RUN npm install
+RUN npm install --production
 COPY . .
 EXPOSE 4321
 CMD [ "node", "server.js" ]
