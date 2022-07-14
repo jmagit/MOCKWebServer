@@ -121,14 +121,12 @@ app.post('/fileupload', function (req, res) {
 
 // Cross-origin resource sharing (CORS)
 app.use(function (req, res, next) {
-  if (req.method === 'OPTIONS') {
-    let origen = req.header("Origin")
-    if (!origen) origen = '*'
-    res.header('Access-Control-Allow-Origin', origen)
-    res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization, X-Requested-With, X-XSRF-TOKEN')
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
-    res.header('Access-Control-Allow-Credentials', 'true')
-  }
+  let origen = req.header("Origin")
+  if (!origen) origen = '*'
+  res.header('Access-Control-Allow-Origin', origen)
+  res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization, X-Requested-With, X-XSRF-TOKEN')
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
+  res.header('Access-Control-Allow-Credentials', 'true')
   next()
 })
 
