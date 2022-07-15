@@ -16,4 +16,9 @@ describe("Test the root path", () => {
         done();
       });
   });
+  it("NOT FOUND", async() => {
+    const response = await request(app)
+      .get('/esta/ruta/no/existe')
+    expect(response.statusCode).toBe(404)
+  });
 });

@@ -55,7 +55,7 @@ seguridad.decodeAuthorization = (req, res, next) => {
     }
 }
 
-// Middleware: Cross-Site Request Forgery
+// Middleware: Cross-Site Request Forgery (XSRF)
 seguridad.generateXsrfToken = (req) => {
     const hash = createHash('sha256')
     let client = `${req.client.remoteFamily}-${req.client.remoteAddress}`
@@ -63,18 +63,18 @@ seguridad.generateXsrfToken = (req) => {
     return hash.digest('base64')
 }
 function generateXsrfCookie(req, res) {
-    res.cookie('XSRF-TOKEN', generateXsrfToken(req), { httpOnly: false, expires: 0 })
+    res.cookie('XSRF-TOKEN', seguridad.generateXsrfToken(req), { httpOnly: false, expires: 0 })
 }
 function isInvalidXsrfToken(req) {
     let token = req.headers['x-xsrf-token'] || req.body['xsrftoken']
     let cookie = req.cookies['XSRF-TOKEN']
-    let secret = generateXsrfToken(req)
+    let secret = seguridad.generateXsrfToken(req)
     return !token || cookie !== token || token !== secret
 }
 // Cookie-to-Header Token
 seguridad.useXSRF = (req, res, next) => {
     if (!req.cookies['XSRF-TOKEN'])
-        seguridad.generateXsrfCookie(req, res)
+        generateXsrfCookie(req, res)
     if ('POST|PUT|DELETE|PATCH'.indexOf(req.method.toUpperCase()) >= 0 && isInvalidXsrfToken(req)) {
         if (req.cookies['XSRF-TOKEN'] !== seguridad.generateXsrfToken(req))
             generateXsrfCookie(req, res)
@@ -89,7 +89,6 @@ seguridad.useXSRF = (req, res, next) => {
 async function encriptaPassword(password) {
     const salt = await bcrypt.genSalt(10)
     const hash = await bcrypt.hash(password, salt)
-    console.log(hash)
     return hash
 }
 
@@ -99,6 +98,10 @@ seguridad.generarTokenJWT = (usuario) => {
         name: usuario.nombre,
         roles: usuario.roles
     }, APP_SECRET, { expiresIn: '1h' })
+
+}
+seguridad.generarTokenScheme = (usuario) => {
+    return AUTHENTICATION_SCHEME + seguridad.generarTokenJWT(usuario)
 
 }
 
@@ -117,26 +120,26 @@ router.post('/login', async function (req, res) {
     let usr = req.body.name
     let pwd = req.body.password
     if (!PASSWORD_PATTERN.test(pwd)) {
-        setTimeout(() => res.status(200).json(payload).end(), 1000)
+        setTimeout(() => res.status(400).json(payload).end(), 1000)
         return
     }
     let data = await fs.readFile(USR_FILENAME, 'utf8')
     let list = JSON.parse(data)
     let element = list.find(item => item[PROP_USERNAME] == usr)
     if (element && await bcrypt.compare(pwd, element[PROP_PASSWORD])) {
-        let token = seguridad.generarTokenJWT(element)
+        let token = seguridad.generarTokenScheme(element)
         payload = {
             success: true,
-            token: AUTHENTICATION_SCHEME + token,
+            token: token,
             name: element[PROP_NAME],
             roles: element.roles
         }
         if (req.query.cookie && req.query.cookie.toLowerCase() === "true")
-            res.cookie('Authorization', token, { maxAge: 3600000 })
+            res.cookie('Authorization', token.substring(AUTHENTICATION_SCHEME.length), { maxAge: 3600000 })
     }
     res.status(200).json(payload).end()
 })
-router.get('/logout', function (req, res) {
+router.all('/logout', function (req, res) {
     res.clearCookie('Authorization');
     res.status(200).end()
 })
@@ -164,44 +167,44 @@ router.post('/register', async function (req, res) {
     if (element[PROP_USERNAME] == undefined) {
         res.status(400).json({ message: 'Falta el nombre de usuario.' })
     } else if (list.find(item => item[PROP_USERNAME] == element[PROP_USERNAME])) {
-        res.status(400).json({ message: 'El usuario ya existe' })
+        res.status(400).json({ message: 'El usuario ya existe.' })
     } else if (PASSWORD_PATTERN.test(element[PROP_PASSWORD])) {
         element[PROP_PASSWORD] = await encriptaPassword(element[PROP_PASSWORD])
+        element.roles = ["Usuarios"]
         list.push(element)
-        console.log(list)
         fs.writeFile(USR_FILENAME, JSON.stringify(list))
-            .then(() => { res.sendStatus(200) })
-            .catch(err => { res.status(500).end('Error de escritura') })
+            .then(() => { res.sendStatus(201) })
+            .catch(err => { res.status(500).json({ message: 'Error de escritura'}) })
     } else {
         res.status(400).json({ message: 'Formato incorrecto de la password.' })
     }
 })
 router.put('/register', async function (req, res) {
-    let element = req.body
-    if (res.locals.usr !== element[PROP_USERNAME]) {
-        res.status(403).end()
-        return false
+    if (!res.locals.isAuthenticated) {
+        res.status(401).end()
+        return
     }
+    let element = req.body
     let data = await fs.readFile(USR_FILENAME, 'utf8')
     let list = JSON.parse(data)
-    let index = list.findIndex(row => row[PROP_USERNAME] == element[PROP_USERNAME])
+    let index = list.findIndex(row => row[PROP_USERNAME] == res.locals.usr)
     if (index == -1) {
         res.status(404).end()
     } else {
         if (element.nombre)
             list[index].nombre = element.nombre;
         fs.writeFile(USR_FILENAME, JSON.stringify(list))
-            .then(() => { res.sendStatus(200) })
-            .catch(err => { res.status(500).end('Error de escritura') })
+            .then(() => { res.sendStatus(204) })
+            .catch(err => { res.status(500).json({ message: 'Error de escritura'}) })
     }
 })
 
 router.put('/register/password', async function (req, res) {
-    let element = req.body
     if (!res.locals.isAuthenticated) {
         res.status(401).end()
-        return false
+        return
     }
+    let element = req.body
     let data = await fs.readFile(USR_FILENAME, 'utf8')
     let list = JSON.parse(data)
     let index = list.findIndex(row => row[PROP_USERNAME] == res.locals.usr)
@@ -210,8 +213,8 @@ router.put('/register/password', async function (req, res) {
     } else if (PASSWORD_PATTERN.test(element.newPassword) && await bcrypt.compare(element.oldPassword, list[index][PROP_PASSWORD])) {
         list[index][PROP_PASSWORD] = await encriptaPassword(element.newPassword)
         fs.writeFile(USR_FILENAME, JSON.stringify(list))
-            .then(() => { res.sendStatus(200) })
-            .catch(err => { res.status(500).end('Error de escritura') })
+            .then(() => { res.sendStatus(204) })
+            .catch(err => { res.status(500).json({ message: 'Error de escritura'}) })
     } else {
         res.status(400).end()
     }
