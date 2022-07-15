@@ -1,11 +1,11 @@
 const request = require('supertest');
-const app = require('../app');
+const app = require('../src/app');
 
 describe("API Rest", () => {
     let authentication = ''
     let spy
     beforeAll(() => {
-        spy = jest.spyOn(console, 'log');
+        spy = jest.spyOn(console, 'info');
         spy.mockImplementation(() => {})
         return new Promise((resolve, reject) => {
             request(app)
@@ -24,6 +24,11 @@ describe("API Rest", () => {
     });
 
     describe("GET", () => {
+        // it("Config", done => {
+        //     let conf = require('../data/__servicios.json')
+        //     expect(conf.length).toBe(8)
+        //   });
+        
         describe("OK", () => {
             it("Sin paginar", done => {
                 request(app)
@@ -48,7 +53,7 @@ describe("API Rest", () => {
                     .catch(err => done(err))
             });
         })
-        describe("KO", () => {
+        describe.skip("KO", () => {
             it("POST: Sin body", done => {
                 request(app)
                     .post("/login")

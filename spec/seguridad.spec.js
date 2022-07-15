@@ -1,10 +1,10 @@
 const request = require('supertest');
-const app = require('../app');
+const app = require('../src/app');
 
 describe("Seguridad", () => {
     let spy
     beforeAll(() => {
-        spy = jest.spyOn(console, 'log');
+        spy = jest.spyOn(console, 'info');
         spy.mockImplementation(() => { })
         return Promise.resolve()
     });
