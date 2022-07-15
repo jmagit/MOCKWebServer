@@ -35,7 +35,18 @@ Se han incorporado una serie de parámetros (querystring) para ampliar el contro
 * ***propiedad=valor*:** Selecciona solo aquellos que el valor de la propiedad dada coincida con el valor proporcionado. Se pueden utilizar varios pares propiedad=valor, en cuyo caso deben cumplirse todos.
 * **_search=*valor*:** Selecciona todos aquellos que en alguna de sus propiedades contenga el valor proporcionado. Invalida las búsquedas por propiedades individuales.
 * **_sort=*propiedad*:** Indica la propiedad por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.
-* **_page=*número*:** Número de página empezando en 0 (primera página). Si se omite pero aparece el parámetro *_rows* tomara el valor 0 por defecto.
+* **_page=*número*:** Número de página empezando en 0 (primera página). Si se omite pero aparece el parámetro *_rows* tomara el valor 0 por defecto. La estructura devuelta es:  
+    | Propiedad             | Tipo                  | Descripción                               |
+    | --------------------- | --------------------- | ----------------------------------------- |
+    | content               | array                 | Listado de elementos                      |
+    | totalElements         | integer($int64)       | Número total de elementos                 |
+    | totalPages            | integer($int32)       | Número total de páginas                   |
+    | number                | integer($int32)       | Número de página actual                   |
+    | size                  | integer($int32)       | Tamaño de página en elementos             |
+    | numberOfElements      | integer($int32)       | Número total de elementos en la página    |
+    | empty                 | boolean               | Si la página está vacía                   |
+    | first                 | boolean               | Si la página es la primera                |
+    | last                  | boolean               | Si la página es la última                 |
 * **_page=count:** Devuelve el número de páginas y filas de la fuente de datos. Si se omite el Número de filas por página tomara 20 por defecto. Ej:  
 `{  
   "pages": 10,
@@ -165,7 +176,14 @@ La contraseñas sigue el patrón /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/
         "newPassword": "Pa$$w0rd"
     }
 
+### Cookies
+
+* Para otros escenarios que requiera autenticación por cookies se puede añadir el parámetro `cookie=true` para que envíe la cookie `Authorization` con una validez de una hora: <http://localhost:8181/api/login?cookie=true>
+* Para borrar la cookie: <http://localhost:8181/api/logout>
+* Para obtener la información de la autenticación: <http://localhost:8181/api/auth>
+
 ### Cross-Site Request Forgery (XSRF o CSRF)
+
 La **falsificación de solicitud entre sitios** (XSRF) es una técnica de ataque mediante la cual un sitio web malicioso puede engañar a un usuario autenticado en otro dominio para que, sin saberlo, se ejecuten acciones en el otro sitio web, explotando la confianza del servidor en la cookie de un usuario.
 
 La protección puede establecerse a nivel de formulario y requerir solo intervención del servidor, enviando un token al cliente en el formulario que se verifica al recibir la devolución del formulario:
