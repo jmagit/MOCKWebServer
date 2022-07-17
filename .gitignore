@@ -50,3 +50,4 @@ npm-debug.log
 testem.log
 /typings
 .scannerwork/*
+/log

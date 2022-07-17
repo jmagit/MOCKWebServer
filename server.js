@@ -9,7 +9,7 @@ const server = app.listen(app.PUERTO, function () {
   console.group('Servicios web')
   console.info('API REST: %s%s', app.URL_SERVER, `/eco`)
   lstServicio.forEach(servicio => {
-    console.log('API REST: %s%s', app.URL_SERVER, servicio.url)
+    console.log('API REST: %s%s/%s', app.URL_SERVER, app.DIR_API_REST, servicio.url)
   })
   console.groupEnd()
 })

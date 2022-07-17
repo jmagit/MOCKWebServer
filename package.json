@@ -6,8 +6,9 @@
   "scripts": {
     "start": "node server.js",
     "restart": "nodemon server.js",
+    "lint": "eslint **/*.js",
     "test": "jest --collectCoverage",
-    "sonar": "sonar-scanner.bat -D\"sonar.projectKey=MOCKWebServer\" -D\"sonar.sources=.\" -D\"sonar.host.url=http://localhost:9000\" -D\"sonar.login=sqp_b7483bfc4eeaf665bd812a017fa02be31a4b2ea0\""
+    "sonar": "sonar-scanner.bat -D\"sonar.projectKey=MOCKWebServer\" -D\"sonar.sources=./src\" -D\"sonar.tests=./spec\" -D\"sonar.javascript.lcov.reportPaths=./coverage/lcov.info\" -D\"sonar.host.url=http://localhost:9000\" -D\"sonar.login=sqp_b7483bfc4eeaf665bd812a017fa02be31a4b2ea0\""
   },
   "author": "Javier Martín",
   "license": "ISC",
@@ -20,7 +21,9 @@
     "cookie-parser": "^1.4.6",
     "express": "^4.18.1",
     "formidable": "^1.2.6",
-    "jsonwebtoken": "^8.5.1"
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.10.0",
+    "rotating-file-stream": "^3.0.4"
   },
   "devDependencies": {
     "@types/jest": "^28.1.5",

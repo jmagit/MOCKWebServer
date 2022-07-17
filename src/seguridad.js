@@ -1,12 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const cookie = require('cookie');
-const cookieParser = require('cookie-parser');
 const { createHash } = require('crypto')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const fs = require('fs/promises');
-
+const { generateErrorByStatus, generateError, generateErrorByError } = require('./utils')
 const APP_SECRET = 'Es segura al 99%'
 const AUTHENTICATION_SCHEME = 'Bearer '
 const PROP_USERNAME = 'idUsuario'
@@ -15,12 +13,10 @@ const PROP_NAME = 'idUsuario'
 const PASSWORD_PATTERN = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/
 const USR_FILENAME = './data/usuarios.json'
 
-const seguridad = {
-    router
-}
+module.exports = router
 
 // Middleware: Cross-origin resource sharing (CORS)
-seguridad.useCORS = (req, res, next) => {
+module.exports.useCORS = (req, res, next) => {
     let origen = req.header("Origin")
     if (!origen) origen = '*'
     res.header('Access-Control-Allow-Origin', origen)
@@ -31,7 +27,7 @@ seguridad.useCORS = (req, res, next) => {
 }
 
 // Middleware: Autenticación
-seguridad.decodeAuthorization = (req, res, next) => {
+module.exports.decodeAuthorization = (req, res, next) => {
     res.locals.isAuthenticated = false;
     let token = ''
     if (!req.headers['authorization']) {
@@ -51,48 +47,83 @@ seguridad.decodeAuthorization = (req, res, next) => {
         res.locals.isInRole = role => res.locals.roles.includes(role)
         next();
     } catch (err) {
-        res.status(401).json({ message: err.name === 'TokenExpiredError' ? 'Token expired' : 'Invalid token' });
+        if (err.name === 'TokenExpiredError')
+            return next(generateError('Invalid token', 401, 'Token expired', { expiredAt: err.expiredAt }))
+        return next(generateError('Invalid token', 401))
     }
 }
+// Middleware: Autorización
+module.exports.onlyAuthenticated = (req, res, next) => {
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(200)
+        return
+    }
+    if (!res.locals.isAuthenticated) {
+        return next(generateErrorByStatus(401))
+    }
+    next()
+}
+module.exports.onlyInRole = (roles) => (req, res, next) => {
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(200)
+        return
+    }
+    if (!res.locals.isAuthenticated) {
+        return next(generateErrorByStatus(401))
+    }
+
+    if (roles.split(',').some(role => res.locals.isInRole(role))) {
+        next()
+    } else {
+        return next(generateErrorByStatus(403))
+    }
+}
+module.exports.onlySelf = (_req, res, next) => {
+    res.locals.onlySelf = true;
+    next()
+}
+
+const isSelf = (res, id) => {
+    return !res.locals.onlySelf || !id || id == res.locals.usr
+}
+module.exports.isSelf = isSelf
 
 // Middleware: Cross-Site Request Forgery (XSRF)
-seguridad.generateXsrfToken = (req) => {
+module.exports.generateXsrfToken = (req) => {
     const hash = createHash('sha256')
     let client = `${req.client.remoteFamily}-${req.client.remoteAddress}`
     hash.update(client)
     return hash.digest('base64')
 }
 function generateXsrfCookie(req, res) {
-    res.cookie('XSRF-TOKEN', seguridad.generateXsrfToken(req), { httpOnly: false, expires: 0 })
+    res.cookie('XSRF-TOKEN', module.exports.generateXsrfToken(req), { httpOnly: false, maxAge: 30 * 60 * 1000 })
 }
 function isInvalidXsrfToken(req) {
     let token = req.headers['x-xsrf-token'] || req.body['xsrftoken']
     let cookie = req.cookies['XSRF-TOKEN']
-    let secret = seguridad.generateXsrfToken(req)
+    let secret = module.exports.generateXsrfToken(req)
     return !token || cookie !== token || token !== secret
 }
-// Cookie-to-Header Token
-seguridad.useXSRF = (req, res, next) => {
+// Middleware: Cookie-to-Header Token
+module.exports.useXSRF = (req, res, next) => {
     if (!req.cookies['XSRF-TOKEN'])
         generateXsrfCookie(req, res)
     if ('POST|PUT|DELETE|PATCH'.indexOf(req.method.toUpperCase()) >= 0 && isInvalidXsrfToken(req)) {
-        if (req.cookies['XSRF-TOKEN'] !== seguridad.generateXsrfToken(req))
+        if (req.cookies['XSRF-TOKEN'] !== module.exports.generateXsrfToken(req))
             generateXsrfCookie(req, res)
-        res.status(401).json({ message: 'Invalid XSRF-TOKEN' })
-        return
+        return next(generateError('Invalid XSRF-TOKEN', 401))
     }
-    res.XsrfToken = seguridad.generateXsrfToken(req)
+    res.XsrfToken = module.exports.generateXsrfToken(req)
     next()
 }
 
 // Rutas: Control de acceso
 async function encriptaPassword(password) {
     const salt = await bcrypt.genSalt(10)
-    const hash = await bcrypt.hash(password, salt)
-    return hash
+    return await bcrypt.hash(password, salt)
 }
 
-seguridad.generarTokenJWT = (usuario) => {
+module.exports.generarTokenJWT = (usuario) => {
     return jwt.sign({
         usr: usuario[PROP_USERNAME],
         name: usuario.nombre,
@@ -100,34 +131,33 @@ seguridad.generarTokenJWT = (usuario) => {
     }, APP_SECRET, { expiresIn: '1h' })
 
 }
-seguridad.generarTokenScheme = (usuario) => {
-    return AUTHENTICATION_SCHEME + seguridad.generarTokenJWT(usuario)
-
+module.exports.generarTokenScheme = (usuario) => {
+    return AUTHENTICATION_SCHEME + module.exports.generarTokenJWT(usuario)
 }
 
-router.options('/login', function (req, res) {
+router.options('/login', function (_req, res) {
     res.status(200).end()
 })
 
-router.post('/login', async function (req, res) {
+router.post('/login', async function (req, res, next) {
     let payload = {
         success: false
     }
     if (!req.body || !req.body.name || !req.body.password) {
-        setTimeout(() => res.status(400).json(payload).end(), 1000)
-        return
+        // setTimeout(() => next(generateErrorByStatus(400)), 1000)
+        return next(generateErrorByStatus(400))
     }
     let usr = req.body.name
     let pwd = req.body.password
     if (!PASSWORD_PATTERN.test(pwd)) {
-        setTimeout(() => res.status(400).json(payload).end(), 1000)
-        return
+        // setTimeout(() => next(generateErrorByStatus(400)), 1000)
+        return next(generateErrorByStatus(400))
     }
     let data = await fs.readFile(USR_FILENAME, 'utf8')
     let list = JSON.parse(data)
     let element = list.find(item => item[PROP_USERNAME] == usr)
     if (element && await bcrypt.compare(pwd, element[PROP_PASSWORD])) {
-        let token = seguridad.generarTokenScheme(element)
+        let token = module.exports.generarTokenScheme(element)
         payload = {
             success: true,
             token: token,
@@ -139,16 +169,38 @@ router.post('/login', async function (req, res) {
     }
     res.status(200).json(payload).end()
 })
-router.all('/logout', function (req, res) {
+router.all('/logout', function (_req, res) {
     res.clearCookie('Authorization');
     res.status(200).end()
 })
-
-router.get('/register', async function (req, res) {
-    if (!res.locals.isAuthenticated) {
-        res.status(401).end()
-        return
+router.get('/auth', function (_req, res) {
+    res.status(200).json({ isAuthenticated: res.locals.isAuthenticated, usr: res.locals.usr, name: res.locals.name, roles: res.locals.roles })
+})
+router.post('/register', async function (req, res, next) {
+    let data = await fs.readFile(USR_FILENAME, 'utf8')
+    let list = JSON.parse(data)
+    let element = req.body
+    if (element[PROP_USERNAME] == undefined) {
+        return next(generateError('Falta el nombre de usuario.', 400))
+    } else if (list.find(item => item[PROP_USERNAME] == element[PROP_USERNAME])) {
+        return next(generateError('El usuario ya existe.', 400))
+    } else if (PASSWORD_PATTERN.test(element[PROP_PASSWORD])) {
+        element[PROP_PASSWORD] = await encriptaPassword(element[PROP_PASSWORD])
+        element.roles = ["Usuarios"]
+        list.push(element)
+        fs.writeFile(USR_FILENAME, JSON.stringify(list))
+            .then(() => { res.sendStatus(201) })
+            .catch(err => { return next(generateErrorByError(err, 500)) })
+    } else {
+        return next(generateError('Formato incorrecto de la password.', 400))
     }
+})
+
+const autenticados = express.Router();
+
+autenticados.use(module.exports.onlyAuthenticated)
+autenticados.use(module.exports.onlySelf)
+autenticados.get('/', async function (_req, res, next) {
     let usr = res.locals.usr;
     let data = await fs.readFile(USR_FILENAME, 'utf8')
     let list = JSON.parse(data)
@@ -157,71 +209,41 @@ router.get('/register', async function (req, res) {
         delete element[PROP_PASSWORD]
         res.status(200).json(element).end()
     } else {
-        res.status(401).end()
+        return next(generateErrorByStatus(401))
     }
 })
-router.post('/register', async function (req, res) {
-    let data = await fs.readFile(USR_FILENAME, 'utf8')
-    let list = JSON.parse(data)
-    let element = req.body
-    if (element[PROP_USERNAME] == undefined) {
-        res.status(400).json({ message: 'Falta el nombre de usuario.' })
-    } else if (list.find(item => item[PROP_USERNAME] == element[PROP_USERNAME])) {
-        res.status(400).json({ message: 'El usuario ya existe.' })
-    } else if (PASSWORD_PATTERN.test(element[PROP_PASSWORD])) {
-        element[PROP_PASSWORD] = await encriptaPassword(element[PROP_PASSWORD])
-        element.roles = ["Usuarios"]
-        list.push(element)
-        fs.writeFile(USR_FILENAME, JSON.stringify(list))
-            .then(() => { res.sendStatus(201) })
-            .catch(err => { res.status(500).json({ message: 'Error de escritura'}) })
-    } else {
-        res.status(400).json({ message: 'Formato incorrecto de la password.' })
-    }
-})
-router.put('/register', async function (req, res) {
-    if (!res.locals.isAuthenticated) {
-        res.status(401).end()
-        return
-    }
+autenticados.put('/', async function (req, res, next) {
+    if(!isSelf(res, req.body.idUsuario)) 
+        return next(generateErrorByStatus(403))
     let element = req.body
     let data = await fs.readFile(USR_FILENAME, 'utf8')
     let list = JSON.parse(data)
     let index = list.findIndex(row => row[PROP_USERNAME] == res.locals.usr)
     if (index == -1) {
-        res.status(404).end()
+        return next(generateErrorByStatus(404))
     } else {
         if (element.nombre)
             list[index].nombre = element.nombre;
         fs.writeFile(USR_FILENAME, JSON.stringify(list))
             .then(() => { res.sendStatus(204) })
-            .catch(err => { res.status(500).json({ message: 'Error de escritura'}) })
+            .catch(err => { return next(generateErrorByError(err, 500)) })
     }
 })
-
-router.put('/register/password', async function (req, res) {
-    if (!res.locals.isAuthenticated) {
-        res.status(401).end()
-        return
-    }
+autenticados.put('/password', async function (req, res, next) {
     let element = req.body
     let data = await fs.readFile(USR_FILENAME, 'utf8')
     let list = JSON.parse(data)
     let index = list.findIndex(row => row[PROP_USERNAME] == res.locals.usr)
     if (index == -1) {
-        res.status(404).end()
+        return next(generateErrorByStatus(404))
     } else if (PASSWORD_PATTERN.test(element.newPassword) && await bcrypt.compare(element.oldPassword, list[index][PROP_PASSWORD])) {
         list[index][PROP_PASSWORD] = await encriptaPassword(element.newPassword)
         fs.writeFile(USR_FILENAME, JSON.stringify(list))
             .then(() => { res.sendStatus(204) })
-            .catch(err => { res.status(500).json({ message: 'Error de escritura'}) })
+            .catch(err => { return next(generateErrorByError(err, 500)) })
     } else {
-        res.status(400).end()
+        return next(generateError('Invalid data', 400))
     }
 })
 
-router.get('/auth', function (req, res) {
-    res.status(200).json({ isAuthenticated: res.locals.isAuthenticated, usr: res.locals.usr, name: res.locals.name, roles: res.locals.roles })
-})
-
-module.exports = seguridad;
+router.use('/register', autenticados)
