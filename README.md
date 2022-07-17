@@ -60,7 +60,7 @@ Se han incorporado una serie de parámetros (querystring) para ampliar el contro
 2. Dar de alta el servicio añadiendo una entrada en el fichero `data/__servicios.json` indicando:
     * url: dirección del servicio
     * pk: propiedad del objeto que actúa como primary key
-    * fich: referencia al fichero que actúa de contenedor
+    * fichero: referencia al fichero que actúa de contenedor
     * readonly: true cuando requiera autenticación para los métodos de escritura (POST, PUT, DELETE, PATCH)
 3. Rearrancar el servidor.
 4. Probar: http://localhost:4321/api/nuevoservicio
@@ -238,3 +238,4 @@ Volúmenes disponibles:
 * /app/data
 * /app/public
 * /app/uploads
+* /app/log

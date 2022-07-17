@@ -2,49 +2,49 @@
     {
         "url": "personas",
         "pk": "id",
-        "fich": "personas.json",
+        "fichero": "personas.json",
         "readonly": false
     },
     {
         "url": "contactos",
         "pk": "id",
-        "fich": "contactos.json",
+        "fichero": "contactos.json",
         "readonly": false
     },
     {
         "url": "tarjetas",
         "pk": "id",
-        "fich": "tarjetas.json",
+        "fichero": "tarjetas.json",
         "readonly": false
     },
     {
         "url": "blog",
         "pk": "id",
-        "fich": "blog.json",
+        "fichero": "blog.json",
         "readonly": false
     },
     {
         "url": "libros",
         "pk": "idLibro",
-        "fich": "libros.json",
+        "fichero": "libros.json",
         "readonly": false
     },
     {
         "url": "biblioteca",
         "pk": "id",
-        "fich": "biblioteca.json",
+        "fichero": "biblioteca.json",
         "readonly": false
     },
     {
         "url": "vehiculos",
         "pk": "id",
-        "fich": "vehiculos.json",
+        "fichero": "vehiculos.json",
         "readonly": false
     },
     {
         "url": "marcas",
         "pk": "marca",
-        "fich": "marcas-modelos.json",
+        "fichero": "marcas-modelos.json",
         "readonly": false
     }
 ]

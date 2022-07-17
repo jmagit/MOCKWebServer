@@ -5,7 +5,7 @@ COPY package*.json ./
 RUN npm install --production
 COPY . .
 EXPOSE 4321
-VOLUME [ "/app/uploads", "/app/public", "/app/data" ]
+VOLUME [ "/app/uploads", "/app/public", "/app/data", "app/log" ]
 CMD [ "node", "server.js" ]
 
 # docker build -rm -t mock-web-server .

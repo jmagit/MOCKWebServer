@@ -7,3 +7,5 @@
 .gitignore
 Dockerfile
 *.http
+/log
+/coverage
