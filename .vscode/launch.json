@@ -9,6 +9,13 @@
             "request": "launch",
             "name": "Run",
             "program": "${workspaceFolder}\\server.js"
+        },
+        {
+            "name": "Docker Node.js Launch",
+            "type": "docker",
+            "request": "launch",
+            "preLaunchTask": "docker-run: debug",
+            "platform": "node"
         }
     ]
 }
