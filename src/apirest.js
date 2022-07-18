@@ -12,69 +12,81 @@ const apis = {
   router, serviciosConfig
 }
 
+const filtrar = (req, list) => {
+  if (Object.keys(req.query).length === 0)
+    return list
+  if ('_search' in req.query)
+    list = list.filter(item => JSON.stringify(Object.values(item)).includes(req.query._search))
+  const q = Object.keys(req.query).filter(item => !item.startsWith('_'));
+  if (q.length === 0)
+    return list
+  for (let cmp in q) {
+    if (req.query[q[cmp]] === 'true') req.query[q[cmp]] = true;
+    if (req.query[q[cmp]] === 'false') req.query[q[cmp]] = false;
+  }
+  return list.filter(function (item) {
+    for (let cmp in q) {
+      if (item[q[cmp]] != req.query[q[cmp]]) return false;
+    }
+    return true;
+  })
+}
+
+const extraePropiedadesSort = list => list.map(cmp => {
+  if (cmp.startsWith("-")) {
+    cmp = cmp.substring(1);
+    return { cmp, dir: -1 }
+  }
+  return { cmp, dir: 1 }
+})
+const comparaValores = function (a, b) {
+  return a == b ? 0 : (a < b ? -1 : 1)
+}
+const comparaMultiplesPropiedades = function (a, b, propiedades, index) {
+  let result = propiedades[index].dir * comparaValores(a[propiedades[index].cmp], b[propiedades[index].cmp])
+  if (result !== 0 || index + 1 === propiedades.length) return result;
+  return comparaMultiplesPropiedades(a, b, propiedades, index + 1);
+}
+const generaPagina = (req, list, rows) => {
+  const page = req.query._page && !isNaN(+req.query._page) ? Math.abs(+req.query._page) : 0;
+  list = {
+    content: list.slice(page * rows, page * rows + rows),
+    totalElements: list.length,
+    totalPages: Math.ceil(list.length / rows),
+    number: list.length === 0 ? 0 : page + 1,
+    size: rows,
+  }
+  list.empty = list.content.length === 0;
+  list.first = !list.empty && page === 0;
+  list.last = !list.empty && page === (list.totalPages - 1);
+  list.numberOfElements = list.content.length
+  return list
+}
+const proyectar = projection => {
+      const propiedades = projection.split(',');
+      return item => { let e = {}; propiedades.forEach(c => e[c] = item[c]); return e; }
+}
+
 apis.getAll = async (servicio, req, res, next) => {
   try {
     let data = await fs.readFile(servicio.fichero, 'utf8');
     let list = JSON.parse(data)
-    if (Object.keys(req.query).length > 0) {
-      if ('_search' in req.query) {
-        list = list.filter(item => JSON.stringify(Object.values(item)).includes(req.query._search))
-      } else {
-        const q = Object.keys(req.query).filter(item => !item.startsWith('_'));
-        if (q.length > 0) {
-          for (let cmp in q) {
-            if (req.query[q[cmp]] === 'true') req.query[q[cmp]] = true;
-            if (req.query[q[cmp]] === 'false') req.query[q[cmp]] = false;
-          }
-          list = list.filter(function (item) {
-            for (let cmp in q) {
-              if (item[q[cmp]] != req.query[q[cmp]]) return false;
-            }
-            return true;
-          })
-        }
-      }
-    }
-    let orderBy = req.query._sort ? req.query._sort.split(',') : [servicio.pk];
-    orderBy = orderBy.map(cmp => {
-      if (cmp.startsWith("-")) {
-        cmp = cmp.substring(1);
-        return { cmp, dir: -1 }
-      }
-      return { cmp, dir: 1 }
-    })
-    const compara = function (a, b, index) {
-      let result = orderBy[index].dir * (a[orderBy[index].cmp] == b[orderBy[index].cmp] ? 0 : (a[orderBy[index].cmp] < b[orderBy[index].cmp] ? -1 : 1))
-      if (result !== 0 || index + 1 === orderBy.length) return result;
-      return compara(a, b, index + 1);
-    }
-    list = list.sort((a, b) => compara(a, b, 0));
+    list = filtrar(req, list)
+    let orderBy = extraePropiedadesSort(req.query._sort ? req.query._sort.split(',') : [servicio.pk]);
+    list = list.sort((a, b) => comparaMultiplesPropiedades(a, b, orderBy, 0));
     if (req.query._page != undefined || req.query._rows != undefined) {
       const rows = req.query._rows && !isNaN(+req.query._rows) ? Math.abs(+req.query._rows) : 20;
       if (req.query._page && req.query._page.toUpperCase() == "COUNT") {
         res.json({ pages: Math.ceil(list.length / rows), rows: list.length }).end()
         return;
       }
-      const page = req.query._page && !isNaN(+req.query._page) ? Math.abs(+req.query._page) : 0;
-      list = {
-        content: list.slice(page * rows, page * rows + rows),
-        totalElements: list.length,
-        totalPages: Math.ceil(list.length / rows),
-        number: list.length === 0 ? 0 : page + 1,
-        size: rows,
-      }
-      list.empty = list.content.length === 0;
-      list.first = !list.empty && page === 0;
-      list.last = !list.empty && page === (list.totalPages - 1);
-      list.numberOfElements = list.content.length
+      list = generaPagina(req, list, rows)
     }
     if ('_projection' in req.query) {
-      const cmps = req.query._projection.split(',');
-      const mapeo = item => { let e = {}; cmps.forEach(c => e[c] = item[c]); return e; }
       if (list.content) {
-        list.content = list.content.map(mapeo)
+        list.content = list.content.map(proyectar(req.query._projection))
       } else {
-        list = list.map(mapeo)
+        list = list.map(proyectar(req.query._projection))
       }
     }
     res.json(list)
@@ -89,10 +101,7 @@ apis.getOne = async (servicio, req, res, next) => {
     let element = list.find(item => item[servicio.pk] == req.params.id)
     if (element) {
       if ('_projection' in req.query) {
-        const cmps = req.query._projection.split(',');
-        let projection = {};
-        cmps.forEach(c => projection[c] = element[c]);
-        element = projection;
+        element = proyectar(req.query._projection)(element);
       }
       if (_DATALOG) console.log(element)
       res.status(200).json(element)
@@ -125,7 +134,7 @@ apis.post = async (servicio, req, res, next) => {
         if (list.length == 0)
           element[servicio.pk] = 1;
         else {
-          let newId = +list.sort((a, b) => (a[servicio.pk] == b[servicio.pk] ? 0 : (a[servicio.pk] < b[servicio.pk] ? -1 : 1)))[list.length - 1][servicio.pk];
+          let newId = +list.sort((a, b) => comparaValores(a[servicio.pk], b[servicio.pk]))[list.length - 1][servicio.pk];
           element[servicio.pk] = newId + 1;
         }
       }
