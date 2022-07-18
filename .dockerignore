@@ -9,3 +9,4 @@ Dockerfile
 *.http
 /log
 /coverage
+/tmp
