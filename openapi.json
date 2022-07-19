@@ -1,0 +1,2452 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Web4Testing",
+    "version": "1.0.0",
+    "description": "Servidor demos de **pruebas** para los cursos de front-end",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4321/api",
+      "description": "Local"
+    }
+  ],
+  "tags": [
+    {
+      "name": "contactos",
+      "description": "Gestión de contactos"
+    },
+    {
+      "name": "personas",
+      "description": "Mantenimiento de personas"
+    },
+    {
+      "name": "tarjetas",
+      "description": "Mantenimiento de tarjetas"
+    },
+    {
+      "name": "blog",
+      "description": "Mantenimiento de blog"
+    },
+    {
+      "name": "libros",
+      "description": "Mantenimiento de libros"
+    },
+    {
+      "name": "biblioteca",
+      "description": "Mantenimiento de biblioteca"
+    },
+    {
+      "name": "vehiculos",
+      "description": "Mantenimiento de vehiculos"
+    },
+    {
+      "name": "marcas",
+      "description": "Mantenimiento de marcas"
+    }
+  ],
+  "paths": {
+    "/contactos": {
+      "get": {
+        "tags": [
+          "contactos"
+        ],
+        "summary": "Listar contactos",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pagina"
+          },
+          {
+            "$ref": "#/components/parameters/filas"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/contactos"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "contactos"
+        ],
+        "summary": "Crear contacto",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/contacto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/contactos/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "contactos"
+        ],
+        "summary": "Recuperar contacto",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/contacto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "contactos"
+        ],
+        "summary": "Reemplazar contacto",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/contacto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "contactos"
+        ],
+        "summary": "Actualiza parte de contacto",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/contacto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "contactos"
+        ],
+        "summary": "Borrar contacto",
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/personas": {
+      "get": {
+        "tags": [
+          "personas"
+        ],
+        "summary": "Listar personas",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pagina"
+          },
+          {
+            "$ref": "#/components/parameters/filas"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/personas"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "personas"
+        ],
+        "summary": "Crear persona",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/persona"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/personas/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "personas"
+        ],
+        "summary": "Recuperar persona",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/persona"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "personas"
+        ],
+        "summary": "Reemplazar persona",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/persona"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "personas"
+        ],
+        "summary": "Actualiza parte de persona",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/persona"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "personas"
+        ],
+        "summary": "Borrar persona",
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/tarjetas": {
+      "get": {
+        "tags": [
+          "tarjetas"
+        ],
+        "summary": "Listar tarjetas",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pagina"
+          },
+          {
+            "$ref": "#/components/parameters/filas"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/tarjetas"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "tarjetas"
+        ],
+        "summary": "Crear tarjeta",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/tarjeta"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/tarjetas/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "tarjetas"
+        ],
+        "summary": "Recuperar tarjeta",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/tarjeta"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "tarjetas"
+        ],
+        "summary": "Reemplazar tarjeta",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/tarjeta"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "tarjetas"
+        ],
+        "summary": "Actualiza parte de tarjeta",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/tarjeta"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "tarjetas"
+        ],
+        "summary": "Borrar tarjeta",
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/blog": {
+      "get": {
+        "tags": [
+          "blog"
+        ],
+        "summary": "Listar blog",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pagina"
+          },
+          {
+            "$ref": "#/components/parameters/filas"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/blog"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "blog"
+        ],
+        "summary": "Crear articulo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/articulo"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/blog/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "blog"
+        ],
+        "summary": "Recuperar articulo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/articulo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "blog"
+        ],
+        "summary": "Reemplazar articulo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/articulo"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "blog"
+        ],
+        "summary": "Actualiza parte de articulo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/articulo"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "blog"
+        ],
+        "summary": "Borrar articulo",
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/libros": {
+      "get": {
+        "tags": [
+          "libros"
+        ],
+        "summary": "Listar libros",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pagina"
+          },
+          {
+            "$ref": "#/components/parameters/filas"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/libros"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "libros"
+        ],
+        "summary": "Crear libro",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/libro"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/libros/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "libros"
+        ],
+        "summary": "Recuperar libro",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/libro"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "libros"
+        ],
+        "summary": "Reemplazar libro",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/libro"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "libros"
+        ],
+        "summary": "Actualiza parte de libro",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/libro"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "libros"
+        ],
+        "summary": "Borrar libro",
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/biblioteca": {
+      "get": {
+        "tags": [
+          "biblioteca"
+        ],
+        "summary": "Listar biblioteca",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pagina"
+          },
+          {
+            "$ref": "#/components/parameters/filas"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/biblioteca"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "biblioteca"
+        ],
+        "summary": "Crear volumen",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/volumen"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "location": {
+                "schema": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/biblioteca/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "biblioteca"
+        ],
+        "summary": "Recuperar volumen",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/volumen"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "biblioteca"
+        ],
+        "summary": "Reemplazar volumen",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/volumen"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "biblioteca"
+        ],
+        "summary": "Actualiza parte de volumen",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/volumen"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "biblioteca"
+        ],
+        "summary": "Borrar volumen",
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/vehiculos": {
+      "get": {
+        "tags": [
+          "vehiculos"
+        ],
+        "summary": "Listar vehiculos",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pagina"
+          },
+          {
+            "$ref": "#/components/parameters/filas"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/vehiculos"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "vehiculos"
+        ],
+        "summary": "Crear vehiculo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/vehiculo"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/vehiculos/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "vehiculos"
+        ],
+        "summary": "Recuperar vehiculo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/vehiculo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "vehiculos"
+        ],
+        "summary": "Reemplazar vehiculo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/vehiculo"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "vehiculos"
+        ],
+        "summary": "Actualiza parte de vehiculo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/vehiculo"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "vehiculos"
+        ],
+        "summary": "Borrar vehiculo",
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/marcas": {
+      "get": {
+        "tags": [
+          "marcas"
+        ],
+        "summary": "Listar marcas",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pagina"
+          },
+          {
+            "$ref": "#/components/parameters/filas"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/marcas"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "marcas"
+        ],
+        "summary": "Crear marca",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/marca"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/marcas/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "marcas"
+        ],
+        "summary": "Recuperar marca",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/marca"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "marcas"
+        ],
+        "summary": "Reemplazar marca",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/marca"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "marcas"
+        ],
+        "summary": "Actualiza parte de marca",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/marca"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "400": {
+            "description": "Invalid data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "marcas"
+        ],
+        "summary": "Borrar marca",
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "contactos": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/contacto"
+        }
+      },
+      "contacto": {
+        "definitions": {},
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "$id": "https://example.com/contacto.json",
+        "title": "contacto",
+        "type": "object",
+        "required": [
+          "id",
+          "nombre"
+        ],
+        "properties": {
+          "id": {
+            "$id": "#root/id",
+            "title": "Id",
+            "type": "integer",
+            "examples": [
+              1
+            ],
+            "default": 0
+          },
+          "tratamiento": {
+            "$id": "#root/tratamiento",
+            "title": "Tratamiento",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Excmo."
+            ],
+            "pattern": "^.*$"
+          },
+          "nombre": {
+            "$id": "#root/nombre",
+            "title": "Nombre",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Pietro"
+            ],
+            "pattern": "^.*$"
+          },
+          "apellidos": {
+            "$id": "#root/apellidos",
+            "title": "Apellidos",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Woodall"
+            ],
+            "pattern": "^.*$"
+          },
+          "telefono": {
+            "$id": "#root/telefono",
+            "title": "Telefono",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "642 051 348"
+            ],
+            "pattern": "^.*$"
+          },
+          "email": {
+            "$id": "#root/email",
+            "title": "Email",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "pwoodall0@army.mil"
+            ],
+            "pattern": "^.*$"
+          },
+          "sexo": {
+            "$id": "#root/sexo",
+            "title": "Sexo",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "H"
+            ],
+            "pattern": "^.*$"
+          },
+          "nacimiento": {
+            "$id": "#root/nacimiento",
+            "title": "Nacimiento",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "1963-10-11"
+            ],
+            "pattern": "^.*$"
+          },
+          "avatar": {
+            "$id": "#root/avatar",
+            "title": "Avatar",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "https://randomuser.me/api/portraits/men/0.jpg"
+            ],
+            "pattern": "^.*$"
+          },
+          "conflictivo": {
+            "$id": "#root/conflictivo",
+            "title": "Conflictivo",
+            "type": "boolean",
+            "examples": [
+              true
+            ],
+            "default": true
+          },
+          "icono": {
+            "$id": "#root/icono",
+            "title": "Icono",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAALJSURBVDjLpVNbS1RRFP72nHGaUedmpamj5pgKSUli0eXJfOipoELs+hA+FFT44oMSRBkZ1GNC/oAoCJ+C8QaSZhdCTEU0rbyP05jTzOTczv20zkz6IBFBBxZrs9f+vv3t76zFNE3D/3zGjYXa01OuKUqtJstZqizPUnSb6+vDem29o8OpiuIFimZFEOZUQXiY09rq0WtMV6B2d98k8F2YTU4YOKjRCKTw+qQqSZcJFKPoTMty7Nu2pwRKJILY2DjiPv9TIrvGlK6uk5osvjSUl4ERGJIEmEyQlpeRmJpeUkQxaikp3mt2u4FwEPoFcDgR6u1FaHzivpGk3uDy88DiccDnBxQVkGWkFReAO3SgUONFcGYLMDxC71RTF1jTYTt2FIEPw1eMJLOCs9mAuXkqyoBGhxQF+PQFBjvtcwyY+aq7BIhyKgeCYCUqFJ636QSmJIAXAEFIEYhSimTFl1STvFkPjfYEqqmUJRFkpmokg9bJ+Z1MpgKfIICSAutAZcs6mSmMBvLCADLRYCCWfnlmBnDlAbEokCASnqcbhFQW+VRO7lPQX0CpG4GB17qCZyzc3u4mFf2WItdu864cYHIKWAv+bg5lU4V3bYxiFLHQd3CZNqT9zIynx7PLuAceTyg2OPiK9/kPqqEfeWmV+8HSqb8WvSkwue5dHUXIHkbFmQaUXmxETrYVIX6FC0YmFtlGK39rabHTm5pIVqOzqtJqzc8F3r2nNoxiaLkT1Q1NsMwOkLFvALsDAWMRPvYNzbOtszDf0FBNRI8dxYWHd9TWJE3rbzuF449egFWd3jwXvpOLkaGAxv40TJ/r6hxEco+8ue4syGVTC88TR85fsmQseSAk/KCWQ2Sdw/QsVtjfpnGipuYs9Ykr4pp3mqwZtwq2y0ajwYvImoyFVU6ReO02+9dxfnuusDkW9F3lFFakcNoKoZ6c6JPbfgHHGqU/+iLy1wAAAABJRU5ErkJggg=="
+            ],
+            "pattern": "^.*$"
+          },
+          "direcciones": {
+            "$id": "#root/direcciones",
+            "title": "Direcciones",
+            "type": "array",
+            "default": [],
+            "items": {
+              "$id": "#root/direcciones/items",
+              "title": "Items",
+              "type": "object",
+              "required": [
+                "calle",
+                "codigo",
+                "provincia",
+                "pais"
+              ],
+              "properties": {
+                "calle": {
+                  "$id": "#root/direcciones/items/calle",
+                  "title": "Calle",
+                  "type": "string",
+                  "default": "",
+                  "examples": [
+                    "488 Pankratz Junction"
+                  ],
+                  "pattern": "^.*$"
+                },
+                "codigo": {
+                  "$id": "#root/direcciones/items/codigo",
+                  "title": "Codigo",
+                  "type": "string",
+                  "default": "",
+                  "examples": [
+                    "29071"
+                  ],
+                  "pattern": "^.*$"
+                },
+                "provincia": {
+                  "$id": "#root/direcciones/items/provincia",
+                  "title": "Provincia",
+                  "type": "string",
+                  "default": "",
+                  "examples": [
+                    "Malaga"
+                  ],
+                  "pattern": "^.*$"
+                },
+                "pais": {
+                  "$id": "#root/direcciones/items/pais",
+                  "title": "Pais",
+                  "type": "string",
+                  "default": "",
+                  "examples": [
+                    "España"
+                  ],
+                  "pattern": "^.*$"
+                }
+              }
+            }
+          }
+        }
+      },
+      "personas": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/persona"
+        }
+      },
+      "persona": {
+        "definitions": {},
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "$id": "https://example.com/persona.json",
+        "title": "persona",
+        "type": "object",
+        "required": [
+          "id",
+          "nombre"
+        ],
+        "properties": {
+          "id": {
+            "$id": "#root/id",
+            "title": "Id",
+            "type": "integer",
+            "examples": [
+              1
+            ],
+            "default": 0
+          },
+          "nombre": {
+            "$id": "#root/nombre",
+            "title": "Nombre",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Camelo"
+            ],
+            "pattern": "^.*$"
+          },
+          "apellidos": {
+            "$id": "#root/apellidos",
+            "title": "Apellidos",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Coton"
+            ],
+            "pattern": "^.*$"
+          },
+          "edad": {
+            "$id": "#root/edad",
+            "title": "Edad",
+            "type": "integer",
+            "examples": [
+              37
+            ],
+            "default": 0
+          },
+          "telefonos": {
+            "$id": "#root/telefonos",
+            "title": "Telefonos",
+            "type": "array",
+            "default": [],
+            "items": {
+              "$id": "#root/telefonos/items",
+              "title": "telefono",
+              "type": "string",
+              "default": "",
+              "examples": [
+                "12342"
+              ],
+              "pattern": "^.*$"
+            }
+          }
+        }
+      },
+      "tarjetas": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/tarjeta"
+        }
+      },
+      "tarjeta": {
+        "definitions": {},
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "$id": "https://example.com/tarjeta.json",
+        "title": "tarjeta",
+        "type": "object",
+        "required": [
+          "id",
+          "idCliente",
+          "numero",
+          "caducidad",
+          "CVC_CVV",
+          "tipo"
+        ],
+        "properties": {
+          "id": {
+            "$id": "#root/id",
+            "title": "Id",
+            "type": "integer",
+            "examples": [
+              1
+            ],
+            "default": 0
+          },
+          "idCliente": {
+            "$id": "#root/idCliente",
+            "title": "IdCliente",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "a.auctor.non@dictummi.ca"
+            ],
+            "pattern": "^.*$"
+          },
+          "numero": {
+            "$id": "#root/numero",
+            "title": "Numero",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "4024 0071 1838 5904"
+            ],
+            "pattern": "^.*$"
+          },
+          "caducidad": {
+            "$id": "#root/caducidad",
+            "title": "Caducidad",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "03/2020"
+            ],
+            "pattern": "^.*$"
+          },
+          "CVC_CVV": {
+            "$id": "#root/CVC_CVV",
+            "title": "Cvc_cvv",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "147"
+            ],
+            "pattern": "^.*$"
+          },
+          "tipo": {
+            "$id": "#root/tipo",
+            "title": "Tipo",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Visa"
+            ],
+            "pattern": "^.*$"
+          }
+        }
+      },
+      "blog": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/articulo"
+        }
+      },
+      "articulo": {
+        "definitions": {},
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "$id": "https://example.com/articulo.json",
+        "title": "articulo",
+        "type": "object",
+        "required": [
+          "id",
+          "titulo"
+        ],
+        "properties": {
+          "id": {
+            "$id": "#root/id",
+            "title": "Id",
+            "type": "integer",
+            "examples": [
+              1
+            ],
+            "default": 0
+          },
+          "titulo": {
+            "$id": "#root/titulo",
+            "title": "Titulo",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Saludo"
+            ],
+            "pattern": "^.*$"
+          },
+          "texto": {
+            "$id": "#root/texto",
+            "title": "Texto",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores eveniet eum nisi expedita ab dolorum labore similique provident officia ipsa, aliquam recusandae dicta id, praesentium quasi consequatur minus laborum perferendis?"
+            ],
+            "pattern": "^.*$"
+          },
+          "autor": {
+            "$id": "#root/autor",
+            "title": "Autor",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Javier"
+            ],
+            "pattern": "^.*$"
+          },
+          "fecha": {
+            "$id": "#root/fecha",
+            "title": "Fecha",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "2016-02-29"
+            ],
+            "pattern": "^.*$"
+          },
+          "megusta": {
+            "$id": "#root/megusta",
+            "title": "Megusta",
+            "type": "integer",
+            "examples": [
+              0
+            ],
+            "default": 0
+          },
+          "fotourl": {
+            "$id": "#root/fotourl",
+            "title": "Fotourl",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "https://cdn-images-1.medium.com/max/800/1*V3Kfghg_jIV0ubxmAnCXBA.jpeg"
+            ],
+            "pattern": "^.*$"
+          }
+        }
+      },
+      "libros": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/libro"
+        }
+      },
+      "libro": {
+        "definitions": {},
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "$id": "https://example.com/libro.json",
+        "title": "libro",
+        "type": "object",
+        "required": [
+          "idLibro",
+          "titulo"
+        ],
+        "properties": {
+          "idLibro": {
+            "$id": "#root/idLibro",
+            "title": "Idlibro",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "1"
+            ],
+            "pattern": "^.*$"
+          },
+          "titulo": {
+            "$id": "#root/titulo",
+            "title": "Titulo",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "El ingenioso hidalgo don Quijote de la Mancha "
+            ],
+            "pattern": "^.*$"
+          },
+          "autor": {
+            "$id": "#root/autor",
+            "title": "Autor",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Miguel de Cervantes"
+            ],
+            "pattern": "^.*$"
+          },
+          "pais": {
+            "$id": "#root/pais",
+            "title": "Pais",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "España"
+            ],
+            "pattern": "^.*$"
+          },
+          "fecha": {
+            "$id": "#root/fecha",
+            "title": "Fecha",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "1605"
+            ],
+            "pattern": "^.*$"
+          },
+          "paginas": {
+            "$id": "#root/paginas",
+            "title": "Paginas",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "377"
+            ],
+            "pattern": "^.*$"
+          },
+          "wiki": {
+            "$id": "#root/wiki",
+            "title": "Wiki",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "https://es.wikipedia.org/wiki/Don_Quijote_de_la_Mancha"
+            ],
+            "pattern": "^.*$"
+          }
+        }
+      },
+      "biblioteca": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/volumen"
+        }
+      },
+      "volumen": {
+        "definitions": {},
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "$id": "https://example.com/volumen.json",
+        "title": "volumen",
+        "type": "object",
+        "required": [
+          "autor",
+          "id",
+          "numPag",
+          "titulo"
+        ],
+        "properties": {
+          "autor": {
+            "$id": "#root/autor",
+            "title": "Autor",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "At Mi Imperdiet"
+            ],
+            "pattern": "^.*$"
+          },
+          "id": {
+            "$id": "#root/id",
+            "title": "Id",
+            "type": "integer",
+            "examples": [
+              2
+            ],
+            "default": 0
+          },
+          "numPag": {
+            "$id": "#root/numPag",
+            "title": "Numpag",
+            "type": "integer",
+            "examples": [
+              22
+            ],
+            "default": 0
+          },
+          "titulo": {
+            "$id": "#root/titulo",
+            "title": "Titulo",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Mauris"
+            ],
+            "pattern": "^.*$"
+          }
+        }
+      },
+      "vehiculos": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/vehiculo"
+        }
+      },
+      "vehiculo": {
+        "definitions": {},
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "$id": "https://example.com/vehiculo.json",
+        "title": "vehiculo",
+        "type": "object",
+        "required": [
+          "id",
+          "marca",
+          "modelo",
+          "matricula"
+        ],
+        "properties": {
+          "id": {
+            "$id": "#root/id",
+            "title": "Id",
+            "type": "integer",
+            "examples": [
+              1
+            ],
+            "default": 0
+          },
+          "marca": {
+            "$id": "#root/marca",
+            "title": "Marca",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "AUDI"
+            ],
+            "pattern": "^.*$"
+          },
+          "modelo": {
+            "$id": "#root/modelo",
+            "title": "Modelo",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "A3"
+            ],
+            "pattern": "^.*$"
+          },
+          "matricula": {
+            "$id": "#root/matricula",
+            "title": "Matricula",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "1234ABC"
+            ],
+            "pattern": "^.*$"
+          },
+          "edad": {
+            "$id": "#root/edad",
+            "title": "Edad",
+            "type": "integer",
+            "examples": [
+              2
+            ],
+            "default": 0
+          },
+          "propietario": {
+            "$id": "#root/propietario",
+            "title": "Propietario",
+            "type": "object",
+            "required": [
+              "nombre",
+              "apellidos",
+              "dni",
+              "email"
+            ],
+            "properties": {
+              "nombre": {
+                "$id": "#root/propietario/nombre",
+                "title": "Nombre",
+                "type": "string",
+                "default": "",
+                "examples": [
+                  " Penélope"
+                ],
+                "pattern": "^.*$"
+              },
+              "apellidos": {
+                "$id": "#root/propietario/apellidos",
+                "title": "Apellidos",
+                "type": "string",
+                "default": "",
+                "examples": [
+                  "Glamour"
+                ],
+                "pattern": "^.*$"
+              },
+              "dni": {
+                "$id": "#root/propietario/dni",
+                "title": "Dni",
+                "type": "string",
+                "default": "",
+                "examples": [
+                  "12345678Z"
+                ],
+                "pattern": "^.*$"
+              },
+              "email": {
+                "$id": "#root/propietario/email",
+                "title": "Email",
+                "type": "string",
+                "default": "",
+                "examples": [
+                  "pglamour@example.com"
+                ],
+                "pattern": "^.*$"
+              }
+            }
+          },
+          "direcciones": {
+            "$id": "#root/direcciones",
+            "title": "Direcciones",
+            "type": "array",
+            "default": [],
+            "items": {
+              "$id": "#root/direcciones/items",
+              "title": "Dirección",
+              "type": "object",
+              "required": [
+                "id",
+                "calle",
+                "localidad",
+                "cp",
+                "provincia"
+              ],
+              "properties": {
+                "id": {
+                  "$id": "#root/direcciones/items/id",
+                  "title": "Id",
+                  "type": "string",
+                  "default": "",
+                  "examples": [
+                    "1"
+                  ],
+                  "pattern": "^.*$"
+                },
+                "calle": {
+                  "$id": "#root/direcciones/items/calle",
+                  "title": "Calle",
+                  "type": "string",
+                  "default": "",
+                  "examples": [
+                    "Compact Pussycat"
+                  ],
+                  "pattern": "^.*$"
+                },
+                "localidad": {
+                  "$id": "#root/direcciones/items/localidad",
+                  "title": "Localidad",
+                  "type": "string",
+                  "default": "",
+                  "examples": [
+                    "Rota"
+                  ],
+                  "pattern": "^.*$"
+                },
+                "cp": {
+                  "$id": "#root/direcciones/items/cp",
+                  "title": "Cp",
+                  "type": "string",
+                  "default": "",
+                  "examples": [
+                    "11080"
+                  ],
+                  "pattern": "^.*$"
+                },
+                "provincia": {
+                  "$id": "#root/direcciones/items/provincia",
+                  "title": "Provincia",
+                  "type": "string",
+                  "default": "",
+                  "examples": [
+                    "11"
+                  ],
+                  "pattern": "^.*$"
+                }
+              }
+            }
+          }
+        }
+      },
+      "marcas": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/marca"
+        }
+      },
+      "marca": {
+        "definitions": {},
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "$id": "https://example.com/marca.json",
+        "title": "marca",
+        "type": "object",
+        "required": [
+          "marca",
+          "modelos"
+        ],
+        "properties": {
+          "marca": {
+            "$id": "#root/marca",
+            "title": "Marca",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "ALFA ROMEO"
+            ],
+            "pattern": "^.*$"
+          },
+          "modelos": {
+            "$id": "#root/modelos",
+            "title": "Modelos",
+            "type": "array",
+            "default": [],
+            "items": {
+              "$id": "#root/modelos/items",
+              "title": "Modelo",
+              "type": "string",
+              "default": "",
+              "examples": [
+                "Giulietta"
+              ],
+              "pattern": "^.*$"
+            }
+          }
+        }
+      }
+    },
+    "requestBodies": {
+      "contacto": {
+        "type": "object"
+      },
+      "persona": {
+        "type": "object"
+      },
+      "tarjeta": {
+        "type": "object"
+      },
+      "articulo": {
+        "type": "object"
+      },
+      "libro": {
+        "type": "object"
+      },
+      "volumen": {
+        "type": "object"
+      },
+      "vehiculo": {
+        "type": "object"
+      },
+      "marca": {
+        "type": "object"
+      }
+    },
+    "responses": {
+      "errorMessage": {
+        "type": "object",
+        "required": [
+          "type",
+          "status",
+          "title"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "pagina": {
+        "in": "query",
+        "name": "_page",
+        "description": "Número de página, siendo 0 la primera",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        }
+      },
+      "filas": {
+        "in": "query",
+        "name": "_rows",
+        "description": "Número de filas por página",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 20
+        }
+      }
+    }
+  }
+}

@@ -5,6 +5,8 @@ const Formidable = require("formidable");
 const morgan = require('morgan')
 const rfs = require('rotating-file-stream')
 const cookieParser = require('cookie-parser')
+const swaggerUi = require('swagger-ui-express');
+const {swaggerDocument, generaSwaggerDocument} = require('../openapi-generator');
 
 const seguridad = require('./seguridad')
 const apiRouter = require('./apirest');
@@ -203,7 +205,7 @@ app.get('/', function (req, res) {
     <li><b>Subir ficheros</b><ul><a href='${srv}/fileupload'>${srv}/fileupload</a></li></ul></li>
     <li><b>Servicios REST</b><ul><li><a href='${srv}/eco'>${srv}/eco</a></li>`
   lstServicio.forEach(servicio => {
-    rslt += `<li><a href='${srv}${DIR_API_REST}/${servicio.url}'>${srv}${DIR_API_REST}/${servicio.url}</a></li>`
+    rslt += `<li><a href='${srv}${DIR_API_REST}/${servicio.endpoint}'>${srv}${DIR_API_REST}/${servicio.endpoint}</a></li>`
   })
   let token = ''
   if (VALIDATE_XSRF_TOKEN) {
@@ -227,6 +229,16 @@ app.get('/', function (req, res) {
 app.all('/favicon.ico', async function (_req, res) {
   res.download(__dirname + '/favicon.ico')
 });
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(generaSwaggerDocument()));
+app.all('/v1/openapi.json', async function (_req, res) {
+  // let data = await fs.readFile('./openapi.json', 'utf8');
+  // let result = JSON.parse(data)
+  let result = swaggerDocument
+
+  res.json(result)
+});
+
 
 // PushState de HTML5
 app.get('/*', async function (req, res, next) {

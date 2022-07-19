@@ -63,13 +63,13 @@ const generaPagina = (req, list, rows) => {
   return list
 }
 const proyectar = projection => {
-      const propiedades = projection.split(',');
-      return item => { let e = {}; propiedades.forEach(c => e[c] = item[c]); return e; }
+  const propiedades = projection.split(',');
+  return item => { let e = {}; propiedades.forEach(c => e[c] = item[c]); return e; }
 }
 
 apis.getAll = async (servicio, req, res, next) => {
   try {
-    let data = await fs.readFile(servicio.fichero, 'utf8');
+    let data = await fs.readFile(servicio.file, 'utf8');
     let list = JSON.parse(data)
     list = filtrar(req, list)
     let orderBy = extraePropiedadesSort(req.query._sort ? req.query._sort.split(',') : [servicio.pk]);
@@ -96,7 +96,7 @@ apis.getAll = async (servicio, req, res, next) => {
 }
 apis.getOne = async (servicio, req, res, next) => {
   try {
-    let data = await fs.readFile(servicio.fichero, 'utf8');
+    let data = await fs.readFile(servicio.file, 'utf8');
     let list = JSON.parse(data)
     let element = list.find(item => item[servicio.pk] == req.params.id)
     if (element) {
@@ -122,7 +122,7 @@ apis.post = async (servicio, req, res, next) => {
   if (Object.keys(req.body).length == 0) {
     return next(generateError('Faltan los datos.', 400))
   }
-  let data = await fs.readFile(servicio.fichero, 'utf8');
+  let data = await fs.readFile(servicio.file, 'utf8');
   try {
     let list = JSON.parse(data)
     let element = req.body
@@ -140,7 +140,7 @@ apis.post = async (servicio, req, res, next) => {
       }
       list.push(element)
       if (_DATALOG) console.log(list)
-      await fs.writeFile(servicio.fichero, JSON.stringify(list), 'utf8');
+      await fs.writeFile(servicio.file, JSON.stringify(list), 'utf8');
       res.status(201).header('location', `${req.protocol}://${req.hostname}:${req.connection.localPort}${req.originalUrl}/${element[servicio.pk]}`).end()
     } else {
       next(generateError('Clave duplicada.', 400))
@@ -166,7 +166,7 @@ apis.put = async (servicio, req, res, next) => {
   } else if (req.body[servicio.pk] != req.params.id) {
     return next(generateError('Invalid identifier', 400))
   }
-  let data = await fs.readFile(servicio.fichero, 'utf8');
+  let data = await fs.readFile(servicio.file, 'utf8');
   try {
     let list = JSON.parse(data)
     let index = list.findIndex(row => row[servicio.pk] == req.params.id)
@@ -175,7 +175,7 @@ apis.put = async (servicio, req, res, next) => {
     } else {
       list[index] = element
       if (_DATALOG) console.log(list)
-      await fs.writeFile(servicio.fichero, JSON.stringify(list), 'utf8');
+      await fs.writeFile(servicio.file, JSON.stringify(list), 'utf8');
       res.status(200).json(list[index]).end()
     }
   } catch (error) {
@@ -192,7 +192,7 @@ apis.putWithoutId = async (servicio, req, res, next) => {
   if (req.body[servicio.pk] == undefined) {
     return next(generateError('Invalid identifier', 400))
   }
-  let data = await fs.readFile(servicio.fichero, 'utf8');
+  let data = await fs.readFile(servicio.file, 'utf8');
   try {
     let list = JSON.parse(data)
     let element = req.body
@@ -201,7 +201,7 @@ apis.putWithoutId = async (servicio, req, res, next) => {
       return next(generateErrorByStatus(404))
     list[index] = element
     if (_DATALOG) console.log(list)
-    await fs.writeFile(servicio.fichero, JSON.stringify(list), 'utf8');
+    await fs.writeFile(servicio.file, JSON.stringify(list), 'utf8');
     res.status(200).json(list[index]).end()
   } catch (error) {
     next(generateErrorByError(error))
@@ -221,7 +221,7 @@ apis.patch = async (servicio, req, res, next) => {
   if (req.body[servicio.pk] && req.body[servicio.pk] != req.params.id) {
     return next(generateError('Invalid identifier', 400))
   }
-  let data = await fs.readFile(servicio.fichero, 'utf8');
+  let data = await fs.readFile(servicio.file, 'utf8');
   try {
     let list = JSON.parse(data)
     let index = list.findIndex(row => row[servicio.pk] == req.params.id)
@@ -229,7 +229,7 @@ apis.patch = async (servicio, req, res, next) => {
       return next(generateErrorByStatus(404))
     list[index] = Object.assign({}, list[index], element)
     if (_DATALOG) console.log(list)
-    await fs.writeFile(servicio.fichero, JSON.stringify(list), 'utf8');
+    await fs.writeFile(servicio.file, JSON.stringify(list), 'utf8');
     res.status(200).json(list[index]).end()
   } catch (error) {
     next(generateErrorByError(error))
@@ -239,7 +239,7 @@ apis.delete = async (servicio, req, res, next) => {
   if (servicio.readonly && !res.locals.isAuthenticated) {
     return next(generateErrorByStatus(401))
   }
-  let data = await fs.readFile(servicio.fichero, 'utf8');
+  let data = await fs.readFile(servicio.file, 'utf8');
   try {
     let list = JSON.parse(data)
     let index = list.findIndex(row => row[servicio.pk] == req.params.id)
@@ -247,7 +247,7 @@ apis.delete = async (servicio, req, res, next) => {
       return next(generateErrorByStatus(404))
     list.splice(index, 1)
     if (_DATALOG) console.log(list)
-    await fs.writeFile(servicio.fichero, JSON.stringify(list), 'utf8');
+    await fs.writeFile(servicio.file, JSON.stringify(list), 'utf8');
     res.sendStatus(204)
   } catch (error) {
     next(generateErrorByError(error))
@@ -259,11 +259,11 @@ apis.options = async (_servicio, _req, res) => {
 
 serviciosConfig.forEach(servicio => {
   const subrouter = express.Router();
-  servicio.fichero = DIR_DATA + servicio.fichero
-  if (servicio.url === 'personas') {
+  servicio.file = DIR_DATA + servicio.file
+  if (servicio.endpoint === 'personas') {
     subrouter.use(onlyAuthenticated)
   }
-  if (servicio.url === 'usuarios') {
+  if (servicio.endpoint === 'usuarios') {
     subrouter.use(onlyInRole('Administradores'))
   }
   subrouter.route('/')
@@ -277,7 +277,7 @@ serviciosConfig.forEach(servicio => {
     .patch((req, res, next) => apis.patch(servicio, req, res, next))
     .delete((req, res, next) => apis.delete(servicio, req, res, next))
     .options((req, res, next) => apis.options(servicio, req, res, next));
-  router.use('/' + servicio.url, subrouter)
+  router.use('/' + servicio.endpoint, subrouter)
 })
 
 module.exports = apis; 

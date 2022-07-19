@@ -23,7 +23,8 @@
     "formidable": "^1.2.6",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
-    "rotating-file-stream": "^3.0.4"
+    "rotating-file-stream": "^3.0.4",
+    "swagger-ui-express": "^4.5.0"
   },
   "devDependencies": {
     "@types/jest": "^28.1.5",
