@@ -1,3 +1,4 @@
+const swaggerJsdoc = require('swagger-jsdoc')
 const serviciosConfig = require('./data/__servicios.json');
 
 const swaggerDocument = {
@@ -150,8 +151,8 @@ const generaGetAll = (servicio) => {
                         "application/json": {
                             "schema": {
                                 "oneOf": [
-                                {"$ref": `#/components/schemas/pagina de ${servicio.models}`},
-                                {"$ref": `#/components/schemas/${servicio.models}`}
+                                    { "$ref": `#/components/schemas/pagina de ${servicio.models}` },
+                                    { "$ref": `#/components/schemas/${servicio.models}` }
                                 ]
                             }
                         }
@@ -260,7 +261,6 @@ const generaPatch = (servicio) => {
         }
     }
 }
-
 const generaDelete = (servicio) => {
     return {
         "delete": {
@@ -274,14 +274,13 @@ const generaDelete = (servicio) => {
         }
     }
 }
-
-const addOpenApi = (servicio) => {
+const addServiceDocumentation = (servicio, dirAPIs) => {
     if (!servicio.tag) servicio.tag = servicio.endpoint
     if (!servicio.models) servicio.models = servicio.endpoint
     if (!servicio.summary) servicio.summary = `Mantenimiento de ${servicio.models}`
     swaggerDocument.tags.push({ name: servicio.tag, description: servicio.summary })
-    swaggerDocument.paths[`/${servicio.endpoint}`] = Object.assign({}, generaGetAll(servicio), generaPost(servicio))
-    swaggerDocument.paths[`/${servicio.endpoint}/{id}`] = Object.assign({
+    swaggerDocument.paths[`${dirAPIs}/${servicio.endpoint}`] = Object.assign({}, generaGetAll(servicio), generaPost(servicio))
+    swaggerDocument.paths[`${dirAPIs}/${servicio.endpoint}/{id}`] = Object.assign({
         "parameters": [
             {
                 "name": "id",
@@ -298,7 +297,7 @@ const addOpenApi = (servicio) => {
     swaggerDocument.components.schemas[`pagina de ${servicio.models}`] = {
         "type": "object",
         "properties": {
-            "content": { 
+            "content": {
                 "$ref": `#/components/schemas/${servicio.models}`,
                 "description": "Listado de elementos"
             },
@@ -339,13 +338,17 @@ const addOpenApi = (servicio) => {
             }
         }
     }
-    if(swaggerDocument.components.schemas[servicio.model].properties[servicio.pk].type === "integer")
+    if (swaggerDocument.components.schemas[servicio.model].properties[servicio.pk].type === "integer")
         swaggerDocument.components.schemas[servicio.model].properties[servicio.pk].description = 'El 0 actúa como autonumérico en la creación'
 }
-const generaSwaggerDocument = () => {
-    serviciosConfig.forEach(servicio => addOpenApi(servicio))
-    return swaggerDocument;
+const generaSwaggerSpecification = (server, dirAPIs )=> {
+    swaggerDocument.servers[0].url = server
+    serviciosConfig.forEach(servicio => addServiceDocumentation(servicio, dirAPIs))
+    const options = {
+        swaggerDefinition: swaggerDocument, // { openapi: '3.0.0' },
+        apis: [`${__dirname}/src/seguridad.js`],
+    };
+    return swaggerJsdoc(options);
 }
 
-module.exports.generaSwaggerDocument = generaSwaggerDocument
-module.exports.swaggerDocument = swaggerDocument
+module.exports.generaSwaggerSpecification = (servidor, DIR_API_REST) => generaSwaggerSpecification(servidor, DIR_API_REST)

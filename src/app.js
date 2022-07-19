@@ -6,7 +6,7 @@ const morgan = require('morgan')
 const rfs = require('rotating-file-stream')
 const cookieParser = require('cookie-parser')
 const swaggerUi = require('swagger-ui-express');
-const {swaggerDocument, generaSwaggerDocument} = require('../openapi-generator');
+const {generaSwaggerSpecification} = require('../openapi-generator');
 
 const seguridad = require('./seguridad')
 const apiRouter = require('./apirest');
@@ -230,12 +230,12 @@ app.all('/favicon.ico', async function (_req, res) {
   res.download(__dirname + '/favicon.ico')
 });
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(generaSwaggerDocument()));
+var options = {
+  explorer: true
+};
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(generaSwaggerSpecification("http://localhost:4321", DIR_API_REST), options));
 app.all('/v1/openapi.json', async function (_req, res) {
-  // let data = await fs.readFile('./openapi.json', 'utf8');
-  // let result = JSON.parse(data)
-  let result = swaggerDocument
-
+  let result = await generaSwaggerSpecification("http://localhost:4321/api", DIR_API_REST)
   res.json(result)
 });
 
