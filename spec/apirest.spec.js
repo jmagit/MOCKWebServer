@@ -12,9 +12,9 @@ describe('API Rest: Ficheros reales', () => {
     //     spy = jest.spyOn(console, 'info');
     //     spy.mockImplementation(() => { })
     // });
-    it.each(serviciosConfig.map(item => item.url.toUpperCase()))('API %s', async url => {
+    it.each(serviciosConfig.map(item => item.endpoint.toUpperCase()))('API %s', async endpoint => {
         let response = await request(app)
-            .get("/api/" + url)
+            .get("/api/" + endpoint)
             .set('authorization', token)
         expect(response.statusCode).toBe(200)
         expect(response.body.length).toBeGreaterThan(1)

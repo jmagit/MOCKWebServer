@@ -1,50 +1,836 @@
 [
     {
-        "url": "personas",
+        "endpoint": "contactos",
+        "summary": "Gestión de contactos",
+        "description": "",
+        "models": "contactos",
+        "model": "contacto",
         "pk": "id",
-        "fichero": "personas.json",
-        "readonly": false
+        "file": "contactos.json",
+        "operations": [],
+        "security": [],
+        "readonly": false,
+        "schema": {
+            "definitions": {},
+            "$schema": "http://json-schema.org/draft-07/schema#", 
+            "$id": "https://example.com/contacto.json", 
+            "title": "contacto", 
+            "type": "object",
+            "required": [
+                "id",
+                "nombre"
+            ],
+            "properties": {
+                "id": {
+                    "$id": "#root/id", 
+                    "title": "Id", 
+                    "type": "integer",
+                    "examples": [
+                        1
+                    ],
+                    "default": 0
+                },
+                "tratamiento": {
+                    "$id": "#root/tratamiento", 
+                    "title": "Tratamiento", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "Excmo."
+                    ],
+                    "pattern": "^.*$"
+                },
+                "nombre": {
+                    "$id": "#root/nombre", 
+                    "title": "Nombre", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "Pietro"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "apellidos": {
+                    "$id": "#root/apellidos", 
+                    "title": "Apellidos", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "Woodall"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "telefono": {
+                    "$id": "#root/telefono", 
+                    "title": "Telefono", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "642 051 348"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "email": {
+                    "$id": "#root/email", 
+                    "title": "Email", 
+                    "type": "string", "format": "email",
+                    "default": "",
+                    "examples": [
+                        "pwoodall0@army.mil"
+                    ]
+                },
+                "sexo": {
+                    "$id": "#root/sexo", 
+                    "title": "Sexo", 
+                    "type": "string",
+                    "enum": [ "H", "M" ],
+                    "default": "H",
+                    "examples": [
+                        "H"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "nacimiento": {
+                    "$id": "#root/nacimiento", 
+                    "title": "Nacimiento", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "1963-10-11"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "avatar": {
+                    "$id": "#root/avatar", 
+                    "title": "Avatar", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "https://randomuser.me/api/portraits/men/0.jpg"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "conflictivo": {
+                    "$id": "#root/conflictivo", 
+                    "title": "Conflictivo", 
+                    "type": "boolean",
+                    "examples": [
+                        true
+                    ],
+                    "default": true
+                },
+                "icono": {
+                    "$id": "#root/icono", 
+                    "title": "Icono", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAALJSURBVDjLpVNbS1RRFP72nHGaUedmpamj5pgKSUli0eXJfOipoELs+hA+FFT44oMSRBkZ1GNC/oAoCJ+C8QaSZhdCTEU0rbyP05jTzOTczv20zkz6IBFBBxZrs9f+vv3t76zFNE3D/3zGjYXa01OuKUqtJstZqizPUnSb6+vDem29o8OpiuIFimZFEOZUQXiY09rq0WtMV6B2d98k8F2YTU4YOKjRCKTw+qQqSZcJFKPoTMty7Nu2pwRKJILY2DjiPv9TIrvGlK6uk5osvjSUl4ERGJIEmEyQlpeRmJpeUkQxaikp3mt2u4FwEPoFcDgR6u1FaHzivpGk3uDy88DiccDnBxQVkGWkFReAO3SgUONFcGYLMDxC71RTF1jTYTt2FIEPw1eMJLOCs9mAuXkqyoBGhxQF+PQFBjvtcwyY+aq7BIhyKgeCYCUqFJ636QSmJIAXAEFIEYhSimTFl1STvFkPjfYEqqmUJRFkpmokg9bJ+Z1MpgKfIICSAutAZcs6mSmMBvLCADLRYCCWfnlmBnDlAbEokCASnqcbhFQW+VRO7lPQX0CpG4GB17qCZyzc3u4mFf2WItdu864cYHIKWAv+bg5lU4V3bYxiFLHQd3CZNqT9zIynx7PLuAceTyg2OPiK9/kPqqEfeWmV+8HSqb8WvSkwue5dHUXIHkbFmQaUXmxETrYVIX6FC0YmFtlGK39rabHTm5pIVqOzqtJqzc8F3r2nNoxiaLkT1Q1NsMwOkLFvALsDAWMRPvYNzbOtszDf0FBNRI8dxYWHd9TWJE3rbzuF449egFWd3jwXvpOLkaGAxv40TJ/r6hxEco+8ue4syGVTC88TR85fsmQseSAk/KCWQ2Sdw/QsVtjfpnGipuYs9Ykr4pp3mqwZtwq2y0ajwYvImoyFVU6ReO02+9dxfnuusDkW9F3lFFakcNoKoZ6c6JPbfgHHGqU/+iLy1wAAAABJRU5ErkJggg=="
+                    ],
+                    "pattern": "^.*$"
+                },
+                "direcciones": {
+                    "$id": "#root/direcciones", 
+                    "title": "Direcciones", 
+                    "type": "array",
+                    "default": [],
+                    "items":{
+                        "$id": "#root/direcciones/items", 
+                        "title": "Items", 
+                        "type": "object",
+                        "required": [
+                            "calle",
+                            "codigo",
+                            "provincia",
+                            "pais"
+                        ],
+                        "properties": {
+                            "calle": {
+                                "$id": "#root/direcciones/items/calle", 
+                                "title": "Calle", 
+                                "type": "string",
+                                "default": "",
+                                "examples": [
+                                    "488 Pankratz Junction"
+                                ],
+                                "pattern": "^.*$"
+                            },
+                            "codigo": {
+                                "$id": "#root/direcciones/items/codigo", 
+                                "title": "Codigo", 
+                                "type": "string",
+                                "default": "",
+                                "examples": [
+                                    "29071"
+                                ],
+                                "pattern": "^.*$"
+                            },
+                            "provincia": {
+                                "$id": "#root/direcciones/items/provincia", 
+                                "title": "Provincia", 
+                                "type": "string",
+                                "default": "",
+                                "examples": [
+                                    "Malaga"
+                                ],
+                                "pattern": "^.*$"
+                            },
+                            "pais": {
+                                "$id": "#root/direcciones/items/pais", 
+                                "title": "Pais", 
+                                "type": "string",
+                                "default": "",
+                                "examples": [
+                                    "España"
+                                ],
+                                "pattern": "^.*$"
+                            }
+                        }
+                    }
+        
+                }
+            }
+        }
     },
     {
-        "url": "contactos",
+        "endpoint": "personas",
+        "model": "persona",
         "pk": "id",
-        "fichero": "contactos.json",
-        "readonly": false
+        "file": "personas.json",
+        "readonly": false,
+        "schema": {
+            "definitions": {},
+            "$schema": "http://json-schema.org/draft-07/schema#", 
+            "$id": "https://example.com/persona.json", 
+            "title": "persona", 
+            "type": "object",
+            "required": [
+                "id",
+                "nombre"
+            ],
+            "properties": {
+                "id": {
+                    "$id": "#root/id", 
+                    "title": "Id", 
+                    "type": "integer",
+                    "examples": [
+                        1
+                    ],
+                    "default": 0
+                },
+                "nombre": {
+                    "$id": "#root/nombre", 
+                    "title": "Nombre", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "Camelo"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "apellidos": {
+                    "$id": "#root/apellidos", 
+                    "title": "Apellidos", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "Coton"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "edad": {
+                    "$id": "#root/edad", 
+                    "title": "Edad", 
+                    "type": "integer",
+                    "examples": [
+                        37
+                    ],
+                    "default": 0
+                },
+                "telefonos": {
+                    "$id": "#root/telefonos", 
+                    "title": "Telefonos", 
+                    "type": "array",
+                    "default": [],
+                    "items":{
+                        "$id": "#root/telefonos/items", 
+                        "title": "telefono", 
+                        "type": "string",
+                        "default": "",
+                        "examples": [
+                            "12342"
+                        ],
+                        "pattern": "^.*$"
+                    }
+                }
+            }
+        }
     },
     {
-        "url": "tarjetas",
+        "endpoint": "tarjetas",
+        "model": "tarjeta",
         "pk": "id",
-        "fichero": "tarjetas.json",
-        "readonly": false
+        "file": "tarjetas.json",
+        "readonly": false,
+        "schema": {
+            "definitions": {},
+            "$schema": "http://json-schema.org/draft-07/schema#", 
+            "$id": "https://example.com/tarjeta.json", 
+            "title": "tarjeta", 
+            "type": "object",
+            "required": [
+                "id",
+                "idCliente",
+                "numero",
+                "caducidad",
+                "CVC_CVV",
+                "tipo"
+            ],
+            "properties": {
+                "id": {
+                    "$id": "#root/id", 
+                    "title": "Id", 
+                    "type": "integer",
+                    "examples": [
+                        1
+                    ],
+                    "default": 0
+                },
+                "idCliente": {
+                    "$id": "#root/idCliente", 
+                    "title": "IdCliente", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "a.auctor.non@dictummi.ca"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "numero": {
+                    "$id": "#root/numero", 
+                    "title": "Numero", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "4024 0071 1838 5904"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "caducidad": {
+                    "$id": "#root/caducidad", 
+                    "title": "Caducidad", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "03/2020"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "CVC_CVV": {
+                    "$id": "#root/CVC_CVV", 
+                    "title": "Cvc_cvv", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "147"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "tipo": {
+                    "$id": "#root/tipo", 
+                    "title": "Tipo", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "Visa"
+                    ],
+                    "pattern": "^.*$"
+                }
+            }
+        }
     },
     {
-        "url": "blog",
+        "endpoint": "blog",
+        "model": "articulo",
         "pk": "id",
-        "fichero": "blog.json",
-        "readonly": false
+        "file": "blog.json",
+        "readonly": false,
+        "schema": {
+            "definitions": {},
+            "$schema": "http://json-schema.org/draft-07/schema#", 
+            "$id": "https://example.com/articulo.json", 
+            "title": "articulo", 
+            "type": "object",
+            "required": [
+                "id",
+                "titulo"
+            ],
+            "properties": {
+                "id": {
+                    "$id": "#root/id", 
+                    "title": "Id", 
+                    "type": "integer",
+                    "examples": [
+                        1
+                    ],
+                    "default": 0
+                },
+                "titulo": {
+                    "$id": "#root/titulo", 
+                    "title": "Titulo", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "Saludo"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "texto": {
+                    "$id": "#root/texto", 
+                    "title": "Texto", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores eveniet eum nisi expedita ab dolorum labore similique provident officia ipsa, aliquam recusandae dicta id, praesentium quasi consequatur minus laborum perferendis?"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "autor": {
+                    "$id": "#root/autor", 
+                    "title": "Autor", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "Javier"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "fecha": {
+                    "$id": "#root/fecha", 
+                    "title": "Fecha", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "2016-02-29"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "megusta": {
+                    "$id": "#root/megusta", 
+                    "title": "Megusta", 
+                    "type": "integer",
+                    "examples": [
+                        0
+                    ],
+                    "default": 0
+                },
+                "fotourl": {
+                    "$id": "#root/fotourl", 
+                    "title": "Fotourl", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "https://cdn-images-1.medium.com/max/800/1*V3Kfghg_jIV0ubxmAnCXBA.jpeg"
+                    ],
+                    "pattern": "^.*$"
+                }
+            }
+        }
+        
     },
     {
-        "url": "libros",
+        "endpoint": "libros",
+        "model": "libro",
         "pk": "idLibro",
-        "fichero": "libros.json",
-        "readonly": false
+        "file": "libros.json",
+        "readonly": false,
+        "schema": {
+            "definitions": {},
+            "$schema": "http://json-schema.org/draft-07/schema#", 
+            "$id": "https://example.com/libro.json", 
+            "title": "libro", 
+            "type": "object",
+            "required": [
+                "idLibro",
+                "titulo"
+            ],
+            "properties": {
+                "idLibro": {
+                    "$id": "#root/idLibro", 
+                    "title": "Idlibro", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "1"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "titulo": {
+                    "$id": "#root/titulo", 
+                    "title": "Titulo", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "El ingenioso hidalgo don Quijote de la Mancha "
+                    ],
+                    "pattern": "^.*$"
+                },
+                "autor": {
+                    "$id": "#root/autor", 
+                    "title": "Autor", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "Miguel de Cervantes"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "pais": {
+                    "$id": "#root/pais", 
+                    "title": "Pais", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "España"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "fecha": {
+                    "$id": "#root/fecha", 
+                    "title": "Fecha", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "1605"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "paginas": {
+                    "$id": "#root/paginas", 
+                    "title": "Paginas", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "377"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "wiki": {
+                    "$id": "#root/wiki", 
+                    "title": "Wiki", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "https://es.wikipedia.org/wiki/Don_Quijote_de_la_Mancha"
+                    ],
+                    "pattern": "^.*$"
+                }
+            }
+        }
+        
     },
     {
-        "url": "biblioteca",
+        "endpoint": "biblioteca",
+        "model": "volumen",
         "pk": "id",
-        "fichero": "biblioteca.json",
-        "readonly": false
+        "file": "biblioteca.json",
+        "readonly": false,
+        "schema": {
+            "definitions": {},
+            "$schema": "http://json-schema.org/draft-07/schema#", 
+            "$id": "https://example.com/volumen.json", 
+            "title": "volumen", 
+            "type": "object",
+            "required": [
+                "autor",
+                "id",
+                "numPag",
+                "titulo"
+            ],
+            "properties": {
+                "autor": {
+                    "$id": "#root/autor", 
+                    "title": "Autor", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "At Mi Imperdiet"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "id": {
+                    "$id": "#root/id", 
+                    "title": "Id", 
+                    "type": "integer",
+                    "examples": [
+                        2
+                    ],
+                    "default": 0
+                },
+                "numPag": {
+                    "$id": "#root/numPag", 
+                    "title": "Numpag", 
+                    "type": "integer",
+                    "examples": [
+                        22
+                    ],
+                    "default": 0
+                },
+                "titulo": {
+                    "$id": "#root/titulo", 
+                    "title": "Titulo", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "Mauris"
+                    ],
+                    "pattern": "^.*$"
+                }
+            }
+        }
+        
     },
     {
-        "url": "vehiculos",
+        "endpoint": "vehiculos",
+        "model": "vehiculo",
         "pk": "id",
-        "fichero": "vehiculos.json",
-        "readonly": false
+        "file": "vehiculos.json",
+        "readonly": false,
+        "schema": {
+            "definitions": {},
+            "$schema": "http://json-schema.org/draft-07/schema#", 
+            "$id": "https://example.com/vehiculo.json", 
+            "title": "vehiculo", 
+            "type": "object",
+            "required": [
+                "id",
+                "marca",
+                "modelo",
+                "matricula"
+            ],
+            "properties": {
+                "id": {
+                    "$id": "#root/id", 
+                    "title": "Id", 
+                    "type": "integer",
+                    "examples": [
+                        1
+                    ],
+                    "default": 0
+                },
+                "marca": {
+                    "$id": "#root/marca", 
+                    "title": "Marca", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "AUDI"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "modelo": {
+                    "$id": "#root/modelo", 
+                    "title": "Modelo", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "A3"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "matricula": {
+                    "$id": "#root/matricula", 
+                    "title": "Matricula", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "1234ABC"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "edad": {
+                    "$id": "#root/edad", 
+                    "title": "Edad", 
+                    "type": "integer",
+                    "examples": [
+                        2
+                    ],
+                    "default": 0
+                },
+                "propietario": {
+                    "$id": "#root/propietario", 
+                    "title": "Propietario", 
+                    "type": "object",
+                    "required": [
+                        "nombre",
+                        "apellidos",
+                        "dni",
+                        "email"
+                    ],
+                    "properties": {
+                        "nombre": {
+                            "$id": "#root/propietario/nombre", 
+                            "title": "Nombre", 
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                                " Penélope"
+                            ],
+                            "pattern": "^.*$"
+                        },
+                        "apellidos": {
+                            "$id": "#root/propietario/apellidos", 
+                            "title": "Apellidos", 
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                                "Glamour"
+                            ],
+                            "pattern": "^.*$"
+                        },
+                        "dni": {
+                            "$id": "#root/propietario/dni", 
+                            "title": "Dni", 
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                                "12345678Z"
+                            ],
+                            "pattern": "^.*$"
+                        },
+                        "email": {
+                            "$id": "#root/propietario/email", 
+                            "title": "Email", 
+                            "type": "string", "format": "email",
+                            "default": "",
+                            "examples": [
+                                "pglamour@example.com"
+                            ],
+                            "pattern": "^.*$"
+                        }
+                    }
+                }
+        ,
+                "direcciones": {
+                    "$id": "#root/direcciones", 
+                    "title": "Direcciones", 
+                    "type": "array",
+                    "default": [],
+                    "items":{
+                        "$id": "#root/direcciones/items", 
+                        "title": "Dirección", 
+                        "type": "object",
+                        "required": [
+                            "id",
+                            "calle",
+                            "localidad",
+                            "cp",
+                            "provincia"
+                        ],
+                        "properties": {
+                            "id": {
+                                "$id": "#root/direcciones/items/id", 
+                                "title": "Id", 
+                                "type": "string",
+                                "default": "",
+                                "examples": [
+                                    "1"
+                                ],
+                                "pattern": "^.*$"
+                            },
+                            "calle": {
+                                "$id": "#root/direcciones/items/calle", 
+                                "title": "Calle", 
+                                "type": "string",
+                                "default": "",
+                                "examples": [
+                                    "Compact Pussycat"
+                                ],
+                                "pattern": "^.*$"
+                            },
+                            "localidad": {
+                                "$id": "#root/direcciones/items/localidad", 
+                                "title": "Localidad", 
+                                "type": "string",
+                                "default": "",
+                                "examples": [
+                                    "Rota"
+                                ],
+                                "pattern": "^.*$"
+                            },
+                            "cp": {
+                                "$id": "#root/direcciones/items/cp", 
+                                "title": "Cp", 
+                                "type": "string",
+                                "default": "",
+                                "examples": [
+                                    "11080"
+                                ],
+                                "pattern": "^.*$"
+                            },
+                            "provincia": {
+                                "$id": "#root/direcciones/items/provincia", 
+                                "title": "Provincia", 
+                                "type": "string",
+                                "default": "",
+                                "examples": [
+                                    "11"
+                                ],
+                                "pattern": "^.*$"
+                            }
+                        }
+                    }
+        
+                }
+            }
+        }
+        
     },
     {
-        "url": "marcas",
+        "endpoint": "marcas",
+        "model": "marca",
         "pk": "marca",
-        "fichero": "marcas-modelos.json",
-        "readonly": false
+        "file": "marcas-modelos.json",
+        "readonly": false,
+        "schema": {
+            "definitions": {},
+            "$schema": "http://json-schema.org/draft-07/schema#", 
+            "$id": "https://example.com/marca.json", 
+            "title": "marca", 
+            "type": "object",
+            "required": [
+                "marca",
+                "modelos"
+            ],
+            "properties": {
+                "marca": {
+                    "$id": "#root/marca", 
+                    "title": "Marca", 
+                    "type": "string",
+                    "default": "",
+                    "examples": [
+                        "ALFA ROMEO"
+                    ],
+                    "pattern": "^.*$"
+                },
+                "modelos": {
+                    "$id": "#root/modelos", 
+                    "title": "Modelos", 
+                    "type": "array",
+                    "default": [],
+                    "items":{
+                        "$id": "#root/modelos/items", 
+                        "title": "Modelo", 
+                        "type": "string",
+                        "default": "",
+                        "examples": [
+                            "Giulietta"
+                        ],
+                        "pattern": "^.*$"
+                    }
+                }
+            }
+        }
+        
     }
 ]
