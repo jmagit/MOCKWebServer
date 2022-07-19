@@ -23,7 +23,9 @@
     "formidable": "^1.2.6",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
+    "openapi-validator-middleware": "^3.2.6",
     "rotating-file-stream": "^3.0.4",
+    "swagger-jsdoc": "^6.2.1",
     "swagger-ui-express": "^4.5.0"
   },
   "devDependencies": {

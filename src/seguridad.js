@@ -134,11 +134,86 @@ module.exports.generarTokenJWT = (usuario) => {
 module.exports.generarTokenScheme = (usuario) => {
     return AUTHENTICATION_SCHEME + module.exports.generarTokenJWT(usuario)
 }
+/**
+* @swagger
+* tags:
+*   - name: autenticación
+*     description: Login
+*   - name: registro
+*     description: Cuentas de usuarios
+*/
 
+
+/**
+ * @swagger
+ *
+ * /login:
+ *   options:
+ *     tags: [ autenticación ]
+ *     summary: Sondeo CORS
+ *     responses:
+ *       "200":
+ *         description: "OK"
+ */
 router.options('/login', function (_req, res) {
     res.status(200).end()
 })
 
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *    Login:
+ *      description: Credenciales de autenticación
+ *      type: object
+ *      properties:
+ *        name:
+ *          type: string
+ *        password:
+ *          type: string
+ *          format: password
+ *      required:
+ *        - name
+ *        - password
+ *    Respuesta Login:
+ *      type: object
+ *      properties:
+ *        success:
+ *          type: boolean
+ *        token:
+ *          type: string
+ *        name:
+ *          type: string
+ *        roles:
+ *          type: array
+ *          items:
+ *            type: string
+ */
+/**
+ * @swagger
+ *
+ * /login:
+ *   post:
+ *     tags: [ autenticación ]
+ *     summary: Iniciar sesión
+ *     produces:
+ *       - application/json
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: "#/components/schemas/Login"
+ *       required: true
+ *     responses:
+ *       "200":
+ *         description: "Resultado de la autenticación"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Respuesta Login"
+ *       "400":
+ *         $ref: "#/components/responses/Bad request"
+ */
 router.post('/login', async function (req, res, next) {
     let payload = {
         success: false
@@ -169,13 +244,78 @@ router.post('/login', async function (req, res, next) {
     }
     res.status(200).json(payload).end()
 })
+/**
+ * @swagger
+ *
+ * /logout:
+ *   post:
+ *     tags: [ autenticación ]
+ *     summary: Cerrar sesión
+ *     responses:
+ *       "200":
+ *         description: "OK"
+ */
 router.all('/logout', function (_req, res) {
     res.clearCookie('Authorization');
     res.status(200).end()
 })
+/**
+ * @swagger
+ *
+ * /auth:
+ *   get:
+ *     tags: [ autenticación ]
+ *     summary: Obtener estado de sesión
+ *     responses:
+ *       "200":
+ *         description: "OK"
+ *         content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                isAuthenticated:
+ *                  type: boolean
+ *                usr:
+ *                  type: string
+ *                name:
+ *                  type: string
+ *                roles:
+ *                  type: array
+ *                  items:
+ *                    type: string
+ */
 router.get('/auth', function (_req, res) {
     res.status(200).json({ isAuthenticated: res.locals.isAuthenticated, usr: res.locals.usr, name: res.locals.name, roles: res.locals.roles })
 })
+/**
+ * @swagger
+ *
+ * /register:
+ *   post:
+ *     tags: [ registro ]
+ *     summary: Registrar un nuevo usuario
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               idUsuario:
+ *                 type: string
+ *                 format: email
+ *               nombre:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *                 format: password
+ *       required: true
+ *     responses:
+ *       "201":
+ *         description: "Created"
+ *       "400":
+ *         $ref: "#/components/responses/Bad request"
+ */
 router.post('/register', async function (req, res, next) {
     let data = await fs.readFile(USR_FILENAME, 'utf8')
     let list = JSON.parse(data)
@@ -200,6 +340,33 @@ const autenticados = express.Router();
 
 autenticados.use(module.exports.onlyAuthenticated)
 autenticados.use(module.exports.onlySelf)
+/**
+ * @swagger
+ *
+ * /register:
+ *   get:
+ *     tags: [ registro ]
+ *     summary: Consultar su usuario
+ *     responses:
+ *       "200":
+ *         description: "OK"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 idUsuario:
+ *                   type: string
+ *                   format: email
+ *                 nombre:
+ *                   type: string
+ *                 roles:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *       "401":
+ *         $ref: "#/components/responses/Unauthorized"
+ */
 autenticados.get('/', async function (_req, res, next) {
     let usr = res.locals.usr;
     let data = await fs.readFile(USR_FILENAME, 'utf8')
@@ -212,8 +379,32 @@ autenticados.get('/', async function (_req, res, next) {
         return next(generateErrorByStatus(401))
     }
 })
+/**
+ * @swagger
+ *
+ * /register:
+ *   put:
+ *     tags: [ registro ]
+ *     summary: Modificar el nombre de su usuario
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *       required: true
+ *     responses:
+ *       "204":
+ *         $ref: "#/components/responses/No content"
+ *       "403":
+ *         $ref: "#/components/responses/Forbidden"
+ *       "404":
+ *         $ref: "#/components/responses/Not found"
+ */
 autenticados.put('/', async function (req, res, next) {
-    if(!isSelf(res, req.body.idUsuario)) 
+    if (!isSelf(res, req.body.idUsuario))
         return next(generateErrorByStatus(403))
     let element = req.body
     let data = await fs.readFile(USR_FILENAME, 'utf8')
@@ -229,6 +420,37 @@ autenticados.put('/', async function (req, res, next) {
             .catch(err => { return next(generateErrorByError(err, 500)) })
     }
 })
+/**
+ * @swagger
+ *
+ * /register/password:
+ *   put:
+ *     tags: [ registro ]
+ *     summary: Cambiar su contraseña
+ *     description: Es necesario conocer la contraseña actual antes de cambiarla
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               oldPassword:
+ *                 type: string
+ *                 format: password
+ *               newPassword:
+ *                 type: string
+ *                 format: password
+ *       required: true
+ *     responses:
+ *       "204":
+ *         $ref: "#/components/responses/No content"
+ *       "400":
+ *         $ref: "#/components/responses/Bad request"
+ *       "403":
+ *         $ref: "#/components/responses/Forbidden"
+ *       "404":
+ *         $ref: "#/components/responses/Not found"
+ */
 autenticados.put('/password', async function (req, res, next) {
     let element = req.body
     let data = await fs.readFile(USR_FILENAME, 'utf8')
