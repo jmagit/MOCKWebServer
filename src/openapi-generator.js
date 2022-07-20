@@ -1,12 +1,19 @@
 const swaggerJsdoc = require('swagger-jsdoc')
-const serviciosConfig = require('./data/__servicios.json');
+const serviciosConfig = require('../data/__servicios.json');
+
+const Capitalize = cad => cad.charAt(0).toUpperCase() + cad.substring(1).toLowerCase()
 
 const swaggerDocument = {
     "openapi": "3.0.0",
     "info": {
-        "title": "Web4Testing",
+        "title": "MOCK Web Server",
         "version": "1.0.0",
-        "description": "Servidor demos de **pruebas** para los cursos de front-end",
+        "description": "Versión NodeJS del **servidor de pruebas** para cursos de FrontEnd",
+        "contact": {
+            "name": "Javier Martín",
+            "url": "http://www.example.com/support",
+            "email": "support@example.com"
+        },
         "license": {
             "name": "Apache 2.0",
             "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
@@ -14,15 +21,37 @@ const swaggerDocument = {
     },
     "servers": [
         {
-            "url": "http://localhost:4321/api",
-            "description": "Local"
+            "url": "http://localhost:{port}/{basePath}",
+            "description": "Servidor local para las pruebas",
+            "variables": {
+                "port": {
+                    "enum": [
+                        "4321",
+                        "8080"
+                    ],
+                    "default": "4321"
+                },
+                "basePath": {
+                    "enum": [
+                        "",
+                        "api",
+                        "api/v1",
+                        "api/v2",
+                    ],
+                    "default": ""
+                }
+            }
         }
     ],
+    "externalDocs": {
+        "description": "Repositorio del proyecto",
+        "url": "https://github.com/jmagit/MOCKWebServer"
+    },
     "tags": [],
     "paths": {},
     "components": {
         "schemas": {
-            "error message": {
+            "Error message": {
                 "type": "object",
                 "required": [
                     "type",
@@ -67,7 +96,7 @@ const swaggerDocument = {
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/error message"
+                            "$ref": "#/components/schemas/Error message"
                         }
                     }
                 }
@@ -77,7 +106,7 @@ const swaggerDocument = {
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/error message"
+                            "$ref": "#/components/schemas/Error message"
                         }
                     }
                 }
@@ -87,7 +116,7 @@ const swaggerDocument = {
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/error message"
+                            "$ref": "#/components/schemas/Error message"
                         }
                     }
                 }
@@ -97,7 +126,7 @@ const swaggerDocument = {
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/error message"
+                            "$ref": "#/components/schemas/Error message"
                         }
                     }
                 }
@@ -128,7 +157,15 @@ const swaggerDocument = {
             }
 
         },
-    }
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
+    },
+    "security": [{ bearerAuth: [] }]
 }
 
 const generaGetAll = (servicio) => {
@@ -151,8 +188,8 @@ const generaGetAll = (servicio) => {
                         "application/json": {
                             "schema": {
                                 "oneOf": [
-                                    { "$ref": `#/components/schemas/pagina de ${servicio.models}` },
-                                    { "$ref": `#/components/schemas/${servicio.models}` }
+                                    { "$ref": `#/components/schemas/Pagina de ${servicio.models}` },
+                                    { "$ref": `#/components/schemas/${Capitalize(servicio.models)}` }
                                 ]
                             }
                         }
@@ -274,27 +311,69 @@ const generaDelete = (servicio) => {
         }
     }
 }
-const addServiceDocumentation = (servicio, dirAPIs) => {
-    if (!servicio.tag) servicio.tag = servicio.endpoint
-    if (!servicio.models) servicio.models = servicio.endpoint
-    if (!servicio.summary) servicio.summary = `Mantenimiento de ${servicio.models}`
-    swaggerDocument.tags.push({ name: servicio.tag, description: servicio.summary })
-    swaggerDocument.paths[`${dirAPIs}/${servicio.endpoint}`] = Object.assign({}, generaGetAll(servicio), generaPost(servicio))
-    swaggerDocument.paths[`${dirAPIs}/${servicio.endpoint}/{id}`] = Object.assign({
-        "parameters": [
-            {
-                "name": "id",
-                "in": "path",
-                "required": true,
-                "schema": {
-                    "type": "integer",
-                    "minimum": 0
-                }
+const generaOptions = (servicio) => {
+    return {
+        "options": {
+            "tags": [servicio.tag],
+            "summary": "Sondeo CORS",
+            "responses": {
+                "200": { description: "OK" },
+                "401": { "$ref": "#/components/responses/Unauthorized" },
+                "403": { "$ref": "#/components/responses/Forbidden" },
             }
-        ]
-    }, generaGetOne(servicio), generaPut(servicio), generaPatch(servicio), generaDelete(servicio))
-    swaggerDocument.components.schemas[servicio.models] = { "type": "array", "items": { "$ref": `#/components/schemas/${servicio.model}` } }
-    swaggerDocument.components.schemas[`pagina de ${servicio.models}`] = {
+        }
+    }
+}
+const addServiceDocumentation = (servicio, dirAPIs) => {
+    if (!servicio.tag) servicio.tag = servicio.endpoint.toLowerCase()
+    if (!servicio.models) servicio.models = servicio.endpoint
+    if (!servicio.summary) servicio.summary = `Mantenimiento de ${Capitalize(servicio.models)}`
+    if (!servicio.operations || servicio.operations.length === 0) servicio.operations = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+
+    let sinID = {}
+    let conID = {}
+    if (servicio.operations.includes('GET')) {
+        sinID = Object.assign(sinID, generaGetAll(servicio))
+        conID = Object.assign(conID, generaGetOne(servicio))
+    }
+    if (servicio.operations.includes('POST'))
+        sinID = Object.assign(sinID, generaPost(servicio))
+    if (servicio.operations.includes('PUT')) {
+        // sinID = Object.assign(sinID, generaGetAll(servicio))
+        conID = Object.assign(conID, generaPut(servicio))
+    }
+    if (servicio.operations.includes('OPTIONS')) {
+        sinID = Object.assign(sinID, generaOptions(servicio))
+        conID = Object.assign(conID, generaOptions(servicio))
+    }
+    if (servicio.operations.includes('PATCH'))
+        conID = Object.assign(conID, generaPatch(servicio))
+    if (servicio.operations.includes('DELETE'))
+        conID = Object.assign(conID, generaDelete(servicio))
+
+    if (!swaggerDocument.tags.some(item => item.name === servicio.tag))
+        swaggerDocument.tags.push({ name: servicio.tag, description: servicio.summary })
+    if (Object.keys(sinID).length > 0)
+        swaggerDocument.paths[`${dirAPIs}/${servicio.endpoint}`] = sinID
+    if (Object.keys(conID).length > 0) {
+        let pkType = "integer"
+        if (servicio?.schema?.properties?.[servicio.pk]?.type)
+            pkType = servicio.schema.properties[servicio.pk].type
+        swaggerDocument.paths[`${dirAPIs}/${servicio.endpoint}/{id}`] = Object.assign({
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": pkType
+                    }
+                }
+            ]
+        }, conID)
+    }
+    swaggerDocument.components.schemas[Capitalize(servicio.models)] = { "type": "array", "items": { "$ref": `#/components/schemas/${servicio.model}` } }
+    swaggerDocument.components.schemas[`Pagina de ${servicio.models}`] = {
         "type": "object",
         "properties": {
             "content": {
@@ -341,8 +420,8 @@ const addServiceDocumentation = (servicio, dirAPIs) => {
     if (swaggerDocument.components.schemas[servicio.model].properties[servicio.pk].type === "integer")
         swaggerDocument.components.schemas[servicio.model].properties[servicio.pk].description = 'El 0 actúa como autonumérico en la creación'
 }
-const generaSwaggerSpecification = (server, dirAPIs )=> {
-    swaggerDocument.servers[0].url = server
+const generaSwaggerSpecification = (server, dirAPIs) => {
+    swaggerDocument.servers[0].variables.port.default = server
     serviciosConfig.forEach(servicio => addServiceDocumentation(servicio, dirAPIs))
     const options = {
         swaggerDefinition: swaggerDocument, // { openapi: '3.0.0' },

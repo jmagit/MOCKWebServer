@@ -6,8 +6,9 @@ const morgan = require('morgan')
 const rfs = require('rotating-file-stream')
 const cookieParser = require('cookie-parser')
 const swaggerUi = require('swagger-ui-express');
-const {generaSwaggerSpecification} = require('../openapi-generator');
+const {generaSwaggerSpecification} = require('./openapi-generator');
 
+const serviciosConfig = require('../data/__servicios.json')
 const seguridad = require('./seguridad')
 const apiRouter = require('./apirest');
 
@@ -18,7 +19,6 @@ const DIR_UPLOADS = './uploads/'
 const USERNAME = 'admin'
 const PASSWORD = 'P@$$w0rd'
 
-let lstServicio = require('../data/__servicios.json')
 
 let VALIDATE_XSRF_TOKEN = false;
 
@@ -204,7 +204,7 @@ app.get('/', function (req, res) {
     <li><b>Esp&iacute;a de la Petici&oacute;n</b><ul><a href='${srv}/form'>${srv}/form</a></li></ul></li>
     <li><b>Subir ficheros</b><ul><a href='${srv}/fileupload'>${srv}/fileupload</a></li></ul></li>
     <li><b>Servicios REST</b><ul><li><a href='${srv}/eco'>${srv}/eco</a></li>`
-  lstServicio.forEach(servicio => {
+  serviciosConfig.forEach(servicio => {
     rslt += `<li><a href='${srv}${DIR_API_REST}/${servicio.endpoint}'>${srv}${DIR_API_REST}/${servicio.endpoint}</a></li>`
   })
   let token = ''
@@ -233,11 +233,11 @@ app.all('/favicon.ico', async function (_req, res) {
 var options = {
   explorer: true
 };
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(generaSwaggerSpecification("http://localhost:4321", DIR_API_REST), options));
-app.all('/v1/openapi.json', async function (_req, res) {
-  let result = await generaSwaggerSpecification("http://localhost:4321/api", DIR_API_REST)
+app.all('/api-docs/v1/openapi.json', async function (_req, res) {
+  let result = await generaSwaggerSpecification(app.PUERTO, DIR_API_REST)
   res.json(result)
 });
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(generaSwaggerSpecification(app.PUERTO, DIR_API_REST), options));
 
 
 // PushState de HTML5

@@ -1,9 +1,9 @@
 const express = require('express');
 const fs = require('fs/promises')
 const router = express.Router();
-const { onlyAuthenticated, onlyInRole } = require('./seguridad')
-const serviciosConfig = require('../data/__servicios.json');
-const { generateError, generateErrorByStatus, generateErrorByError } = require('./utils');
+const { onlyAuthenticated, onlyInRole, readOnly } = require('./seguridad')
+const { generateError, generateErrorByStatus, generateErrorByError, getServiciosConfig } = require('./utils');
+const serviciosConfig = getServiciosConfig();
 
 const _DATALOG = false
 const DIR_DATA = './data/'
@@ -113,17 +113,17 @@ apis.getOne = async (servicio, req, res, next) => {
   }
 }
 apis.post = async (servicio, req, res, next) => {
-  if (servicio.readonly && !res.locals.isAuthenticated) {
-    return next(generateErrorByStatus(401))
-  }
+  // if (servicio.readonly && !res.locals.isAuthenticated) {
+  //   return next(generateErrorByStatus(401))
+  // }
   if (!req.is('json') || !req.body) {
     return next(generateErrorByStatus(406))
   }
   if (Object.keys(req.body).length == 0) {
     return next(generateError('Faltan los datos.', 400))
   }
-  let data = await fs.readFile(servicio.file, 'utf8');
   try {
+    let data = await fs.readFile(servicio.file, 'utf8');
     let list = JSON.parse(data)
     let element = req.body
     if (element[servicio.pk] == undefined) {
@@ -150,9 +150,9 @@ apis.post = async (servicio, req, res, next) => {
   }
 }
 apis.put = async (servicio, req, res, next) => {
-  if (servicio.readonly && !res.locals.isAuthenticated) {
-    return next(generateErrorByStatus(401))
-  }
+  // if (servicio.readonly && !res.locals.isAuthenticated) {
+  //   return next(generateErrorByStatus(401))
+  // }
 
   if (!req.is('json') || !req.body) {
     return next(generateErrorByStatus(406))
@@ -166,8 +166,8 @@ apis.put = async (servicio, req, res, next) => {
   } else if (req.body[servicio.pk] != req.params.id) {
     return next(generateError('Invalid identifier', 400))
   }
-  let data = await fs.readFile(servicio.file, 'utf8');
   try {
+    let data = await fs.readFile(servicio.file, 'utf8');
     let list = JSON.parse(data)
     let index = list.findIndex(row => row[servicio.pk] == req.params.id)
     if (index == -1) {
@@ -183,17 +183,17 @@ apis.put = async (servicio, req, res, next) => {
   }
 }
 apis.putWithoutId = async (servicio, req, res, next) => {
-  if (servicio.readonly && !res.locals.isAuthenticated) {
-    return next(generateErrorByStatus(401))
-  }
+  // if (servicio.readonly && !res.locals.isAuthenticated) {
+  //   return next(generateErrorByStatus(401))
+  // }
   if (!req.is('json') || !req.body) {
     return next(generateErrorByStatus(406))
   }
   if (req.body[servicio.pk] == undefined) {
     return next(generateError('Invalid identifier', 400))
   }
-  let data = await fs.readFile(servicio.file, 'utf8');
   try {
+    let data = await fs.readFile(servicio.file, 'utf8');
     let list = JSON.parse(data)
     let element = req.body
     let index = list.findIndex(row => row[servicio.pk] == element[servicio.pk])
@@ -208,9 +208,9 @@ apis.putWithoutId = async (servicio, req, res, next) => {
   }
 }
 apis.patch = async (servicio, req, res, next) => {
-  if (servicio.readonly && !res.locals.isAuthenticated) {
-    return next(generateErrorByStatus(401))
-  }
+  // if (servicio.readonly && !res.locals.isAuthenticated) {
+  //   return next(generateErrorByStatus(401))
+  // }
   if (!req.is('json') || !req.body) {
     return next(generateErrorByStatus(406))
   }
@@ -221,8 +221,8 @@ apis.patch = async (servicio, req, res, next) => {
   if (req.body[servicio.pk] && req.body[servicio.pk] != req.params.id) {
     return next(generateError('Invalid identifier', 400))
   }
-  let data = await fs.readFile(servicio.file, 'utf8');
   try {
+    let data = await fs.readFile(servicio.file, 'utf8');
     let list = JSON.parse(data)
     let index = list.findIndex(row => row[servicio.pk] == req.params.id)
     if (index == -1)
@@ -236,11 +236,11 @@ apis.patch = async (servicio, req, res, next) => {
   }
 }
 apis.delete = async (servicio, req, res, next) => {
-  if (servicio.readonly && !res.locals.isAuthenticated) {
-    return next(generateErrorByStatus(401))
-  }
-  let data = await fs.readFile(servicio.file, 'utf8');
+  // if (servicio.readonly && !res.locals.isAuthenticated) {
+  //   return next(generateErrorByStatus(401))
+  // }
   try {
+    let data = await fs.readFile(servicio.file, 'utf8');
     let list = JSON.parse(data)
     let index = list.findIndex(row => row[servicio.pk] == req.params.id)
     if (index == -1)
@@ -258,26 +258,41 @@ apis.options = async (_servicio, _req, res) => {
 }
 
 serviciosConfig.forEach(servicio => {
-  const subrouter = express.Router();
+  const apiRouter = express.Router();
   servicio.file = DIR_DATA + servicio.file
-  if (servicio.endpoint === 'personas') {
-    subrouter.use(onlyAuthenticated)
-  }
+  if (!servicio.operations || servicio.operations.length === 0) servicio.operations = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+  if (servicio.security) {
+    if (typeof (servicio.security) === 'string')
+      apiRouter.use(onlyInRole(servicio.security))
+    else
+      apiRouter.use(onlyAuthenticated)
+  } else if (servicio.readonly)
+    apiRouter.use(readOnly)
+
   if (servicio.endpoint === 'usuarios') {
-    subrouter.use(onlyInRole('Administradores'))
+    apiRouter.use(onlyInRole('Administradores'))
   }
-  subrouter.route('/')
-    .get((req, res, next) => apis.getAll(servicio, req, res, next))
-    .post((req, res, next) => apis.post(servicio, req, res, next))
-    .put((req, res, next) => apis.putWithoutId(servicio, req, res, next))
-    .options((req, res, next) => apis.options(servicio, req, res, next));
-  subrouter.route('/:id')
-    .get((req, res, next) => apis.getOne(servicio, req, res, next))
-    .put((req, res, next) => apis.put(servicio, req, res, next))
-    .patch((req, res, next) => apis.patch(servicio, req, res, next))
-    .delete((req, res, next) => apis.delete(servicio, req, res, next))
-    .options((req, res, next) => apis.options(servicio, req, res, next));
-  router.use('/' + servicio.endpoint, subrouter)
+  let sinID = apiRouter.route('/')
+  let conID = apiRouter.route('/:id')
+  if (servicio.operations.includes('GET')) {
+    sinID.get((req, res, next) => apis.getAll(servicio, req, res, next))
+    conID.get((req, res, next) => apis.getOne(servicio, req, res, next))
+  }
+  if (servicio.operations.includes('POST'))
+    sinID.post((req, res, next) => apis.post(servicio, req, res, next))
+  if (servicio.operations.includes('PUT')) {
+    sinID.put((req, res, next) => apis.putWithoutId(servicio, req, res, next))
+    conID.put((req, res, next) => apis.put(servicio, req, res, next))
+  }
+  if (servicio.operations.includes('OPTIONS')) {
+    sinID.options((req, res, next) => apis.options(servicio, req, res, next));
+    conID.options((req, res, next) => apis.options(servicio, req, res, next));
+  }
+  if (servicio.operations.includes('PATCH'))
+    conID.patch((req, res, next) => apis.patch(servicio, req, res, next))
+  if (servicio.operations.includes('DELETE'))
+    conID.delete((req, res, next) => apis.delete(servicio, req, res, next))
+  router.use('/' + servicio.endpoint, apiRouter)
 })
 
 module.exports = apis; 
