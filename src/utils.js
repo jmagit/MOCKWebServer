@@ -40,7 +40,7 @@ module.exports.formatError = (error, status = 400) => {
     return { status, title: error.message }
 }
 
-const generateError = (title, status = 500, detail, source) => {
+const generateError = (title, status = 500, detail = undefined, source = undefined) => {
     if(!title) title = http.STATUS_CODES[status] || '(desconocido)'
     let error = new Error(title)
     error.name = 'ApplicationError'

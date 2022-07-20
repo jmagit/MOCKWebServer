@@ -1,6 +1,6 @@
 const fs = require('fs/promises');
 
-class dbJSONError extends Error {
+class DbJSONError extends Error {
     constructor(message, code) {
         super(message);
         this.name = "dbJSONError";
@@ -16,7 +16,7 @@ class DbJSON {
         this.__data = null
     }
     async load(force = false) {
-        if (this.__data && !force & process.env.NODE_ENV !== 'test')
+        if (this.__data && !force && process.env.NODE_ENV !== 'test')
             return
 
         let result = await fs.readFile(this.__filename, 'utf8')
@@ -28,7 +28,7 @@ class DbJSON {
     get isLoad() { return this.__data !== null }
     get list() {
         if (!this.isLoad)
-            throw new dbJSONError('Data not loading', 500)
+            throw new DbJSONError('Data not loading', 500)
         return this.__data;
     }
     get loadList() {
@@ -104,7 +104,7 @@ class DbJSON {
             element[this.__pk] = 0
         }
         if (this.getById(element[this.__pk]) !== undefined)
-            throw new dbJSONError('Duplicate key', 400)
+            throw new DbJSONError('Duplicate key', 400)
         if (element[this.__pk] == 0) {
             if (this.list.length == 0)
                 element[this.__pk] = 1;
@@ -119,10 +119,10 @@ class DbJSON {
     }
     update(element, persist = false) {
         if (element[this.__pk] === undefined)
-            throw new dbJSONError('Missing key', 400)
+            throw new DbJSONError('Missing key', 400)
         let index = this.indexById(element[this.__pk])
         if (index < 0)
-            throw new dbJSONError('Missing data', 404)
+            throw new DbJSONError('Missing data', 404)
         this.__data[index] = element
         if (persist || this.__autoSave) this.save()
         return element
@@ -130,7 +130,7 @@ class DbJSON {
     change(key, element, persist = false) {
         let index = this.indexById(key)
         if (index < 0)
-            throw new dbJSONError('Missing data', 404)
+            throw new DbJSONError('Missing data', 404)
         this.__data[index] = Object.assign({}, this.__data[index], element)
         if (persist || this.__autoSave) this.save()
         return this.__data[index]
@@ -138,11 +138,11 @@ class DbJSON {
     delete(key, persist = false) {
         let index = this.indexById(key)
         if (index < 0)
-            throw new dbJSONError('Missing data', 404)
+            throw new DbJSONError('Missing data', 404)
         this.__data.splice(index, 1)
         if (persist || this.__autoSave) this.save()
     }
 }
 
 module.exports = DbJSON
-module.exports.dbJSONError = dbJSONError
+module.exports.dbJSONError = DbJSONError

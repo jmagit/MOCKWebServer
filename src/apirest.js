@@ -170,12 +170,14 @@ serviciosConfig.forEach(servicio => {
   // servicio.file = DIR_DATA + servicio.file
   if (!servicio.operations || servicio.operations.length === 0) servicio.operations = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
   if (servicio.security) {
-    if (typeof (servicio.security) === 'string')
+    if (typeof (servicio.security) === 'string') {
       apiRouter.use(onlyInRole(servicio.security))
-    else
+    } else {
       apiRouter.use(onlyAuthenticated)
-  } else if (servicio.readonly)
+    }
+  } else if (servicio.readonly) {
     apiRouter.use(readOnly)
+  }
 
   if (servicio.endpoint === 'usuarios') {
     apiRouter.use(onlyInRole('Administradores'))
