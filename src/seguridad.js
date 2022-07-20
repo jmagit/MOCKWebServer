@@ -124,7 +124,7 @@ module.exports.useXSRF = (req, res, next) => {
 // Rutas: Control de acceso
 async function encriptaPassword(password) {
     const salt = await bcrypt.genSalt(10)
-    return await bcrypt.hash(password, salt)
+    return bcrypt.hash(password, salt)
 }
 
 module.exports.generarTokenJWT = (usuario) => {
@@ -179,8 +179,9 @@ router.options('/login', function (_req, res) {
  *      required:
  *        - name
  *        - password
- *    Respuesta Login:
+ *    RespuestaLogin:
  *      type: object
+ *      title: Respuesta Login
  *      properties:
  *        success:
  *          type: boolean
@@ -214,9 +215,9 @@ router.options('/login', function (_req, res) {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: "#/components/schemas/Respuesta Login"
+ *               $ref: "#/components/schemas/RespuestaLogin"
  *       "400":
- *         $ref: "#/components/responses/Bad request"
+ *         $ref: "#/components/responses/BadRequest"
  */
 router.post('/login', async function (req, res, next) {
     let payload = {
@@ -318,7 +319,7 @@ router.get('/auth', function (_req, res) {
  *       "201":
  *         description: "Created"
  *       "400":
- *         $ref: "#/components/responses/Bad request"
+ *         $ref: "#/components/responses/BadRequest"
  */
 router.post('/register', async function (req, res, next) {
     let data = await fs.readFile(USR_FILENAME, 'utf8')
@@ -401,11 +402,11 @@ autenticados.get('/', async function (_req, res, next) {
  *       required: true
  *     responses:
  *       "204":
- *         $ref: "#/components/responses/No content"
+ *         $ref: "#/components/responses/NoContent"
  *       "403":
  *         $ref: "#/components/responses/Forbidden"
  *       "404":
- *         $ref: "#/components/responses/Not found"
+ *         $ref: "#/components/responses/NotFound"
  */
 autenticados.put('/', async function (req, res, next) {
     if (!isSelf(res, req.body.idUsuario))
@@ -447,13 +448,13 @@ autenticados.put('/', async function (req, res, next) {
  *       required: true
  *     responses:
  *       "204":
- *         $ref: "#/components/responses/No content"
+ *         $ref: "#/components/responses/NoContent"
  *       "400":
- *         $ref: "#/components/responses/Bad request"
+ *         $ref: "#/components/responses/BadRequest"
  *       "403":
  *         $ref: "#/components/responses/Forbidden"
  *       "404":
- *         $ref: "#/components/responses/Not found"
+ *         $ref: "#/components/responses/NotFound"
  */
 autenticados.put('/password', async function (req, res, next) {
     let element = req.body

@@ -11,7 +11,7 @@ const swaggerDocument = {
         "description": "Versión NodeJS del **servidor de pruebas** para cursos de FrontEnd",
         "contact": {
             "name": "Javier Martín",
-            "url": "http://www.example.com/support",
+            "url": "https://www.example.com/support",
             "email": "support@example.com"
         },
         "license": {
@@ -21,13 +21,21 @@ const swaggerDocument = {
     },
     "servers": [
         {
-            "url": "http://localhost:{port}/{basePath}",
+            "url": "{protocol}://localhost:{port}/{basePath}",
             "description": "Servidor local para las pruebas",
             "variables": {
+                "protocol": {
+                    "enum": [
+                        "http",
+                        "https"
+                    ],
+                    "default": "http"
+                },
                 "port": {
                     "enum": [
                         "4321",
-                        "8080"
+                        "8080",
+                        ""
                     ],
                     "default": "4321"
                 },
@@ -51,8 +59,9 @@ const swaggerDocument = {
     "paths": {},
     "components": {
         "schemas": {
-            "Error message": {
+            "ErrorMessage": {
                 "type": "object",
+                "title": "Error message",
                 "required": [
                     "type",
                     "status",
@@ -88,15 +97,15 @@ const swaggerDocument = {
                     }
                 }
             },
-            "No content": {
-                "description": "No content"
+            "NoContent": {
+                "description": "No content",
             },
-            "Bad request": {
+            "BadRequest": {
                 "description": "Invalid data",
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/Error message"
+                            "$ref": "#/components/schemas/ErrorMessage"
                         }
                     }
                 }
@@ -106,7 +115,7 @@ const swaggerDocument = {
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/Error message"
+                            "$ref": "#/components/schemas/ErrorMessage"
                         }
                     }
                 }
@@ -116,17 +125,17 @@ const swaggerDocument = {
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/Error message"
+                            "$ref": "#/components/schemas/ErrorMessage"
                         }
                     }
                 }
             },
-            "Not found": {
+            "NotFound": {
                 "description": "Not found",
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/Error message"
+                            "$ref": "#/components/schemas/ErrorMessage"
                         }
                     }
                 }
@@ -188,7 +197,7 @@ const generaGetAll = (servicio) => {
                         "application/json": {
                             "schema": {
                                 "oneOf": [
-                                    { "$ref": `#/components/schemas/Pagina de ${servicio.models}` },
+                                    { "$ref": `#/components/schemas/Pagina_${servicio.models}` },
                                     { "$ref": `#/components/schemas/${Capitalize(servicio.models)}` }
                                 ]
                             }
@@ -218,7 +227,7 @@ const generaPost = (servicio) => {
             },
             "responses": {
                 "201": { "$ref": "#/components/responses/Created" },
-                "400": { "$ref": "#/components/responses/Bad request" },
+                "400": { "$ref": "#/components/responses/BadRequest" },
                 "401": { "$ref": "#/components/responses/Unauthorized" },
                 "403": { "$ref": "#/components/responses/Forbidden" },
             }
@@ -243,7 +252,7 @@ const generaGetOne = (servicio) => {
                 },
                 "401": { "$ref": "#/components/responses/Unauthorized" },
                 "403": { "$ref": "#/components/responses/Forbidden" },
-                "404": { "$ref": "#/components/responses/Not found" },
+                "404": { "$ref": "#/components/responses/NotFound" },
             }
         }
     }
@@ -264,11 +273,11 @@ const generaPut = (servicio) => {
                 "required": true,
             },
             "responses": {
-                "204": { "$ref": "#/components/responses/No content" },
-                "400": { "$ref": "#/components/responses/Bad request" },
+                "204": { "$ref": "#/components/responses/NoContent" },
+                "400": { "$ref": "#/components/responses/BadRequest" },
                 "401": { "$ref": "#/components/responses/Unauthorized" },
                 "403": { "$ref": "#/components/responses/Forbidden" },
-                "404": { "$ref": "#/components/responses/Not found" },
+                "404": { "$ref": "#/components/responses/NotFound" },
             }
         }
     }
@@ -289,11 +298,11 @@ const generaPatch = (servicio) => {
                 "required": true,
             },
             "responses": {
-                "204": { "$ref": "#/components/responses/No content" },
-                "400": { "$ref": "#/components/responses/Bad request" },
+                "204": { "$ref": "#/components/responses/NoContent" },
+                "400": { "$ref": "#/components/responses/BadRequest" },
                 "401": { "$ref": "#/components/responses/Unauthorized" },
                 "403": { "$ref": "#/components/responses/Forbidden" },
-                "404": { "$ref": "#/components/responses/Not found" },
+                "404": { "$ref": "#/components/responses/NotFound" },
             }
         }
     }
@@ -304,7 +313,7 @@ const generaDelete = (servicio) => {
             "tags": [servicio.tag],
             "summary": `Borrar ${servicio.model}`,
             "responses": {
-                "204": { "$ref": "#/components/responses/No content" },
+                "204": { "$ref": "#/components/responses/NoContent" },
                 "401": { "$ref": "#/components/responses/Unauthorized" },
                 "403": { "$ref": "#/components/responses/Forbidden" },
             }
@@ -324,11 +333,19 @@ const generaOptions = (servicio) => {
         }
     }
 }
+const preparaService = (servicio) => {
+    if (!servicio.tag)
+        servicio.tag = servicio.endpoint.toLowerCase();
+    if (!servicio.models)
+        servicio.models = servicio.endpoint;
+    if (!servicio.summary)
+        servicio.summary = `Mantenimiento de ${Capitalize(servicio.models)}`;
+    if (!servicio.operations || servicio.operations.length === 0)
+        servicio.operations = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"];
+}
+
 const addServiceDocumentation = (servicio, dirAPIs) => {
-    if (!servicio.tag) servicio.tag = servicio.endpoint.toLowerCase()
-    if (!servicio.models) servicio.models = servicio.endpoint
-    if (!servicio.summary) servicio.summary = `Mantenimiento de ${Capitalize(servicio.models)}`
-    if (!servicio.operations || servicio.operations.length === 0) servicio.operations = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+    preparaService(servicio);
 
     let sinID = {}
     let conID = {}
@@ -373,11 +390,12 @@ const addServiceDocumentation = (servicio, dirAPIs) => {
         }, conID)
     }
     swaggerDocument.components.schemas[Capitalize(servicio.models)] = { "type": "array", "items": { "$ref": `#/components/schemas/${servicio.model}` } }
-    swaggerDocument.components.schemas[`Pagina de ${servicio.models}`] = {
+    swaggerDocument.components.schemas[`Pagina_${servicio.models}`] = {
         "type": "object",
+        "title": `Pagina de ${servicio.models}`,
         "properties": {
             "content": {
-                "$ref": `#/components/schemas/${servicio.models}`,
+                "$ref": `#/components/schemas/${Capitalize(servicio.models)}`,
                 "description": "Listado de elementos"
             },
             "totalElements": {

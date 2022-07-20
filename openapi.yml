@@ -1,0 +1,1866 @@
+openapi: 3.0.0
+info:
+  title: MOCK Web Server
+  version: 1.0.0
+  description: Versión NodeJS del **servidor de pruebas** para cursos de FrontEnd
+  contact:
+    name: Javier Martín
+    url: https://www.example.com/support
+    email: support@example.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: "{protocol}://localhost:{port}/{basePath}"
+    description: Servidor local para las pruebas
+    variables:
+      protocol:
+        enum:
+          - http
+          - https
+        default: http
+      port:
+        enum:
+          - "4321"
+          - "8080"
+          - ""
+        default: "4321"
+      basePath:
+        enum:
+          - ""
+          - api
+          - api/v1
+          - api/v2
+        default: ""
+externalDocs:
+  description: Repositorio del proyecto
+  url: https://github.com/jmagit/MOCKWebServer
+tags:
+  - name: contactos
+    description: Gestión de contactos
+  - name: personas
+    description: Mantenimiento de Personas
+  - name: tarjetas
+    description: Mantenimiento de Tarjetas
+  - name: blog
+    description: Mantenimiento de Blog
+  - name: libros
+    description: Mantenimiento de Libros
+  - name: biblioteca
+    description: Mantenimiento de Biblioteca
+  - name: vehiculos
+    description: Mantenimiento de Vehiculos
+paths:
+  /api/contactos:
+    get:
+      tags:
+        - contactos
+      summary: Listar contactos
+      parameters:
+        - $ref: "#/components/parameters/pagina"
+        - $ref: "#/components/parameters/filas"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Pagina_contactos"
+                  - $ref: "#/components/schemas/Contactos"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      tags:
+        - contactos
+      summary: Crear Contacto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Contacto"
+        required: true
+      responses:
+        "201":
+          $ref: "#/components/responses/Created"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    options:
+      tags:
+        - contactos
+      summary: Sondeo CORS
+      responses:
+        "200":
+          description: OK
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  "/api/contactos/{id}":
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+        - contactos
+      summary: Recuperar Contacto
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Contacto"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags:
+        - contactos
+      summary: Reemplazar Contacto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Contacto"
+        required: true
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    options:
+      tags:
+        - contactos
+      summary: Sondeo CORS
+      responses:
+        "200":
+          description: OK
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    patch:
+      tags:
+        - contactos
+      summary: Actualiza parte de Contacto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Contacto"
+        required: true
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      tags:
+        - contactos
+      summary: Borrar Contacto
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/personas:
+    get:
+      tags:
+        - personas
+      summary: Listar personas
+      parameters:
+        - $ref: "#/components/parameters/pagina"
+        - $ref: "#/components/parameters/filas"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Pagina_personas"
+                  - $ref: "#/components/schemas/Personas"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      tags:
+        - personas
+      summary: Crear Persona
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Persona"
+        required: true
+      responses:
+        "201":
+          $ref: "#/components/responses/Created"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  "/api/personas/{id}":
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+        - personas
+      summary: Recuperar Persona
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Persona"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags:
+        - personas
+      summary: Reemplazar Persona
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Persona"
+        required: true
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      tags:
+        - personas
+      summary: Borrar Persona
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/tarjetas:
+    get:
+      tags:
+        - tarjetas
+      summary: Listar tarjetas
+      parameters:
+        - $ref: "#/components/parameters/pagina"
+        - $ref: "#/components/parameters/filas"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Pagina_tarjetas"
+                  - $ref: "#/components/schemas/Tarjetas"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      tags:
+        - tarjetas
+      summary: Crear Tarjeta
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Tarjeta"
+        required: true
+      responses:
+        "201":
+          $ref: "#/components/responses/Created"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  "/api/tarjetas/{id}":
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+        - tarjetas
+      summary: Recuperar Tarjeta
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tarjeta"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags:
+        - tarjetas
+      summary: Reemplazar Tarjeta
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Tarjeta"
+        required: true
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/blog:
+    get:
+      tags:
+        - blog
+      summary: Listar blog
+      parameters:
+        - $ref: "#/components/parameters/pagina"
+        - $ref: "#/components/parameters/filas"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Pagina_blog"
+                  - $ref: "#/components/schemas/Blog"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      tags:
+        - blog
+      summary: Crear Articulo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Articulo"
+        required: true
+      responses:
+        "201":
+          $ref: "#/components/responses/Created"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    options:
+      tags:
+        - blog
+      summary: Sondeo CORS
+      responses:
+        "200":
+          description: OK
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  "/api/blog/{id}":
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+        - blog
+      summary: Recuperar Articulo
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Articulo"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags:
+        - blog
+      summary: Reemplazar Articulo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Articulo"
+        required: true
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    options:
+      tags:
+        - blog
+      summary: Sondeo CORS
+      responses:
+        "200":
+          description: OK
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    patch:
+      tags:
+        - blog
+      summary: Actualiza parte de Articulo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Articulo"
+        required: true
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      tags:
+        - blog
+      summary: Borrar Articulo
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/libros:
+    get:
+      tags:
+        - libros
+      summary: Listar libros
+      parameters:
+        - $ref: "#/components/parameters/pagina"
+        - $ref: "#/components/parameters/filas"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Pagina_libros"
+                  - $ref: "#/components/schemas/Libros"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      tags:
+        - libros
+      summary: Crear Libro
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Libro"
+        required: true
+      responses:
+        "201":
+          $ref: "#/components/responses/Created"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    options:
+      tags:
+        - libros
+      summary: Sondeo CORS
+      responses:
+        "200":
+          description: OK
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  "/api/libros/{id}":
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - libros
+      summary: Recuperar Libro
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Libro"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags:
+        - libros
+      summary: Reemplazar Libro
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Libro"
+        required: true
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    options:
+      tags:
+        - libros
+      summary: Sondeo CORS
+      responses:
+        "200":
+          description: OK
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    patch:
+      tags:
+        - libros
+      summary: Actualiza parte de Libro
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Libro"
+        required: true
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      tags:
+        - libros
+      summary: Borrar Libro
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/biblioteca:
+    get:
+      tags:
+        - biblioteca
+      summary: Listar biblioteca
+      parameters:
+        - $ref: "#/components/parameters/pagina"
+        - $ref: "#/components/parameters/filas"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Pagina_biblioteca"
+                  - $ref: "#/components/schemas/Biblioteca"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      tags:
+        - biblioteca
+      summary: Crear Volumen
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Volumen"
+        required: true
+      responses:
+        "201":
+          $ref: "#/components/responses/Created"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    options:
+      tags:
+        - biblioteca
+      summary: Sondeo CORS
+      responses:
+        "200":
+          description: OK
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  "/api/biblioteca/{id}":
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+        - biblioteca
+      summary: Recuperar Volumen
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Volumen"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags:
+        - biblioteca
+      summary: Reemplazar Volumen
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Volumen"
+        required: true
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    options:
+      tags:
+        - biblioteca
+      summary: Sondeo CORS
+      responses:
+        "200":
+          description: OK
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    patch:
+      tags:
+        - biblioteca
+      summary: Actualiza parte de Volumen
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Volumen"
+        required: true
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      tags:
+        - biblioteca
+      summary: Borrar Volumen
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/vehiculos:
+    get:
+      tags:
+        - vehiculos
+      summary: Listar vehiculos
+      parameters:
+        - $ref: "#/components/parameters/pagina"
+        - $ref: "#/components/parameters/filas"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Pagina_vehiculos"
+                  - $ref: "#/components/schemas/Vehiculos"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      tags:
+        - vehiculos
+      summary: Crear Vehiculo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Vehiculo"
+        required: true
+      responses:
+        "201":
+          $ref: "#/components/responses/Created"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    options:
+      tags:
+        - vehiculos
+      summary: Sondeo CORS
+      responses:
+        "200":
+          description: OK
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  "/api/vehiculos/{id}":
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+        - vehiculos
+      summary: Recuperar Vehiculo
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Vehiculo"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags:
+        - vehiculos
+      summary: Reemplazar Vehiculo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Vehiculo"
+        required: true
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    options:
+      tags:
+        - vehiculos
+      summary: Sondeo CORS
+      responses:
+        "200":
+          description: OK
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    patch:
+      tags:
+        - vehiculos
+      summary: Actualiza parte de Vehiculo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Vehiculo"
+        required: true
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      tags:
+        - vehiculos
+      summary: Borrar Vehiculo
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/marcas:
+    get:
+      tags:
+        - vehiculos
+      summary: Listar marcas
+      parameters:
+        - $ref: "#/components/parameters/pagina"
+        - $ref: "#/components/parameters/filas"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Pagina_marcas"
+                  - $ref: "#/components/schemas/Marcas"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  "/api/marcas/{id}":
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - vehiculos
+      summary: Recuperar Marca
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Marca"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+components:
+  schemas:
+    ErrorMessage:
+      type: object
+      title: Error message
+      required:
+        - type
+        - status
+        - title
+      properties:
+        type:
+          type: string
+        status:
+          type: integer
+        title:
+          type: string
+        detail:
+          type: string
+        source:
+          type: string
+    Contactos:
+      type: array
+      items:
+        $ref: "#/components/schemas/Contacto"
+    Pagina_contactos:
+      type: object
+      title: Pagina de contactos
+      properties:
+        content:
+          $ref: "#/components/schemas/Contactos"
+          description: Listado de elementos
+        totalElements:
+          type: integer
+          description: Número total de elementos
+        totalPages:
+          type: integer
+          description: Número total de páginas
+        size:
+          type: integer
+          description: Tamaño de página en elementos
+        number:
+          type: integer
+          description: Número de página actual
+        numberOfElements:
+          type: integer
+          description: Número total de elementos en la página
+        empty:
+          type: boolean
+          description: Si la página está vacía
+        first:
+          type: boolean
+          description: Si la página es la primera
+        last:
+          type: boolean
+          description: Si la página es la última
+    Contacto:
+      title: Contacto
+      type: object
+      required:
+        - id
+        - nombre
+      properties:
+        id:
+          title: Id
+          type: integer
+          example:
+            - 1
+          default: 0
+          description: El 0 actúa como autonumérico en la creación
+        tratamiento:
+          title: Tratamiento
+          type: string
+          default: ""
+          example:
+            - Excmo.
+          pattern: ^.*$
+        nombre:
+          title: Nombre
+          type: string
+          default: ""
+          example:
+            - Pietro
+          pattern: ^.*$
+        apellidos:
+          title: Apellidos
+          type: string
+          default: ""
+          example:
+            - Woodall
+          pattern: ^.*$
+        telefono:
+          title: Telefono
+          type: string
+          default: ""
+          example:
+            - 642 051 348
+          pattern: ^.*$
+        email:
+          title: Email
+          type: string
+          format: email
+          default: ""
+          example:
+            - pwoodall0@army.mil
+        sexo:
+          title: Sexo
+          type: string
+          enum:
+            - H
+            - M
+          default: H
+          example:
+            - H
+          pattern: ^.*$
+        nacimiento:
+          title: Nacimiento
+          type: string
+          default: ""
+          example:
+            - 1963-10-11
+          pattern: ^.*$
+        avatar:
+          title: Avatar
+          type: string
+          default: ""
+          example:
+            - https://randomuser.me/api/portraits/men/0.jpg
+          pattern: ^.*$
+        conflictivo:
+          title: Conflictivo
+          type: boolean
+          example:
+            - true
+          default: true
+        icono:
+          title: Icono
+          type: string
+          default: ""
+          example:
+            - data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAALJSURBVDjLpVNbS1RRFP72nHGaUedmpamj5pgKSUli0eXJfOipoELs+hA+FFT44oMSRBkZ1GNC/oAoCJ+C8QaSZhdCTEU0rbyP05jTzOTczv20zkz6IBFBBxZrs9f+vv3t76zFNE3D/3zGjYXa01OuKUqtJstZqizPUnSb6+vDem29o8OpiuIFimZFEOZUQXiY09rq0WtMV6B2d98k8F2YTU4YOKjRCKTw+qQqSZcJFKPoTMty7Nu2pwRKJILY2DjiPv9TIrvGlK6uk5osvjSUl4ERGJIEmEyQlpeRmJpeUkQxaikp3mt2u4FwEPoFcDgR6u1FaHzivpGk3uDy88DiccDnBxQVkGWkFReAO3SgUONFcGYLMDxC71RTF1jTYTt2FIEPw1eMJLOCs9mAuXkqyoBGhxQF+PQFBjvtcwyY+aq7BIhyKgeCYCUqFJ636QSmJIAXAEFIEYhSimTFl1STvFkPjfYEqqmUJRFkpmokg9bJ+Z1MpgKfIICSAutAZcs6mSmMBvLCADLRYCCWfnlmBnDlAbEokCASnqcbhFQW+VRO7lPQX0CpG4GB17qCZyzc3u4mFf2WItdu864cYHIKWAv+bg5lU4V3bYxiFLHQd3CZNqT9zIynx7PLuAceTyg2OPiK9/kPqqEfeWmV+8HSqb8WvSkwue5dHUXIHkbFmQaUXmxETrYVIX6FC0YmFtlGK39rabHTm5pIVqOzqtJqzc8F3r2nNoxiaLkT1Q1NsMwOkLFvALsDAWMRPvYNzbOtszDf0FBNRI8dxYWHd9TWJE3rbzuF449egFWd3jwXvpOLkaGAxv40TJ/r6hxEco+8ue4syGVTC88TR85fsmQseSAk/KCWQ2Sdw/QsVtjfpnGipuYs9Ykr4pp3mqwZtwq2y0ajwYvImoyFVU6ReO02+9dxfnuusDkW9F3lFFakcNoKoZ6c6JPbfgHHGqU/+iLy1wAAAABJRU5ErkJggg==
+          pattern: ^.*$
+        direcciones:
+          title: Direcciones
+          type: array
+          default: []
+          items:
+            title: Items
+            type: object
+            required:
+              - calle
+              - codigo
+              - provincia
+              - pais
+            properties:
+              calle:
+                title: Calle
+                type: string
+                default: ""
+                example:
+                  - 488 Pankratz Junction
+                pattern: ^.*$
+              codigo:
+                title: Codigo
+                type: string
+                default: ""
+                example:
+                  - "29071"
+                pattern: ^.*$
+              provincia:
+                title: Provincia
+                type: string
+                default: ""
+                example:
+                  - Malaga
+                pattern: ^.*$
+              pais:
+                title: Pais
+                type: string
+                default: ""
+                example:
+                  - España
+                pattern: ^.*$
+    Personas:
+      type: array
+      items:
+        $ref: "#/components/schemas/Persona"
+    Pagina_personas:
+      type: object
+      title: Pagina de personas
+      properties:
+        content:
+          $ref: "#/components/schemas/Personas"
+          description: Listado de elementos
+        totalElements:
+          type: integer
+          description: Número total de elementos
+        totalPages:
+          type: integer
+          description: Número total de páginas
+        size:
+          type: integer
+          description: Tamaño de página en elementos
+        number:
+          type: integer
+          description: Número de página actual
+        numberOfElements:
+          type: integer
+          description: Número total de elementos en la página
+        empty:
+          type: boolean
+          description: Si la página está vacía
+        first:
+          type: boolean
+          description: Si la página es la primera
+        last:
+          type: boolean
+          description: Si la página es la última
+    Persona:
+      title: Persona
+      type: object
+      required:
+        - id
+        - nombre
+      properties:
+        id:
+          title: Id
+          type: integer
+          example:
+            - 1
+          default: 0
+          description: El 0 actúa como autonumérico en la creación
+        nombre:
+          title: Nombre
+          type: string
+          default: ""
+          example:
+            - Camelo
+          pattern: ^.*$
+        apellidos:
+          title: Apellidos
+          type: string
+          default: ""
+          example:
+            - Coton
+          pattern: ^.*$
+        edad:
+          title: Edad
+          type: integer
+          example:
+            - 37
+          default: 0
+        telefonos:
+          title: Telefonos
+          type: array
+          default: []
+          items:
+            title: telefono
+            type: string
+            default: ""
+            example:
+              - "12342"
+            pattern: ^.*$
+    Tarjetas:
+      type: array
+      items:
+        $ref: "#/components/schemas/Tarjeta"
+    Pagina_tarjetas:
+      type: object
+      title: Pagina de tarjetas
+      properties:
+        content:
+          $ref: "#/components/schemas/Tarjetas"
+          description: Listado de elementos
+        totalElements:
+          type: integer
+          description: Número total de elementos
+        totalPages:
+          type: integer
+          description: Número total de páginas
+        size:
+          type: integer
+          description: Tamaño de página en elementos
+        number:
+          type: integer
+          description: Número de página actual
+        numberOfElements:
+          type: integer
+          description: Número total de elementos en la página
+        empty:
+          type: boolean
+          description: Si la página está vacía
+        first:
+          type: boolean
+          description: Si la página es la primera
+        last:
+          type: boolean
+          description: Si la página es la última
+    Tarjeta:
+      title: Tarjeta
+      type: object
+      required:
+        - id
+        - idCliente
+        - numero
+        - caducidad
+        - CVC_CVV
+        - tipo
+      properties:
+        id:
+          title: Id
+          type: integer
+          example:
+            - 1
+          default: 0
+          description: El 0 actúa como autonumérico en la creación
+        idCliente:
+          title: IdCliente
+          type: string
+          default: ""
+          example:
+            - a.auctor.non@dictummi.ca
+          pattern: ^.*$
+        numero:
+          title: Numero
+          type: string
+          default: ""
+          example:
+            - 4024 0071 1838 5904
+          pattern: ^.*$
+        caducidad:
+          title: Caducidad
+          type: string
+          default: ""
+          example:
+            - 03/2020
+          pattern: ^.*$
+        CVC_CVV:
+          title: Cvc_cvv
+          type: string
+          default: ""
+          example:
+            - "147"
+          pattern: ^.*$
+        tipo:
+          title: Tipo
+          type: string
+          default: ""
+          example:
+            - Visa
+          pattern: ^.*$
+    Blog:
+      type: array
+      items:
+        $ref: "#/components/schemas/Articulo"
+    Pagina_blog:
+      type: object
+      title: Pagina de blog
+      properties:
+        content:
+          $ref: "#/components/schemas/Blog"
+          description: Listado de elementos
+        totalElements:
+          type: integer
+          description: Número total de elementos
+        totalPages:
+          type: integer
+          description: Número total de páginas
+        size:
+          type: integer
+          description: Tamaño de página en elementos
+        number:
+          type: integer
+          description: Número de página actual
+        numberOfElements:
+          type: integer
+          description: Número total de elementos en la página
+        empty:
+          type: boolean
+          description: Si la página está vacía
+        first:
+          type: boolean
+          description: Si la página es la primera
+        last:
+          type: boolean
+          description: Si la página es la última
+    Articulo:
+      title: Articulo
+      type: object
+      required:
+        - id
+        - titulo
+      properties:
+        id:
+          title: Id
+          type: integer
+          example:
+            - 1
+          default: 0
+          description: El 0 actúa como autonumérico en la creación
+        titulo:
+          title: Titulo
+          type: string
+          default: ""
+          example:
+            - Saludo
+          pattern: ^.*$
+        texto:
+          title: Texto
+          type: string
+          default: ""
+          example:
+            - Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores
+              eveniet eum nisi expedita ab dolorum labore similique provident
+              officia ipsa, aliquam recusandae dicta id, praesentium quasi
+              consequatur minus laborum perferendis?
+          pattern: ^.*$
+        autor:
+          title: Autor
+          type: string
+          default: ""
+          example:
+            - Javier
+          pattern: ^.*$
+        fecha:
+          title: Fecha
+          type: string
+          default: ""
+          example:
+            - 2016-02-29
+          pattern: ^.*$
+        megusta:
+          title: Megusta
+          type: integer
+          example:
+            - 0
+          default: 0
+        fotourl:
+          title: Fotourl
+          type: string
+          default: ""
+          example:
+            - https://cdn-images-1.medium.com/max/800/1*V3Kfghg_jIV0ubxmAnCXBA.jpeg
+          pattern: ^.*$
+    Libros:
+      type: array
+      items:
+        $ref: "#/components/schemas/Libro"
+    Pagina_libros:
+      type: object
+      title: Pagina de libros
+      properties:
+        content:
+          $ref: "#/components/schemas/Libros"
+          description: Listado de elementos
+        totalElements:
+          type: integer
+          description: Número total de elementos
+        totalPages:
+          type: integer
+          description: Número total de páginas
+        size:
+          type: integer
+          description: Tamaño de página en elementos
+        number:
+          type: integer
+          description: Número de página actual
+        numberOfElements:
+          type: integer
+          description: Número total de elementos en la página
+        empty:
+          type: boolean
+          description: Si la página está vacía
+        first:
+          type: boolean
+          description: Si la página es la primera
+        last:
+          type: boolean
+          description: Si la página es la última
+    Libro:
+      title: Libro
+      type: object
+      required:
+        - idLibro
+        - titulo
+      properties:
+        idLibro:
+          title: Idlibro
+          type: string
+          default: ""
+          example:
+            - "1"
+          pattern: ^.*$
+        titulo:
+          title: Titulo
+          type: string
+          default: ""
+          example:
+            - "El ingenioso hidalgo don Quijote de la Mancha "
+          pattern: ^.*$
+        autor:
+          title: Autor
+          type: string
+          default: ""
+          example:
+            - Miguel de Cervantes
+          pattern: ^.*$
+        pais:
+          title: Pais
+          type: string
+          default: ""
+          example:
+            - España
+          pattern: ^.*$
+        fecha:
+          title: Fecha
+          type: string
+          default: ""
+          example:
+            - "1605"
+          pattern: ^.*$
+        paginas:
+          title: Paginas
+          type: string
+          default: ""
+          example:
+            - "377"
+          pattern: ^.*$
+        wiki:
+          title: Wiki
+          type: string
+          default: ""
+          example:
+            - https://es.wikipedia.org/wiki/Don_Quijote_de_la_Mancha
+          pattern: ^.*$
+    Biblioteca:
+      type: array
+      items:
+        $ref: "#/components/schemas/Volumen"
+    Pagina_biblioteca:
+      type: object
+      title: Pagina de biblioteca
+      properties:
+        content:
+          $ref: "#/components/schemas/Biblioteca"
+          description: Listado de elementos
+        totalElements:
+          type: integer
+          description: Número total de elementos
+        totalPages:
+          type: integer
+          description: Número total de páginas
+        size:
+          type: integer
+          description: Tamaño de página en elementos
+        number:
+          type: integer
+          description: Número de página actual
+        numberOfElements:
+          type: integer
+          description: Número total de elementos en la página
+        empty:
+          type: boolean
+          description: Si la página está vacía
+        first:
+          type: boolean
+          description: Si la página es la primera
+        last:
+          type: boolean
+          description: Si la página es la última
+    Volumen:
+      title: Volumen
+      type: object
+      required:
+        - autor
+        - id
+        - numPag
+        - titulo
+      properties:
+        autor:
+          title: Autor
+          type: string
+          default: ""
+          example:
+            - At Mi Imperdiet
+          pattern: ^.*$
+        id:
+          title: Id
+          type: integer
+          example:
+            - 2
+          default: 0
+          description: El 0 actúa como autonumérico en la creación
+        numPag:
+          title: Numpag
+          type: integer
+          example:
+            - 22
+          default: 0
+        titulo:
+          title: Titulo
+          type: string
+          default: ""
+          example:
+            - Mauris
+          pattern: ^.*$
+    Vehiculos:
+      type: array
+      items:
+        $ref: "#/components/schemas/Vehiculo"
+    Pagina_vehiculos:
+      type: object
+      title: Pagina de vehiculos
+      properties:
+        content:
+          $ref: "#/components/schemas/Vehiculos"
+          description: Listado de elementos
+        totalElements:
+          type: integer
+          description: Número total de elementos
+        totalPages:
+          type: integer
+          description: Número total de páginas
+        size:
+          type: integer
+          description: Tamaño de página en elementos
+        number:
+          type: integer
+          description: Número de página actual
+        numberOfElements:
+          type: integer
+          description: Número total de elementos en la página
+        empty:
+          type: boolean
+          description: Si la página está vacía
+        first:
+          type: boolean
+          description: Si la página es la primera
+        last:
+          type: boolean
+          description: Si la página es la última
+    Vehiculo:
+      title: Vehículo
+      type: object
+      required:
+        - id
+        - marca
+        - modelo
+        - matricula
+      properties:
+        id:
+          title: Id
+          type: integer
+          example:
+            - 1
+          default: 0
+          description: El 0 actúa como autonumérico en la creación
+        marca:
+          title: Marca
+          type: string
+          default: ""
+          example:
+            - AUDI
+          pattern: ^.*$
+        modelo:
+          title: Modelo
+          type: string
+          default: ""
+          example:
+            - A3
+          pattern: ^.*$
+        matricula:
+          title: Matricula
+          type: string
+          default: ""
+          example:
+            - 1234ABC
+          pattern: ^.*$
+        edad:
+          title: Edad
+          type: integer
+          example:
+            - 2
+          default: 0
+        propietario:
+          title: Propietario
+          type: object
+          required:
+            - nombre
+            - apellidos
+            - dni
+            - email
+          properties:
+            nombre:
+              title: Nombre
+              type: string
+              default: ""
+              example:
+                - " Penélope"
+              pattern: ^.*$
+            apellidos:
+              title: Apellidos
+              type: string
+              default: ""
+              example:
+                - Glamour
+              pattern: ^.*$
+            dni:
+              title: Dni
+              type: string
+              default: ""
+              example:
+                - 12345678Z
+              pattern: ^.*$
+            email:
+              title: Email
+              type: string
+              format: email
+              default: ""
+              example:
+                - pglamour@example.com
+              pattern: ^.*$
+        direcciones:
+          title: Direcciones
+          type: array
+          default: []
+          items:
+            title: Dirección
+            type: object
+            required:
+              - id
+              - calle
+              - localidad
+              - cp
+              - provincia
+            properties:
+              id:
+                title: Id
+                type: string
+                default: ""
+                example:
+                  - "1"
+                pattern: ^.*$
+              calle:
+                title: Calle
+                type: string
+                default: ""
+                example:
+                  - Compact Pussycat
+                pattern: ^.*$
+              localidad:
+                title: Localidad
+                type: string
+                default: ""
+                example:
+                  - Rota
+                pattern: ^.*$
+              cp:
+                title: Cp
+                type: string
+                default: ""
+                example:
+                  - "11080"
+                pattern: ^.*$
+              provincia:
+                title: Provincia
+                type: string
+                default: ""
+                example:
+                  - "11"
+                pattern: ^.*$
+    Marcas:
+      type: array
+      items:
+        $ref: "#/components/schemas/Marca"
+    Pagina_marcas:
+      type: object
+      title: Pagina de marcas
+      properties:
+        content:
+          $ref: "#/components/schemas/Marcas"
+          description: Listado de elementos
+        totalElements:
+          type: integer
+          description: Número total de elementos
+        totalPages:
+          type: integer
+          description: Número total de páginas
+        size:
+          type: integer
+          description: Tamaño de página en elementos
+        number:
+          type: integer
+          description: Número de página actual
+        numberOfElements:
+          type: integer
+          description: Número total de elementos en la página
+        empty:
+          type: boolean
+          description: Si la página está vacía
+        first:
+          type: boolean
+          description: Si la página es la primera
+        last:
+          type: boolean
+          description: Si la página es la última
+    Marca:
+      title: Marca
+      type: object
+      required:
+        - marca
+        - modelos
+      properties:
+        marca:
+          title: Marca
+          type: string
+          default: ""
+          example:
+            - ALFA ROMEO
+          pattern: ^.*$
+        modelos:
+          title: Modelos
+          type: array
+          default: []
+          items:
+            title: Modelo
+            type: string
+            default: ""
+            example:
+              - Giulietta
+            pattern: ^.*$
+  requestBodies: {}
+  responses:
+    Created:
+      description: Created
+      headers:
+        location:
+          description: URL al elemento recién creado
+          schema:
+            type: string
+            format: uri
+    NoContent:
+      description: No content
+    BadRequest:
+      description: Invalid data
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorMessage"
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorMessage"
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorMessage"
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorMessage"
+  parameters:
+    pagina:
+      in: query
+      name: _page
+      description: Número de página, siendo 0 la primera
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    filas:
+      in: query
+      name: _rows
+      description: Número de filas por página
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 20
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []

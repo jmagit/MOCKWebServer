@@ -26,7 +26,8 @@
     "openapi-validator-middleware": "^3.2.6",
     "rotating-file-stream": "^3.0.4",
     "swagger-jsdoc": "^6.2.1",
-    "swagger-ui-express": "^4.5.0"
+    "swagger-ui-express": "^4.5.0",
+    "yaml": "^2.1.1"
   },
   "devDependencies": {
     "@types/jest": "^28.1.5",

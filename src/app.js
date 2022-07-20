@@ -6,6 +6,7 @@ const morgan = require('morgan')
 const rfs = require('rotating-file-stream')
 const cookieParser = require('cookie-parser')
 const swaggerUi = require('swagger-ui-express');
+const YAML = require('yaml')
 const {generaSwaggerSpecification} = require('./openapi-generator');
 
 const serviciosConfig = require('../data/__servicios.json')
@@ -230,12 +231,16 @@ app.all('/favicon.ico', async function (_req, res) {
   res.download(__dirname + '/favicon.ico')
 });
 
-var options = {
+const options = {
   explorer: true
 };
 app.all('/api-docs/v1/openapi.json', async function (_req, res) {
   let result = await generaSwaggerSpecification(app.PUERTO, DIR_API_REST)
   res.json(result)
+});
+app.all('/api-docs/v1/openapi.yml', async function (_req, res) {
+  let result = await generaSwaggerSpecification(app.PUERTO, DIR_API_REST)
+  res.contentType('text/yaml').end(YAML.stringify(result))
 });
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(generaSwaggerSpecification(app.PUERTO, DIR_API_REST), options));
 
