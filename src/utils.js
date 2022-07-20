@@ -1,4 +1,9 @@
+const serviciosConfig = require('../data/__servicios.json');
 const http = require('http');
+
+module.exports.getServiciosConfig = () => serviciosConfig  // Facilitator de mock
+
+// Unificacion de los errores
 
 // https://datatracker.ietf.org/doc/html/rfc7807
 /*

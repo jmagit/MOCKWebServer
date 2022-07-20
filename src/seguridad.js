@@ -55,8 +55,7 @@ module.exports.decodeAuthorization = (req, res, next) => {
 // Middleware: Autorización
 module.exports.onlyAuthenticated = (req, res, next) => {
     if (req.method === 'OPTIONS') {
-        res.sendStatus(200)
-        return
+        return next()
     }
     if (!res.locals.isAuthenticated) {
         return next(generateErrorByStatus(401))
@@ -65,8 +64,7 @@ module.exports.onlyAuthenticated = (req, res, next) => {
 }
 module.exports.onlyInRole = (roles) => (req, res, next) => {
     if (req.method === 'OPTIONS') {
-        res.sendStatus(200)
-        return
+        return next()
     }
     if (!res.locals.isAuthenticated) {
         return next(generateErrorByStatus(401))
@@ -80,6 +78,12 @@ module.exports.onlyInRole = (roles) => (req, res, next) => {
 }
 module.exports.onlySelf = (_req, res, next) => {
     res.locals.onlySelf = true;
+    next()
+}
+module.exports.readOnly = (req, res, next) => {
+    if (req.method !== 'GET' && req.method !== 'OPTIONS' && !res.locals.isAuthenticated) {
+        return next(generateErrorByStatus(401))
+    }
     next()
 }
 

@@ -1,12 +1,20 @@
 // eslint-disable-next-line node/no-unpublished-require
 const request = require('supertest');
-const app = require('../src/app');
+const utils = require('../src/utils')
+
+let spy = jest.spyOn(utils, 'getServiciosConfig');
+spy.mockReturnValue([
+    {
+        "endpoint": "fake",
+        "model": "fake",
+        "pk": "id",
+        "file": "fake.json"
+    },
+])
+const serviciosConfig = utils.getServiciosConfig()
 
 jest.mock('fs/promises');
 
-const serviciosConfig = [
-    { "url": "fake", "pk": "id", "fichero": "fake.json", "readonly": false },
-]
 const fichero = [{
     "id": 1,
     "name": "Burty",
@@ -440,6 +448,7 @@ const fichero = [{
 }]
 
 describe('API Rest: Ficheros simulados', () => {
+    const app = require('../src/app');
     let fsMock
 
     beforeEach(() => {
@@ -447,7 +456,7 @@ describe('API Rest: Ficheros simulados', () => {
         fsMock = require('fs/promises')
         fsMock.__setMockFiles({
             '../data/__servicios.json': JSON.stringify(serviciosConfig),
-            './data/blog.json': JSON.stringify(fichero),
+            './data/fake.json': JSON.stringify(fichero),
         });
     });
 
@@ -455,7 +464,7 @@ describe('API Rest: Ficheros simulados', () => {
         describe('OK', () => {
             it('Sin paginar', done => {
                 request(app)
-                    .get("/api/blog")
+                    .get("/api/fake")
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .then(response => {
@@ -466,7 +475,7 @@ describe('API Rest: Ficheros simulados', () => {
             });
             it('Paginar', done => {
                 request(app)
-                    .get("/api/blog?_page=1&_rows=19")
+                    .get("/api/fake?_page=1&_rows=19")
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .then(response => {
@@ -477,7 +486,7 @@ describe('API Rest: Ficheros simulados', () => {
             });
             it('Contar paginas', done => {
                 request(app)
-                    .get("/api/blog?_page=count")
+                    .get("/api/fake?_page=count")
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .then(response => {
@@ -488,7 +497,7 @@ describe('API Rest: Ficheros simulados', () => {
             });
             it('Buscar', done => {
                 request(app)
-                    .get("/api/blog?_search=Zamora")
+                    .get("/api/fake?_search=Zamora")
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .then(response => {
@@ -500,7 +509,7 @@ describe('API Rest: Ficheros simulados', () => {
             });
             it('Filtrar', done => {
                 request(app)
-                    .get("/api/blog?gender=Female&booleano=true")
+                    .get("/api/fake?gender=Female&booleano=true")
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .then(response => {
@@ -512,7 +521,7 @@ describe('API Rest: Ficheros simulados', () => {
             });
             it('Ordenar asc', done => {
                 request(app)
-                    .get("/api/blog?_sort=gender,name")
+                    .get("/api/fake?_sort=gender,name")
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .then(response => {
@@ -523,7 +532,7 @@ describe('API Rest: Ficheros simulados', () => {
             });
             it('Ordenar desc', done => {
                 request(app)
-                    .get("/api/blog?_sort=-gender,name")
+                    .get("/api/fake?_sort=-gender,name")
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .then(response => {
@@ -534,7 +543,7 @@ describe('API Rest: Ficheros simulados', () => {
             });
             it('Proyecciones', done => {
                 request(app)
-                    .get("/api/blog?_projection=gender,name")
+                    .get("/api/fake?_projection=gender,name")
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .then(response => {
@@ -546,7 +555,7 @@ describe('API Rest: Ficheros simulados', () => {
             });
             it('Proyecciones con paginación', done => {
                 request(app)
-                    .get("/api/blog?_projection=gender,name&_page=all")
+                    .get("/api/fake?_projection=gender,name&_page=all")
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .then(response => {
@@ -558,7 +567,7 @@ describe('API Rest: Ficheros simulados', () => {
             });
             it('Uno', done => {
                 request(app)
-                    .get("/api/blog/5")
+                    .get("/api/fake/5")
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .then(response => {
@@ -569,7 +578,7 @@ describe('API Rest: Ficheros simulados', () => {
             });
             it('Uno con proyección', done => {
                 request(app)
-                    .get("/api/blog/2?_projection=id,name,url")
+                    .get("/api/fake/2?_projection=id,name,url")
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .then(response => {
@@ -585,7 +594,7 @@ describe('API Rest: Ficheros simulados', () => {
         describe('KO', () => {
             it('Uno no encontrado', done => {
                 request(app)
-                    .get("/api/blog/999")
+                    .get("/api/fake/999")
                     .expect(404, done)
             });
         })
@@ -594,13 +603,13 @@ describe('API Rest: Ficheros simulados', () => {
         describe('OK', () => {
             it('Con id=0', done => {
                 request(app)
-                    .post("/api/blog")
+                    .post("/api/fake")
                     .set('Content-Type', 'application/json')
                     .send({ "id": "0", "name": "Nuevo" })
                     .expect(201)
                     .then(response => {
-                        expect(response.headers['location'].endsWith('/blog/30')).toBeTruthy()
-                        let data = JSON.parse(fsMock.__getMockFile('./data/blog.json'))
+                        expect(response.headers['location'].endsWith('/fake/30')).toBeTruthy()
+                        let data = JSON.parse(fsMock.__getMockFile('./data/fake.json'))
                         expect(data.length).toBe(21);
                         expect(data[20].id).toBe(30)
                         expect(data[20].name).toBe("Nuevo")
@@ -610,13 +619,13 @@ describe('API Rest: Ficheros simulados', () => {
             });
             it('Sin id', done => {
                 request(app)
-                    .post("/api/blog")
+                    .post("/api/fake")
                     .set('Content-Type', 'application/json')
                     .send({ "name": "Otro" })
                     .expect(201)
                     .then(response => {
-                        expect(response.headers['location'].endsWith('/blog/30')).toBeTruthy()
-                        let data = JSON.parse(fsMock.__getMockFile('./data/blog.json'))
+                        expect(response.headers['location'].endsWith('/fake/30')).toBeTruthy()
+                        let data = JSON.parse(fsMock.__getMockFile('./data/fake.json'))
                         expect(data.length).toBe(21);
                         expect(data[20].id).toBe(30)
                         expect(data[20].name).toBe("Otro")
@@ -626,13 +635,13 @@ describe('API Rest: Ficheros simulados', () => {
             });
             it('Con id nuevo', done => {
                 request(app)
-                    .post("/api/blog")
+                    .post("/api/fake")
                     .set('Content-Type', 'application/json')
                     .send({ id: 99, "name": "Nuevo" })
                     .expect(201)
                     .then(response => {
-                        expect(response.headers['location'].endsWith('/blog/99')).toBeTruthy()
-                        let data = JSON.parse(fsMock.__getMockFile('./data/blog.json'))
+                        expect(response.headers['location'].endsWith('/fake/99')).toBeTruthy()
+                        let data = JSON.parse(fsMock.__getMockFile('./data/fake.json'))
                         expect(data.length).toBe(21);
                         expect(data[20].id).toBe(99)
                         expect(data[20].name).toBe("Nuevo")
@@ -644,7 +653,7 @@ describe('API Rest: Ficheros simulados', () => {
         describe('KO', () => {
             it('Clave duplicada', done => {
                 request(app)
-                    .post("/api/blog")
+                    .post("/api/fake")
                     .set('Content-Type', 'application/json')
                     .send({ "id": "1", "name": "Nuevo" })
                     .expect(400)
@@ -653,14 +662,14 @@ describe('API Rest: Ficheros simulados', () => {
             });
             it('Sin Content-Type: application/json', done => {
                 request(app)
-                    .post("/api/blog")
+                    .post("/api/fake")
                     .send("Nuevo")
                     .expect(406)
                     .end(done)
             });
             it('Sin body', done => {
                 request(app)
-                    .post("/api/blog")
+                    .post("/api/fake")
                     .set('Content-Type', 'application/json')
                     .expect(400)
                     .end(done)
@@ -672,12 +681,12 @@ describe('API Rest: Ficheros simulados', () => {
             it('Con id', done => {
                 const item = { "id": "1", "name": "Nuevo" }
                 request(app)
-                    .put("/api/blog/1")
+                    .put("/api/fake/1")
                     .set('Content-Type', 'application/json')
                     .send(item)
                     .expect(200)
                     .then(response => {
-                        let data = JSON.parse(fsMock.__getMockFile('./data/blog.json'))
+                        let data = JSON.parse(fsMock.__getMockFile('./data/fake.json'))
                         expect(data.length).toBe(20);
                         expect(item).toEqual(response.body)
                         expect(data[0]).toEqual(item)
@@ -688,12 +697,12 @@ describe('API Rest: Ficheros simulados', () => {
             it('Sin id', done => {
                 const item = { "id": "1", "name": "Nuevo" }
                 request(app)
-                    .put("/api/blog")
+                    .put("/api/fake")
                     .set('Content-Type', 'application/json')
                     .send(item)
                     .expect(200)
                     .then(response => {
-                        let data = JSON.parse(fsMock.__getMockFile('./data/blog.json'))
+                        let data = JSON.parse(fsMock.__getMockFile('./data/fake.json'))
                         expect(data.length).toBe(20);
                         expect(item).toEqual(response.body)
                         expect(data[0]).toEqual(item)
@@ -705,7 +714,7 @@ describe('API Rest: Ficheros simulados', () => {
         describe('KO', () => {
             it('Invalid identifier', done => {
                 request(app)
-                    .put("/api/blog/2")
+                    .put("/api/fake/2")
                     .set('Content-Type', 'application/json')
                     .send({ "id": "1", "name": "Nuevo" })
                     .expect(400)
@@ -714,7 +723,7 @@ describe('API Rest: Ficheros simulados', () => {
             });
             it('No encontrado: con id', done => {
                 request(app)
-                    .put("/api/blog/222")
+                    .put("/api/fake/222")
                     .set('Content-Type', 'application/json')
                     .send({ "id": "222", "name": "Nuevo" })
                     .expect(404)
@@ -722,7 +731,7 @@ describe('API Rest: Ficheros simulados', () => {
             });
             it('No encontrado: sin id', done => {
                 request(app)
-                    .put("/api/blog")
+                    .put("/api/fake")
                     .set('Content-Type', 'application/json')
                     .send({ "id": "222", "name": "Nuevo" })
                     .expect(404)
@@ -730,14 +739,14 @@ describe('API Rest: Ficheros simulados', () => {
             });
             it('Sin body: con id', done => {
                 request(app)
-                    .put("/api/blog/1")
+                    .put("/api/fake/1")
                     .set('Content-Type', 'application/json')
                     .expect(400)
                     .end(done)
             });
             it('Sin body: sin id', done => {
                 request(app)
-                    .put("/api/blog")
+                    .put("/api/fake")
                     .set('Content-Type', 'application/json')
                     .expect(400)
                     .expect(response => expect(response.body.title).toBe('Invalid identifier'))
@@ -750,12 +759,12 @@ describe('API Rest: Ficheros simulados', () => {
             it('Con id', done => {
                 const item = { "id": "1", "name": "Nuevo" }
                 request(app)
-                    .patch("/api/blog/1")
+                    .patch("/api/fake/1")
                     .set('Content-Type', 'application/json')
                     .send(item)
                     .expect(200)
                     .then(response => {
-                        let data = JSON.parse(fsMock.__getMockFile('./data/blog.json'))
+                        let data = JSON.parse(fsMock.__getMockFile('./data/fake.json'))
                         expect(data.length).toBe(20);
                         expect(data[0]).toEqual(response.body)
                         for (let cmp in data[0]) {
@@ -768,12 +777,12 @@ describe('API Rest: Ficheros simulados', () => {
             it('Sin id', done => {
                 const item = { "name": "Nuevo" }
                 request(app)
-                    .patch("/api/blog/1")
+                    .patch("/api/fake/1")
                     .set('Content-Type', 'application/json')
                     .send(item)
                     .expect(200)
                     .then(response => {
-                        let data = JSON.parse(fsMock.__getMockFile('./data/blog.json'))
+                        let data = JSON.parse(fsMock.__getMockFile('./data/fake.json'))
                         expect(data.length).toBe(20);
                         expect(data[0]).toEqual(response.body)
                         for (let cmp in data[0]) {
@@ -787,7 +796,7 @@ describe('API Rest: Ficheros simulados', () => {
         describe('KO', () => {
             it('Invalid identifier', done => {
                 request(app)
-                    .patch("/api/blog/2")
+                    .patch("/api/fake/2")
                     .set('Content-Type', 'application/json')
                     .send({ "id": "1", "name": "Nuevo" })
                     .expect(400)
@@ -796,7 +805,7 @@ describe('API Rest: Ficheros simulados', () => {
             });
             it('No encontrado: con id', done => {
                 request(app)
-                    .patch("/api/blog/222")
+                    .patch("/api/fake/222")
                     .set('Content-Type', 'application/json')
                     .send({ "id": "222", "name": "Nuevo" })
                     .expect(404)
@@ -804,7 +813,7 @@ describe('API Rest: Ficheros simulados', () => {
             });
             it('No encontrado: sin id', done => {
                 request(app)
-                    .patch("/api/blog/222")
+                    .patch("/api/fake/222")
                     .set('Content-Type', 'application/json')
                     .send({ "name": "Nuevo" })
                     .expect(404)
@@ -812,7 +821,7 @@ describe('API Rest: Ficheros simulados', () => {
             });
             it('Sin body', done => {
                 request(app)
-                    .patch("/api/blog/1")
+                    .patch("/api/fake/1")
                     .set('Content-Type', 'application/json')
                     .expect(400)
                     .end(done)
@@ -823,10 +832,10 @@ describe('API Rest: Ficheros simulados', () => {
         describe('OK', () => {
             it('Exite', done => {
                 request(app)
-                    .delete("/api/blog/5")
+                    .delete("/api/fake/5")
                     .expect(204)
                     .then(() => {
-                        let data = JSON.parse(fsMock.__getMockFile('./data/blog.json'))
+                        let data = JSON.parse(fsMock.__getMockFile('./data/fake.json'))
                         expect(data.length).toBe(19);
                         expect(data.find(item => item.id === 5)).toBeUndefined()
                         done();
@@ -837,7 +846,7 @@ describe('API Rest: Ficheros simulados', () => {
         describe('KO', () => {
             it('No encontrado', done => {
                 request(app)
-                    .delete("/api/blog/222")
+                    .delete("/api/fake/222")
                     .expect(404)
                     .end(done)
             });
@@ -846,13 +855,13 @@ describe('API Rest: Ficheros simulados', () => {
     describe('OPTIONS', () => {
         it('Con id', done => {
             request(app)
-                .options("/api/blog/1")
+                .options("/api/fake/1")
                 .expect(200)
                 .end(done)
         });
         it('Sin id', done => {
             request(app)
-                .options("/api/blog")
+                .options("/api/fake")
                 .expect(200)
                 .end(done)
         });
