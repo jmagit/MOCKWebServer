@@ -16,8 +16,9 @@ class DbJSON {
         this.__data = null
     }
     async load(force = false) {
-        if (this.__data && !force)
+        if (this.__data && !force & process.env.NODE_ENV !== 'test')
             return
+
         let result = await fs.readFile(this.__filename, 'utf8')
         this.__data = JSON.parse(result)
     }
@@ -76,8 +77,9 @@ class DbJSON {
 
     orderByProperties(source, properties) {
         let orderBy = properties.split(',').map(cmp => {
+            cmp = cmp.trim()
             if (cmp.startsWith("-")) {
-                cmp = cmp.substring(1);
+                cmp = cmp.substring(1).trim();
                 return { cmp, dir: -1 }
             }
             return { cmp, dir: 1 }
@@ -131,7 +133,7 @@ class DbJSON {
             throw new dbJSONError('Missing data', 404)
         this.__data[index] = Object.assign({}, this.__data[index], element)
         if (persist || this.__autoSave) this.save()
-        return element
+        return this.__data[index]
     }
     delete(key, persist = false) {
         let index = this.indexById(key)

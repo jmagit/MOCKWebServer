@@ -446,7 +446,9 @@ const fichero = [{
         }
     ]
 }]
-
+const getFichero = () => {
+    return fichero;
+}
 describe('API Rest: Ficheros simulados', () => {
     const app = require('../src/app');
     let fsMock
@@ -456,7 +458,7 @@ describe('API Rest: Ficheros simulados', () => {
         fsMock = require('fs/promises')
         fsMock.__setMockFiles({
             '../data/__servicios.json': JSON.stringify(serviciosConfig),
-            './data/fake.json': JSON.stringify(fichero),
+            './data/fake.json': JSON.stringify(getFichero()),
         });
     });
 
@@ -651,13 +653,13 @@ describe('API Rest: Ficheros simulados', () => {
             });
         })
         describe('KO', () => {
-            it('Clave duplicada', done => {
+            it('Duplicate key', done => {
                 request(app)
                     .post("/api/fake")
                     .set('Content-Type', 'application/json')
                     .send({ "id": "1", "name": "Nuevo" })
                     .expect(400)
-                    .expect(response => expect(response.body.title).toBe('Clave duplicada.'))
+                    .expect(response => expect(response.body.title).toBe('Duplicate key'))
                     .end(done)
             });
             it('Sin Content-Type: application/json', done => {
