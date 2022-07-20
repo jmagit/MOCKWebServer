@@ -6,16 +6,16 @@ function __setMockFiles(newMockFiles) {
 }
 
 function readFile(file) {
-  if(mockFiles[file]) {
-   return Promise.resolve(mockFiles[file])
+  if (mockFiles[file]) {
+    return Promise.resolve(mockFiles[file])
   } else {
     return Promise.reject(new Error('File not found'))
   }
 }
 function writeFile(file, data) {
-  if(mockFiles[file]) {
+  if (mockFiles[file]) {
     mockFiles[file] = data
-   return Promise.resolve()
+    return Promise.resolve()
   } else {
     return Promise.reject(new Error('File not found'))
   }
