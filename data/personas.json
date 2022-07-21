@@ -4,7 +4,7 @@
 		"nombre": "Camelo",
 		"apellidos": "Coton",
 		"edad": 37,
-		"telefonos": ["12342", "3453", "3334"]
+		"telefono": ["123 424 435", "555 000 111"]
 	},
 	{ "id": 2, "nombre": "Pepito", "apellidos": "Grillo", "edad": 67 },
 	{ "id": 3, "nombre": "Pierre", "apellidos": "Nodoiuna", "edad": 55 },

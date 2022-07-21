@@ -11,7 +11,7 @@ const sendOK = (_req, res) => res.sendStatus(200)
 
 const usuarios = [
     {
-        "idUsuario": "admin",
+        "idUsuario": "admin@kk.kk",
         "password": "$2b$10$7EHNhM3dTSyGenDgmxzub.IfYloVNJrbvdjAF5LsrNBpu57JuNV1W",
         "nombre": "Administrador",
         "roles": ["Usuarios", "Administradores"]
@@ -55,7 +55,7 @@ describe('Seguridad', () => {
         });
         describe('Middleware: Autenticación', () => {
             it('Sin cabecera', async () => {
-                mockApp.use(seguridad.decodeAuthorization)
+                mockApp.use(seguridad.useAuthentication)
                 mockApp.all('/', sendOK)
                 mockApp.use(errorMiddleware);
                 const response = await request(mockApp).get('/')
@@ -64,7 +64,7 @@ describe('Seguridad', () => {
                 expect(response.body.isAuthenticated).toBeFalsy()
             })
             it('Con cabecera', async () => {
-                mockApp.use(seguridad.decodeAuthorization)
+                mockApp.use(seguridad.useAuthentication)
                 mockApp.all('/', (req, res) => { res.json({ locals: res.locals, isInRole: res.locals.isInRole('Administradores') }) })
                 mockApp.use(errorMiddleware);
                 let index = 0
@@ -80,7 +80,7 @@ describe('Seguridad', () => {
                 expect(response.body.isInRole).toBeTruthy()
             })
             it('Con cookies', async () => {
-                mockApp.use(seguridad.decodeAuthorization)
+                mockApp.use(seguridad.useAuthentication)
                 mockApp.all('/', (req, res) => { res.json({ locals: res.locals, isInRole: res.locals.isInRole('Administradores') }) })
                 mockApp.use(errorMiddleware);
                 let index = 1
@@ -96,7 +96,7 @@ describe('Seguridad', () => {
                 expect(response.body.isInRole).toBeFalsy()
             })
             it('Con token expirado', async () => {
-                mockApp.use(seguridad.decodeAuthorization)
+                mockApp.use(seguridad.useAuthentication)
                 mockApp.all('/', (req, res) => { res.json(res.locals) })
                 mockApp.use(errorMiddleware);
 
@@ -107,7 +107,7 @@ describe('Seguridad', () => {
                 expect(response.body.detail).toEqual('Token expired')
             })
             it('Con token manipulado', async () => {
-                mockApp.use(seguridad.decodeAuthorization)
+                mockApp.use(seguridad.useAuthentication)
                 mockApp.all('/', (req, res) => { res.json(res.locals) })
                 mockApp.use(errorMiddleware);
                 let token = seguridad.generarTokenJWT(usuarios[0])
@@ -122,7 +122,7 @@ describe('Seguridad', () => {
         })
         describe('Middleware: Autorización', () => {
             it('onlyAuthenticated: sin autenticar', async () => {
-                mockApp.use(seguridad.decodeAuthorization)
+                mockApp.use(seguridad.useAuthentication)
                 mockApp.use(seguridad.onlyAuthenticated)
                 mockApp.all('/', sendOK)
                 mockApp.use(errorMiddleware);
@@ -130,7 +130,7 @@ describe('Seguridad', () => {
                 expect(response.statusCode).toBe(401)
             })
             it('onlyAuthenticated: autenticados', async () => {
-                mockApp.use(seguridad.decodeAuthorization)
+                mockApp.use(seguridad.useAuthentication)
                 mockApp.use(seguridad.onlyAuthenticated)
                 mockApp.all('/', sendOK)
                 mockApp.use(errorMiddleware);
@@ -139,7 +139,7 @@ describe('Seguridad', () => {
                 expect(response.statusCode).toBe(200)
             })
             it('onlyAuthenticated: OPTIONS', async () => {
-                mockApp.use(seguridad.decodeAuthorization)
+                mockApp.use(seguridad.useAuthentication)
                 mockApp.use(seguridad.onlyAuthenticated)
                 mockApp.all('/', sendOK)
                 mockApp.use(errorMiddleware);
@@ -155,7 +155,7 @@ describe('Seguridad', () => {
                 expect(response.statusCode).toBe(401)
             })
             it('onlyInRole("Empleados,Administradores"): pertenece', async () => {
-                mockApp.use(seguridad.decodeAuthorization)
+                mockApp.use(seguridad.useAuthentication)
                 mockApp.use(seguridad.onlyInRole('Empleados,Administradores'))
                 mockApp.all('/', sendOK)
                 mockApp.use(errorMiddleware);
@@ -164,7 +164,7 @@ describe('Seguridad', () => {
                 expect(response.statusCode).toBe(200)
             })
             it('onlyInRole: no pertenece', async () => {
-                mockApp.use(seguridad.decodeAuthorization)
+                mockApp.use(seguridad.useAuthentication)
                 mockApp.use(seguridad.onlyInRole('Inventado'))
                 mockApp.all('/', sendOK)
                 mockApp.use(errorMiddleware);
@@ -173,7 +173,7 @@ describe('Seguridad', () => {
                 expect(response.statusCode).toBe(403)
             })
             it('onlyInRole: OPTIONS', async () => {
-                mockApp.use(seguridad.decodeAuthorization)
+                mockApp.use(seguridad.useAuthentication)
                 mockApp.use(seguridad.onlyInRole('Inventado'))
                 mockApp.all('/', sendOK)
                 mockApp.use(errorMiddleware);
@@ -182,7 +182,7 @@ describe('Seguridad', () => {
                 expect(response.statusCode).toBe(200)
             })
             it('onlySelf: OK', async () => {
-                mockApp.use(seguridad.decodeAuthorization)
+                mockApp.use(seguridad.useAuthentication)
                 mockApp.use(seguridad.onlySelf)
                 mockApp.all('/', (req, res) => {
                     res.sendStatus(seguridad.isSelf(res, usuarios[0].idUsuario) ? 200 : 403)
@@ -193,7 +193,7 @@ describe('Seguridad', () => {
                 expect(response.statusCode).toBe(200)
             })
             it('onlySelf: KO', async () => {
-                mockApp.use(seguridad.decodeAuthorization)
+                mockApp.use(seguridad.useAuthentication)
                 mockApp.use(seguridad.onlySelf)
                 mockApp.all('/', (req, res) => {
                     res.sendStatus(seguridad.isSelf(res, usuarios[0].idUsuario) ? 200 : 403)
@@ -204,7 +204,7 @@ describe('Seguridad', () => {
                 expect(response.statusCode).toBe(403)
             })
             it('readOnly: OK', async () => {
-                mockApp.use(seguridad.decodeAuthorization)
+                mockApp.use(seguridad.useAuthentication)
                 mockApp.use(seguridad.readOnly)
                 mockApp.all('/', sendOK)
                 mockApp.use(errorMiddleware);
@@ -228,7 +228,7 @@ describe('Seguridad', () => {
                 expect(response.statusCode).toBe(200)
             })
             it('readOnly: KO', async () => {
-                mockApp.use(seguridad.decodeAuthorization)
+                mockApp.use(seguridad.useAuthentication)
                 mockApp.use(seguridad.readOnly)
                 mockApp.all('/', sendOK)
                 mockApp.use(errorMiddleware);
@@ -340,7 +340,7 @@ describe('Seguridad', () => {
                     request(app)
                         .post('/login')
                         .set('Content-Type', 'application/json')
-                        .send({ "name": "admin", "password": "P@$$w0rd" })
+                        .send({ "name": "admin@kk.kk", "password": "P@$$w0rd" })
                         .expect('Content-Type', /json/)
                         .then(response => {
                             expect(response.statusCode).toBe(200);
@@ -353,7 +353,7 @@ describe('Seguridad', () => {
                     let response = await request(app)
                         .post('/login?cookie=true')
                         .set('Content-Type', 'application/json')
-                        .send({ "name": "admin", "password": "P@$$w0rd" })
+                        .send({ "name": "admin@kk.kk", "password": "P@$$w0rd" })
                     expect(response.statusCode).toBe(200)
                     expect(response.headers['set-cookie']).toBeTruthy()
                     let cookie = response.headers['set-cookie']
@@ -368,7 +368,7 @@ describe('Seguridad', () => {
                 it('POST: Sin body', done => {
                     request(app)
                         .post('/login')
-                        .expect(400, done)
+                        .expect(415, done)
                 });
                 it('POST: Usuario invalido: name', async () => {
                     await request(app)
@@ -383,7 +383,7 @@ describe('Seguridad', () => {
                     return request(app)
                         .post('/login')
                         .set('Content-Type', 'application/json')
-                        .send({ "name": "admin", "password": "P@$Sw0rd" })
+                        .send({ "name": "admin@kk.kk", "password": "P@$Sw0rd" })
                         .expect(200)
                         .expect('Content-Type', /json/)
                         .expect('{"success":false}')

@@ -20,21 +20,16 @@ Versión NodeJS del servidor de pruebas para cursos de FrontEnd
 
 Para no crear dependencias de bases de datos los servicios utilizan ficheros como `data/personas.json`. El fichero se lee completo y se graba completo, no se ha optimizado el proceso. Los resultados de las peticiones se vuelcan a consola para facilitar las comprobaciones.
   
-La estructura de datos del servicio personas:
-
-* id: number
-* nombre: string
-* apellidos: string
-* edad: number
-
 **Nota:** *En algunos casos es necesario marcar en la cabecera de la petición el **Content-Type** como **application/json**.*
 
 ### Filtrado, paginación y ordenación
 
 Se han incorporado una serie de parámetros (querystring) para ampliar el control de los resultados del GET:
+
 * ***propiedad=valor*:** Selecciona solo aquellos que el valor de la propiedad dada coincida con el valor proporcionado. Se pueden utilizar varios pares propiedad=valor, en cuyo caso deben cumplirse todos.
 * **_search=*valor*:** Selecciona todos aquellos que en alguna de sus propiedades contenga el valor proporcionado. Invalida las búsquedas por propiedades individuales.
-* **_sort=*propiedad*:** Indica la propiedad por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.
+* **_sort=*propiedad*:** Indica la lista de propiedades (separadas por comas) por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.
+* **_projection=*propiedades*:** Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.
 * **_page=*número*:** Número de página empezando en 0 (primera página). Si se omite pero aparece el parámetro *_rows* tomara el valor 0 por defecto. La estructura devuelta es:  
     | Propiedad             | Tipo                  | Descripción                               |
     | --------------------- | --------------------- | ----------------------------------------- |
@@ -165,7 +160,7 @@ Mediante peticiones AJAX a http://localhost:4321/register se pueden:
 * Modificar usuario autenticado (PUT)
 * Consultar usuario autenticado (GET)
 
-La contraseñas sigue el patrón /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/ (al menos 8 caracteres con minúsculas, mayúsculas, dígitos y símbolos ). Para el encriptado de contraseñas en la persistencia se utiliza bcrypt (función de hashing de contraseñas basada en el cifrado Blowfish), utilizado al Registrar usuario y se ignora la contraseña en el resto de los casos. Para cambiar la contraseña se ha habilitado el método PUT http://localhost:4321/register/password que requiere el usuario autenticado y la contraseña anterior como medida de seguridad:
+La contraseñas sigue el patrón /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/ (al menos 8 caracteres con minúsculas, mayúsculas, dígitos y símbolos). Para el encriptado de contraseñas en la persistencia se utiliza bcrypt (función de hashing de contraseñas basada en el cifrado Blowfish), utilizado al Registrar usuario y se ignora la contraseña en el resto de los casos. Para cambiar la contraseña se ha habilitado el método PUT http://localhost:4321/register/password que requiere el usuario autenticado y la contraseña anterior como medida de seguridad:
 
     PUT http://localhost:4321/register/password
     Content-Type: application/json

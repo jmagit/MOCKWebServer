@@ -1,13 +1,14 @@
 const fs = require('fs/promises')
 const path = require('path');
 const express = require('express')
-const Formidable = require("formidable");
+const Formidable = require('formidable');
 const morgan = require('morgan')
 const rfs = require('rotating-file-stream')
 const cookieParser = require('cookie-parser')
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yaml')
 const OpenApiValidator = require('express-openapi-validator');
+const validator = require('validator');
 const { generaSwaggerSpecification } = require('./openapi-generator');
 const { generateErrorByError } = require('./utils')
 
@@ -26,7 +27,7 @@ const PASSWORD = 'P@$$w0rd'
 let VALIDATE_XSRF_TOKEN = false;
 
 const app = express()
-app.disable("x-powered-by");
+app.disable('x-powered-by');
 app.PUERTO = process.env.PORT || '4321';
 app.URL_SERVER = ''
 app.DIR_API_REST = DIR_API_REST
@@ -44,11 +45,11 @@ process.argv.forEach(val => {
 // Registro
 if (process.env.NODE_ENV !== 'test')
   app.use(morgan('combined', {
-    stream: rfs.createStream("file.log", {
+    stream: rfs.createStream('file.log', {
       path: path.join(__dirname, '../log'), // directory
-      size: "10M", // rotate every 10 MegaBytes written
-      interval: "1d", // rotate daily
-      compress: "gzip" // compress rotated files
+      size: '10M', // rotate every 10 MegaBytes written
+      interval: '1d', // rotate daily
+      compress: 'gzip' // compress rotated files
     })
   }))
 
@@ -185,7 +186,7 @@ app.all('/eco(/*)?', function (req, res) {
     method: req.method,
     headers: req.headers,
     authentication: res.locals,
-    "XSRF-TOKEN": VALIDATE_XSRF_TOKEN ? seguridad.generateXsrfToken(req) : 'disabled',
+    'XSRF-TOKEN': VALIDATE_XSRF_TOKEN ? seguridad.generateXsrfToken(req) : 'disabled',
     cookies: req.cookies,
     params: req.params,
     query: req.query,
@@ -201,6 +202,9 @@ app.use(
     validateRequests: true, // (default)
     validateResponses: true, // false by default
     ignoreUndocumented: true,
+    formats: [
+      { name: 'nif', type: 'string', validate: (v) =>  validator.isIdentityCard(v, 'ES') },
+    ]
   })
 )
 
@@ -241,7 +245,7 @@ app.get('/', function (req, res) {
   }
   rslt += `</ul></li>
     <li><b>Formulario AUTH</b> <br>action=${srv}${DIR_API_AUTH}login <br>method=post: name=${USERNAME}&password=${PASSWORD}<br><br>
-    <form action='${srv}${DIR_API_AUTH}login' method='post'>
+    <form action='${srv}${DIR_API_AUTH}login?cookie=true' method='post'>
     ${token}
     <label>Name: <input type='text' name='name' value='${USERNAME}'></label><br>
     <label>Password: <input type='text' name='password' value='${PASSWORD}'></label><br>

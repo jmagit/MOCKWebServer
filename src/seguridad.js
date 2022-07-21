@@ -184,14 +184,36 @@ module.exports.generarTokenScheme = (usuario) => {
  *   post:
  *     tags: [ autenticación ]
  *     summary: Iniciar sesión
+ *     parameters:
+ *       - name: cookie
+ *         in: query
+ *         required: false
+ *         description: 'true para que genere y envíe la cookie'
+ *         schema:
+ *           type: boolean
  *     requestBody:
  *       content:
  *         application/json:
  *           schema:
  *             $ref: "#/components/schemas/Login"
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 description: Usuario
+ *                 type: string
+ *               password:
+ *                 description: Contraseña
+ *                 type: string
+ *                 format: password
  *       required: true
  *     responses:
  *       "200":
+ *         headers: 
+ *           Set-Cookie:
+ *             schema: 
+ *               type: string
  *         description: "Resultado de la autenticación"
  *         content:
  *           application/json:
@@ -225,10 +247,10 @@ router.post('/login', async function (req, res, next) {
             name: element[PROP_NAME],
             roles: element.roles
         }
-        if (req.query.cookie && req.query.cookie.toLowerCase() === "true")
+        if (req.query.cookie)
             res.cookie('Authorization', token.substring(AUTHENTICATION_SCHEME.length), { maxAge: 3600000 })
     }
-    res.status(200).json(payload).end()
+    res.status(200).json(payload)
 })
 
 /**
@@ -243,7 +265,7 @@ router.post('/login', async function (req, res, next) {
  *         description: "OK"
  */
  router.options('/login', function (_req, res) {
-    res.status(200).end()
+    res.sendStatus(200)
 })
 
 /**
@@ -259,7 +281,7 @@ router.post('/login', async function (req, res, next) {
  */
 router.all('/logout', function (_req, res) {
     res.clearCookie('Authorization');
-    res.status(200).end()
+    res.sendStatus(200)
 })
 /**
  * @swagger
@@ -270,6 +292,7 @@ router.all('/logout', function (_req, res) {
  *     summary: Obtener estado de sesión
  *     security:
  *       - bearerAuth: []
+ *       - cookieAuth: []
  *     responses:
  *       "200":
  *         description: "OK"
@@ -353,6 +376,7 @@ autenticados.use(module.exports.onlySelf)
  *     summary: Consultar su usuario
  *     security:
  *       - bearerAuth: []
+ *       - cookieAuth: []
  *     responses:
  *       "200":
  *         description: "OK"
@@ -380,7 +404,7 @@ autenticados.get('/', async function (_req, res, next) {
     let element = list.find(item => item[PROP_USERNAME] == usr)
     if (element) {
         delete element[PROP_PASSWORD]
-        res.status(200).json(element).end()
+        res.status(200).json(element)
     } else {
         return next(generateErrorByStatus(401))
     }
@@ -394,6 +418,7 @@ autenticados.get('/', async function (_req, res, next) {
  *     summary: Modificar el nombre de su usuario
  *     security:
  *       - bearerAuth: []
+ *       - cookieAuth: []
  *     requestBody:
  *       content:
  *         application/json:
@@ -439,6 +464,7 @@ autenticados.put('/', async function (req, res, next) {
  *     summary: Cambiar su contraseña
  *     security:
  *       - bearerAuth: []
+ *       - cookieAuth: []
  *     description: Es necesario conocer la contraseña actual antes de cambiarla
  *     requestBody:
  *       content:

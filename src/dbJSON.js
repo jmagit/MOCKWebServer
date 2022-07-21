@@ -3,7 +3,7 @@ const fs = require('fs/promises');
 class DbJSONError extends Error {
     constructor(message, code) {
         super(message);
-        this.name = "dbJSONError";
+        this.name = 'dbJSONError';
         this.code = code;
     }
 }
@@ -48,11 +48,11 @@ class DbJSON {
         return this.__comparaMultiplesPropiedades(a, b, properties, index + 1);
     }
     __proyectar(projection) {
-        const propiedades = projection.split(',');
+        const propiedades = projection.replace(/ /g, '').split(',');
         return item => {
             let e = {};
             propiedades.forEach(c => {
-                if (item[c] !== undefined) e[c] = item[c]
+                if (item[c] != undefined) e[c] = item[c]
             });
             return Object.keys(e).length > 0 ? e : item;
         }
@@ -76,10 +76,9 @@ class DbJSON {
     }
 
     orderByProperties(source, properties) {
-        let orderBy = properties.split(',').map(cmp => {
-            cmp = cmp.trim()
-            if (cmp.startsWith("-")) {
-                cmp = cmp.substring(1).trim();
+        let orderBy = properties.replace(/ /g, '').split(',').map(cmp => {
+            if (cmp.startsWith('-')) {
+                cmp = cmp.substring(1);
                 return { cmp, dir: -1 }
             }
             return { cmp, dir: 1 }
@@ -103,7 +102,7 @@ class DbJSON {
         if (element[this.__pk] == undefined) {
             element[this.__pk] = 0
         }
-        if (this.getById(element[this.__pk]) !== undefined)
+        if (this.getById(element[this.__pk]) != undefined)
             throw new DbJSONError('Duplicate key', 400)
         if (element[this.__pk] == 0) {
             if (this.list.length == 0)
@@ -118,11 +117,11 @@ class DbJSON {
         return element
     }
     update(element, persist = false) {
-        if (element[this.__pk] === undefined)
+        if (element[this.__pk] == undefined)
             throw new DbJSONError('Missing key', 400)
         let index = this.indexById(element[this.__pk])
         if (index < 0)
-            throw new DbJSONError('Missing data', 404)
+            throw new DbJSONError('Not Found', 404)
         this.__data[index] = element
         if (persist || this.__autoSave) this.save()
         return element
@@ -130,7 +129,7 @@ class DbJSON {
     change(key, element, persist = false) {
         let index = this.indexById(key)
         if (index < 0)
-            throw new DbJSONError('Missing data', 404)
+            throw new DbJSONError('Not Found', 404)
         this.__data[index] = Object.assign({}, this.__data[index], element)
         if (persist || this.__autoSave) this.save()
         return this.__data[index]
@@ -138,7 +137,7 @@ class DbJSON {
     delete(key, persist = false) {
         let index = this.indexById(key)
         if (index < 0)
-            throw new DbJSONError('Missing data', 404)
+            throw new DbJSONError('Not Found', 404)
         this.__data.splice(index, 1)
         if (persist || this.__autoSave) this.save()
     }
