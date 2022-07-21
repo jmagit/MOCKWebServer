@@ -40,10 +40,10 @@ module.exports.formatError = (error, status = 400) => {
     return { status, title: error.message }
 }
 
-const generateError = (title, status = 500, detail = undefined, source = undefined) => {
+const generateError = (title, status = 500, detail = undefined, source = undefined, name = undefined) => {
     if(!title) title = http.STATUS_CODES[status] || '(desconocido)'
     let error = new Error(title)
-    error.name = 'ApplicationError'
+    error.name = name || 'ApplicationError'
     error.payload = { type: error.name, status, title }
     if (detail) error.payload.detail = detail
     if (source) error.payload.source = source
@@ -54,7 +54,7 @@ module.exports.generateErrorByStatus = (status = 500) => {
     return generateError(http.STATUS_CODES[status] || '(desconocido)', status)
 }
 module.exports.generateErrorByError = (error, status = 500) => {
-    return generateError(error.message, error.statusCode || status, null , production ? null : error.trace)
+    return generateError(error.message, error.statusCode || error.status || status, null , production ? null : error.trace || error.stack, error.name)
 }
 
 // module.exports.relanzaError = (error, status = 500) => {

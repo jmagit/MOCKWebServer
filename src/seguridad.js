@@ -27,7 +27,7 @@ module.exports.useCORS = (req, res, next) => {
 }
 
 // Middleware: Autenticación
-module.exports.decodeAuthorization = (req, res, next) => {
+module.exports.useAuthentication = (req, res, next) => {
     res.locals.isAuthenticated = false;
     let token = ''
     if (!req.headers['authorization']) {
@@ -146,23 +146,6 @@ module.exports.generarTokenScheme = (usuario) => {
 *   - name: registro
 *     description: Cuentas de usuarios
 */
-
-
-/**
- * @swagger
- *
- * /login:
- *   options:
- *     tags: [ autenticación ]
- *     summary: Sondeo CORS
- *     responses:
- *       "200":
- *         description: "OK"
- */
-router.options('/login', function (_req, res) {
-    res.status(200).end()
-})
-
 /**
  * @swagger
  * components:
@@ -170,15 +153,15 @@ router.options('/login', function (_req, res) {
  *    Login:
  *      description: Credenciales de autenticación
  *      type: object
+ *      required:
+ *        - name
+ *        - password
  *      properties:
  *        name:
  *          type: string
  *        password:
  *          type: string
  *          format: password
- *      required:
- *        - name
- *        - password
  *    RespuestaLogin:
  *      type: object
  *      title: Respuesta Login
@@ -201,8 +184,6 @@ router.options('/login', function (_req, res) {
  *   post:
  *     tags: [ autenticación ]
  *     summary: Iniciar sesión
- *     produces:
- *       - application/json
  *     requestBody:
  *       content:
  *         application/json:
@@ -249,6 +230,22 @@ router.post('/login', async function (req, res, next) {
     }
     res.status(200).json(payload).end()
 })
+
+/**
+ * @swagger
+ *
+ * /login:
+ *   options:
+ *     tags: [ autenticación ]
+ *     summary: Sondeo CORS
+ *     responses:
+ *       "200":
+ *         description: "OK"
+ */
+ router.options('/login', function (_req, res) {
+    res.status(200).end()
+})
+
 /**
  * @swagger
  *
@@ -271,6 +268,8 @@ router.all('/logout', function (_req, res) {
  *   get:
  *     tags: [ autenticación ]
  *     summary: Obtener estado de sesión
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       "200":
  *         description: "OK"
@@ -352,6 +351,8 @@ autenticados.use(module.exports.onlySelf)
  *   get:
  *     tags: [ registro ]
  *     summary: Consultar su usuario
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       "200":
  *         description: "OK"
@@ -391,6 +392,8 @@ autenticados.get('/', async function (_req, res, next) {
  *   put:
  *     tags: [ registro ]
  *     summary: Modificar el nombre de su usuario
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       content:
  *         application/json:
@@ -399,6 +402,8 @@ autenticados.get('/', async function (_req, res, next) {
  *             properties:
  *               nombre:
  *                 type: string
+ *             required:
+ *               - nombre
  *       required: true
  *     responses:
  *       "204":
@@ -432,6 +437,8 @@ autenticados.put('/', async function (req, res, next) {
  *   put:
  *     tags: [ registro ]
  *     summary: Cambiar su contraseña
+ *     security:
+ *       - bearerAuth: []
  *     description: Es necesario conocer la contraseña actual antes de cambiarla
  *     requestBody:
  *       content:
