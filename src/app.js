@@ -7,7 +7,9 @@ const rfs = require('rotating-file-stream')
 const cookieParser = require('cookie-parser')
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yaml')
-const {generaSwaggerSpecification} = require('./openapi-generator');
+const OpenApiValidator = require('express-openapi-validator');
+const { generaSwaggerSpecification } = require('./openapi-generator');
+const { generateErrorByError } = require('./utils')
 
 const serviciosConfig = require('../data/__servicios.json')
 const seguridad = require('./seguridad')
@@ -29,6 +31,7 @@ app.PUERTO = process.env.PORT || '4321';
 app.URL_SERVER = ''
 app.DIR_API_REST = DIR_API_REST
 
+// Argumentos de entrada
 process.argv.forEach(val => {
   if (val.toLocaleLowerCase().startsWith('--port='))
     app.PUERTO = val.substring('--port='.length)
@@ -38,7 +41,7 @@ process.argv.forEach(val => {
   }
 });
 
-// log
+// Registro
 if (process.env.NODE_ENV !== 'test')
   app.use(morgan('combined', {
     stream: rfs.createStream("file.log", {
@@ -130,7 +133,7 @@ if (VALIDATE_XSRF_TOKEN) {
 }
 
 // Autenticación
-app.use(seguridad.decodeAuthorization)
+app.use(seguridad.useAuthentication)
 
 // Autorespondedor de formularios
 function plantillaHTML(titulo, body) {
@@ -175,9 +178,6 @@ app.all('/form', function (req, res) {
   res.status(200).end(plantillaHTML('Petici&oacute;n', rslt))
 })
 
-// Control de acceso
-app.use(DIR_API_AUTH, seguridad)
-
 // Eco de la petición
 app.all('/eco(/*)?', function (req, res) {
   res.status(200).json({
@@ -195,7 +195,33 @@ app.all('/eco(/*)?', function (req, res) {
 });
 
 // Servicios web
+app.use(
+  OpenApiValidator.middleware({
+    apiSpec: generaSwaggerSpecification(app.PUERTO, DIR_API_REST),
+    validateRequests: true, // (default)
+    validateResponses: true, // false by default
+    ignoreUndocumented: true,
+  })
+)
+
+// Control de acceso
+// app.use(DIR_API_REST, seguridad)
+app.use(DIR_API_AUTH, seguridad)
+
 app.use(DIR_API_REST, apiRouter.router);
+
+const options = {
+  explorer: true
+};
+app.all('/api-docs/v1/openapi.json', async function (_req, res) {
+  let result = await generaSwaggerSpecification(app.PUERTO, DIR_API_REST)
+  res.json(result)
+});
+app.all('/api-docs/v1/openapi.yml', async function (_req, res) {
+  let result = await generaSwaggerSpecification(app.PUERTO, DIR_API_REST)
+  res.contentType('text/yaml').end(YAML.stringify(result))
+});
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(generaSwaggerSpecification(app.PUERTO, DIR_API_REST), options));
 
 app.get('/', function (req, res) {
   let rslt = ''
@@ -231,20 +257,6 @@ app.all('/favicon.ico', async function (_req, res) {
   res.download(__dirname + '/favicon.ico')
 });
 
-const options = {
-  explorer: true
-};
-app.all('/api-docs/v1/openapi.json', async function (_req, res) {
-  let result = await generaSwaggerSpecification(app.PUERTO, DIR_API_REST)
-  res.json(result)
-});
-app.all('/api-docs/v1/openapi.yml', async function (_req, res) {
-  let result = await generaSwaggerSpecification(app.PUERTO, DIR_API_REST)
-  res.contentType('text/yaml').end(YAML.stringify(result))
-});
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(generaSwaggerSpecification(app.PUERTO, DIR_API_REST), options));
-
-
 // PushState de HTML5
 app.get('/*', async function (req, res, next) {
   console.info('NOT FOUND: %s', req.originalUrl)
@@ -259,10 +271,8 @@ app.get('/*', async function (req, res, next) {
 // eslint-disable-next-line no-unused-vars
 app.use(function (err, _req, res, _next) {
   // console.error('ERROR: %s', req.originalUrl, err)
-  if (err.payload) {
-    res.status(err.payload.status).json(err.payload);
-  } else
-    res.status(500).json({ status: 500, title: err.message });
+  let error = err.payload ? err : generateErrorByError(err)
+  res.status(error.payload.status).json(error.payload);
 });
 
 module.exports = app;

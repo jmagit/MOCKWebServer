@@ -21,7 +21,7 @@ const swaggerDocument = {
     },
     "servers": [
         {
-            "url": "{protocol}://localhost:{port}/{basePath}",
+            "url": "{protocol}://localhost:{port}/",
             "description": "Servidor local para las pruebas",
             "variables": {
                 "protocol": {
@@ -34,20 +34,10 @@ const swaggerDocument = {
                 "port": {
                     "enum": [
                         "4321",
-                        "8080",
-                        ""
+                        "8181"
                     ],
                     "default": "4321"
                 },
-                "basePath": {
-                    "enum": [
-                        "",
-                        "api",
-                        "api/v1",
-                        "api/v2",
-                    ],
-                    "default": ""
-                }
             }
         }
     ],
@@ -174,11 +164,11 @@ const swaggerDocument = {
             }
         },
     },
-    "security": [{ bearerAuth: [] }]
+    // "security": [{ bearerAuth: [] }]
 }
 
 const generaGetAll = (servicio) => {
-    return {
+    let result = {
         "get": {
             "tags": [servicio.tag],
             "summary": `Listar ${servicio.models}`,
@@ -209,9 +199,12 @@ const generaGetAll = (servicio) => {
             }
         }
     }
+    if(servicio.security)
+        result.get.security = [{ bearerAuth: [] }]
+    return result
 }
 const generaPost = (servicio) => {
-    return {
+    let result =  {
         "post": {
             "tags": [servicio.tag],
             "summary": `Crear ${servicio.model}`,
@@ -233,9 +226,12 @@ const generaPost = (servicio) => {
             }
         }
     }
+    if(servicio.security || servicio.readonly)
+        result.post.security = [{ bearerAuth: [] }]
+    return result
 }
 const generaGetOne = (servicio) => {
-    return {
+    let result = {
         "get": {
             "tags": [servicio.tag],
             "summary": `Recuperar ${servicio.model}`,
@@ -256,9 +252,12 @@ const generaGetOne = (servicio) => {
             }
         }
     }
+    if(servicio.security)
+        result.get.security = [{ bearerAuth: [] }]
+    return result
 }
 const generaPut = (servicio) => {
-    return {
+    let result =  {
         "put": {
             "tags": [servicio.tag],
             "summary": `Reemplazar ${servicio.model}`,
@@ -281,18 +280,29 @@ const generaPut = (servicio) => {
             }
         }
     }
+    if(servicio.security || servicio.readonly)
+        result.put.security = [{ bearerAuth: [] }]
+    return result
 }
 const generaPatch = (servicio) => {
-    return {
+    let schema;
+    if(servicio.schema) {
+        schema = { ...servicio.schema }
+        schema.properties = { ...servicio.schema.properties }
+        if(schema.additionalProperties === undefined) schema.additionalProperties = false
+        delete schema.required
+        delete schema.properties[servicio.pk]
+    } else {
+        schema = { type: "object" }
+    }
+    let result =  {
         "patch": {
             "tags": [servicio.tag],
             "summary": `Actualiza parte de ${servicio.model}`,
             "requestBody": {
                 "content": {
                     "application/json": {
-                        "schema": {
-                            "$ref": `#/components/schemas/${servicio.model}`
-                        }
+                        "schema": schema
                     }
                 },
                 "required": true,
@@ -306,9 +316,12 @@ const generaPatch = (servicio) => {
             }
         }
     }
+    if(servicio.security || servicio.readonly)
+        result.patch.security = [{ bearerAuth: [] }]
+    return result
 }
 const generaDelete = (servicio) => {
-    return {
+    let result =  {
         "delete": {
             "tags": [servicio.tag],
             "summary": `Borrar ${servicio.model}`,
@@ -319,9 +332,12 @@ const generaDelete = (servicio) => {
             }
         }
     }
+    if(servicio.security || servicio.readonly)
+        result.delete.security = [{ bearerAuth: [] }]
+    return result
 }
 const generaOptions = (servicio) => {
-    return {
+    let result =  {
         "options": {
             "tags": [servicio.tag],
             "summary": "Sondeo CORS",
@@ -332,6 +348,9 @@ const generaOptions = (servicio) => {
             }
         }
     }
+    if(servicio.security)
+        result.options.security = [{ bearerAuth: [] }]
+    return result
 }
 const preparaService = (servicio) => {
     if (!servicio.tag)
@@ -426,13 +445,13 @@ const addServiceDocumentation = (servicio, dirAPIs) => {
     }
     // swaggerDocument.components.requestBodies[servicio.model] = { "type": "object" }
     swaggerDocument.components.schemas[servicio.model] = servicio.schema || {
-        "type": "object", "properties": {
+        "type": "object", additionalProperties: true, required: [servicio.pk], "properties": {
             [servicio.pk]: {
                 "type": "integer",
                 "format": "int32",
                 "minimum": 0,
                 "description": "El 0 actúa como autonumérico en la creación"
-            }
+            },            
         }
     }
     if (swaggerDocument.components.schemas[servicio.model].properties[servicio.pk].type === "integer")
@@ -442,8 +461,8 @@ const generaSwaggerSpecification = (server, dirAPIs) => {
     swaggerDocument.servers[0].variables.port.default = server
     serviciosConfig.forEach(servicio => addServiceDocumentation(servicio, dirAPIs))
     const options = {
-        swaggerDefinition: swaggerDocument, // { openapi: '3.0.0' },
-        apis: [`${__dirname}/src/seguridad.js`],
+        swaggerDefinition: swaggerDocument, //  { openapi: '3.0.0' },
+        apis: [`${__dirname}/seguridad.js`],
     };
     return swaggerJsdoc(options);
 }

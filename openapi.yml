@@ -11,7 +11,7 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  - url: "{protocol}://localhost:{port}/{basePath}"
+  - url: "{protocol}://localhost:{port}/"
     description: Servidor local para las pruebas
     variables:
       protocol:
@@ -22,22 +22,16 @@ servers:
       port:
         enum:
           - "4321"
-          - "8080"
-          - ""
+          - "8181"
         default: "4321"
-      basePath:
-        enum:
-          - ""
-          - api
-          - api/v1
-          - api/v2
-        default: ""
 externalDocs:
   description: Repositorio del proyecto
   url: https://github.com/jmagit/MOCKWebServer
 tags:
   - name: contactos
     description: Gestión de contactos
+  - name: books
+    description: Mantenimiento de Books
   - name: personas
     description: Mantenimiento de Personas
   - name: tarjetas
@@ -50,6 +44,10 @@ tags:
     description: Mantenimiento de Biblioteca
   - name: vehiculos
     description: Mantenimiento de Vehiculos
+  - name: autenticación
+    description: Login
+  - name: registro
+    description: Cuentas de usuarios
 paths:
   /api/contactos:
     get:
@@ -166,7 +164,108 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Contacto"
+              title: Contacto
+              type: object
+              properties:
+                tratamiento:
+                  title: Tratamiento
+                  type: string
+                  enum:
+                    - Sr.
+                    - Sra.
+                    - Srta.
+                    - Dr.
+                    - Dra.
+                    - Ilmo.
+                    - Ilma.
+                    - Excmo.
+                    - Excma.
+                  example: Excmo.
+                nombre:
+                  title: Nombre
+                  type: string
+                  maxLength: 100
+                  example: Pietro
+                apellidos:
+                  title: Apellidos
+                  type: string
+                  maxLength: 100
+                  example: Woodall
+                telefono:
+                  title: Telefono
+                  type: string
+                  example: 642 051 348
+                  pattern: ^(\d{3}\s){2}\d{3}$
+                email:
+                  title: Email
+                  type: string
+                  format: email
+                  maxLength: 100
+                  example: pwoodall0@army.mil
+                sexo:
+                  title: Sexo
+                  type: string
+                  enum:
+                    - H
+                    - M
+                  default: H
+                  example: H
+                nacimiento:
+                  title: Nacimiento
+                  type: string
+                  format: date
+                  example: 1963-10-11
+                avatar:
+                  title: Avatar
+                  type: string
+                  format: uri
+                  maxLength: 200
+                  example: https://randomuser.me/api/portraits/men/0.jpg
+                conflictivo:
+                  title: Conflictivo
+                  type: boolean
+                  example: true
+                  default: false
+                icono:
+                  title: Icono
+                  type: string
+                  maxLength: 65000
+                  example: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAALJSURBVDjLpVNbS1RRFP72nHGaUedmpamj5pgKSUli0eXJfOipoELs+hA+FFT44oMSRBkZ1GNC/oAoCJ+C8QaSZhdCTEU0rbyP05jTzOTczv20zkz6IBFBBxZrs9f+vv3t76zFNE3D/3zGjYXa01OuKUqtJstZqizPUnSb6+vDem29o8OpiuIFimZFEOZUQXiY09rq0WtMV6B2d98k8F2YTU4YOKjRCKTw+qQqSZcJFKPoTMty7Nu2pwRKJILY2DjiPv9TIrvGlK6uk5osvjSUl4ERGJIEmEyQlpeRmJpeUkQxaikp3mt2u4FwEPoFcDgR6u1FaHzivpGk3uDy88DiccDnBxQVkGWkFReAO3SgUONFcGYLMDxC71RTF1jTYTt2FIEPw1eMJLOCs9mAuXkqyoBGhxQF+PQFBjvtcwyY+aq7BIhyKgeCYCUqFJ636QSmJIAXAEFIEYhSimTFl1STvFkPjfYEqqmUJRFkpmokg9bJ+Z1MpgKfIICSAutAZcs6mSmMBvLCADLRYCCWfnlmBnDlAbEokCASnqcbhFQW+VRO7lPQX0CpG4GB17qCZyzc3u4mFf2WItdu864cYHIKWAv+bg5lU4V3bYxiFLHQd3CZNqT9zIynx7PLuAceTyg2OPiK9/kPqqEfeWmV+8HSqb8WvSkwue5dHUXIHkbFmQaUXmxETrYVIX6FC0YmFtlGK39rabHTm5pIVqOzqtJqzc8F3r2nNoxiaLkT1Q1NsMwOkLFvALsDAWMRPvYNzbOtszDf0FBNRI8dxYWHd9TWJE3rbzuF449egFWd3jwXvpOLkaGAxv40TJ/r6hxEco+8ue4syGVTC88TR85fsmQseSAk/KCWQ2Sdw/QsVtjfpnGipuYs9Ykr4pp3mqwZtwq2y0ajwYvImoyFVU6ReO02+9dxfnuusDkW9F3lFFakcNoKoZ6c6JPbfgHHGqU/+iLy1wAAAABJRU5ErkJggg==
+                direcciones:
+                  title: Direcciones
+                  type: array
+                  uniqueItems: true
+                  default: []
+                  items:
+                    title: Dirección
+                    type: object
+                    required:
+                      - calle
+                      - codigo
+                      - provincia
+                      - pais
+                    properties:
+                      calle:
+                        title: Calle
+                        type: string
+                        maxLength: 500
+                        example: 488 Pankratz Junction
+                      codigo:
+                        title: Código Postal
+                        type: string
+                        example: "29071"
+                        pattern: ^\d{4,5}$
+                      provincia:
+                        title: Provincia
+                        type: string
+                        maxLength: 100
+                        example: Malaga
+                      pais:
+                        title: Pais
+                        type: string
+                        maxLength: 100
+                        example: España
+              additionalProperties: false
         required: true
       responses:
         "204":
@@ -183,6 +282,145 @@ paths:
       tags:
         - contactos
       summary: Borrar Contacto
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/books:
+    get:
+      tags:
+        - books
+      summary: Listar books
+      parameters:
+        - $ref: "#/components/parameters/pagina"
+        - $ref: "#/components/parameters/filas"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/Pagina_books"
+                  - $ref: "#/components/schemas/Books"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      tags:
+        - books
+      summary: Crear Book
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Book"
+        required: true
+      responses:
+        "201":
+          $ref: "#/components/responses/Created"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    options:
+      tags:
+        - books
+      summary: Sondeo CORS
+      responses:
+        "200":
+          description: OK
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  "/api/books/{id}":
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+        - books
+      summary: Recuperar Book
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    put:
+      tags:
+        - books
+      summary: Reemplazar Book
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Book"
+        required: true
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    options:
+      tags:
+        - books
+      summary: Sondeo CORS
+      responses:
+        "200":
+          description: OK
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    patch:
+      tags:
+        - books
+      summary: Actualiza parte de Book
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      tags:
+        - books
+      summary: Borrar Book
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
@@ -307,6 +545,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+      security:
+        - bearerAuth: []
     post:
       tags:
         - tarjetas
@@ -326,6 +566,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+      security:
+        - bearerAuth: []
   "/api/tarjetas/{id}":
     parameters:
       - name: id
@@ -350,6 +592,8 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+      security:
+        - bearerAuth: []
     put:
       tags:
         - tarjetas
@@ -371,6 +615,8 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+      security:
+        - bearerAuth: []
   /api/blog:
     get:
       tags:
@@ -392,6 +638,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+      security:
+        - bearerAuth: []
     post:
       tags:
         - blog
@@ -411,6 +659,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+      security:
+        - bearerAuth: []
     options:
       tags:
         - blog
@@ -422,6 +672,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+      security:
+        - bearerAuth: []
   "/api/blog/{id}":
     parameters:
       - name: id
@@ -446,6 +698,8 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+      security:
+        - bearerAuth: []
     put:
       tags:
         - blog
@@ -467,6 +721,8 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+      security:
+        - bearerAuth: []
     options:
       tags:
         - blog
@@ -478,6 +734,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+      security:
+        - bearerAuth: []
     patch:
       tags:
         - blog
@@ -486,7 +744,42 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Articulo"
+              title: Articulo
+              type: object
+              properties:
+                titulo:
+                  title: Titulo
+                  type: string
+                  maxLength: 200
+                  example: Saludo
+                texto:
+                  title: Texto
+                  type: string
+                  example: Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores
+                    eveniet eum nisi expedita ab dolorum labore similique
+                    provident officia ipsa, aliquam recusandae dicta id,
+                    praesentium quasi consequatur minus laborum perferendis?
+                autor:
+                  title: Autor
+                  type: string
+                  maxLength: 200
+                  example: Javier
+                fecha:
+                  title: Fecha
+                  type: string
+                  format: date
+                  example: 2016-02-29
+                megusta:
+                  title: Megusta
+                  type: integer
+                  example: 0
+                  default: 0
+                fotourl:
+                  title: Fotourl
+                  type: string
+                  format: uri
+                  example: https://cdn-images-1.medium.com/max/800/1*V3Kfghg_jIV0ubxmAnCXBA.jpeg
+              additionalProperties: false
         required: true
       responses:
         "204":
@@ -499,6 +792,8 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+      security:
+        - bearerAuth: []
     delete:
       tags:
         - blog
@@ -510,6 +805,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+      security:
+        - bearerAuth: []
   /api/libros:
     get:
       tags:
@@ -531,6 +828,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+      security:
+        - bearerAuth: []
     post:
       tags:
         - libros
@@ -550,6 +849,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+      security:
+        - bearerAuth: []
     options:
       tags:
         - libros
@@ -561,6 +862,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+      security:
+        - bearerAuth: []
   "/api/libros/{id}":
     parameters:
       - name: id
@@ -585,6 +888,8 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+      security:
+        - bearerAuth: []
     put:
       tags:
         - libros
@@ -606,6 +911,8 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+      security:
+        - bearerAuth: []
     options:
       tags:
         - libros
@@ -617,6 +924,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+      security:
+        - bearerAuth: []
     patch:
       tags:
         - libros
@@ -625,7 +934,38 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Libro"
+              title: Libro
+              type: object
+              properties:
+                titulo:
+                  title: Titulo
+                  type: string
+                  maxLength: 200
+                  example: "El ingenioso hidalgo don Quijote de la Mancha "
+                autor:
+                  title: Autor
+                  type: string
+                  maxLength: 100
+                  example: Miguel de Cervantes
+                pais:
+                  title: Pais
+                  type: string
+                  maxLength: 50
+                  example: España
+                fecha:
+                  title: Fecha
+                  type: string
+                  example: "1605"
+                paginas:
+                  title: Paginas
+                  type: string
+                  example: "377"
+                wiki:
+                  title: Wiki
+                  type: string
+                  format: uri
+                  example: https://es.wikipedia.org/wiki/Don_Quijote_de_la_Mancha
+              additionalProperties: false
         required: true
       responses:
         "204":
@@ -638,6 +978,8 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+      security:
+        - bearerAuth: []
     delete:
       tags:
         - libros
@@ -649,6 +991,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+      security:
+        - bearerAuth: []
   /api/biblioteca:
     get:
       tags:
@@ -689,6 +1033,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+      security:
+        - bearerAuth: []
     options:
       tags:
         - biblioteca
@@ -745,6 +1091,8 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+      security:
+        - bearerAuth: []
     options:
       tags:
         - biblioteca
@@ -764,7 +1112,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Volumen"
+              title: Volumen
+              type: object
+              additionalProperties: false
+              properties:
+                titulo:
+                  title: Titulo
+                  type: string
+                  maxLength: 100
+                  example: Mauris
+                autor:
+                  title: Autor
+                  type: string
+                  maxLength: 100
+                  example: At Mi Imperdiet
+                numPag:
+                  title: Número de páginas
+                  type: integer
+                  minimum: 0
+                  exclusiveMinimum: true
+                  example: 22
         required: true
       responses:
         "204":
@@ -777,6 +1144,8 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+      security:
+        - bearerAuth: []
     delete:
       tags:
         - biblioteca
@@ -788,6 +1157,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+      security:
+        - bearerAuth: []
   /api/vehiculos:
     get:
       tags:
@@ -809,6 +1180,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+      security:
+        - bearerAuth: []
     post:
       tags:
         - vehiculos
@@ -828,6 +1201,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+      security:
+        - bearerAuth: []
     options:
       tags:
         - vehiculos
@@ -839,6 +1214,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+      security:
+        - bearerAuth: []
   "/api/vehiculos/{id}":
     parameters:
       - name: id
@@ -863,6 +1240,8 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+      security:
+        - bearerAuth: []
     put:
       tags:
         - vehiculos
@@ -884,6 +1263,8 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+      security:
+        - bearerAuth: []
     options:
       tags:
         - vehiculos
@@ -895,6 +1276,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+      security:
+        - bearerAuth: []
     patch:
       tags:
         - vehiculos
@@ -903,7 +1286,87 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Vehiculo"
+              title: Vehículo
+              type: object
+              properties:
+                marca:
+                  title: Marca
+                  type: string
+                  example: AUDI
+                modelo:
+                  title: Modelo
+                  type: string
+                  example: A3
+                matricula:
+                  title: Matricula
+                  type: string
+                  example: 1234ABC
+                edad:
+                  title: Edad
+                  type: integer
+                  example: 2
+                propietario:
+                  title: Propietario
+                  type: object
+                  required:
+                    - nombre
+                    - apellidos
+                    - dni
+                    - email
+                  properties:
+                    nombre:
+                      title: Nombre
+                      type: string
+                      example: Penélope
+                    apellidos:
+                      title: Apellidos
+                      type: string
+                      example: Glamour
+                    dni:
+                      title: Dni
+                      type: string
+                      example: 12345678Z
+                    email:
+                      title: Email
+                      type: string
+                      format: email
+                      example: pglamour@example.com
+                direcciones:
+                  title: Direcciones
+                  type: array
+                  uniqueItems: true
+                  default: []
+                  items:
+                    title: Dirección
+                    type: object
+                    required:
+                      - id
+                      - calle
+                      - localidad
+                      - cp
+                      - provincia
+                    properties:
+                      id:
+                        title: Id
+                        type: string
+                        example: "1"
+                      calle:
+                        title: Calle
+                        type: string
+                        example: Compact Pussycat
+                      localidad:
+                        title: Localidad
+                        type: string
+                        example: Rota
+                      cp:
+                        title: Cp
+                        type: string
+                        example: "11080"
+                      provincia:
+                        title: Provincia
+                        type: string
+                        example: "11"
+              additionalProperties: false
         required: true
       responses:
         "204":
@@ -916,6 +1379,8 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+      security:
+        - bearerAuth: []
     delete:
       tags:
         - vehiculos
@@ -927,6 +1392,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+      security:
+        - bearerAuth: []
   /api/marcas:
     get:
       tags:
@@ -968,6 +1435,170 @@ paths:
                 $ref: "#/components/schemas/Marca"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /login:
+    post:
+      tags:
+        - autenticación
+      summary: Iniciar sesión
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Login"
+        required: true
+      responses:
+        "200":
+          description: Resultado de la autenticación
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RespuestaLogin"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+    options:
+      tags:
+        - autenticación
+      summary: Sondeo CORS
+      responses:
+        "200":
+          description: OK
+  /logout:
+    post:
+      tags:
+        - autenticación
+      summary: Cerrar sesión
+      responses:
+        "200":
+          description: OK
+  /auth:
+    get:
+      tags:
+        - autenticación
+      summary: Obtener estado de sesión
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isAuthenticated:
+                    type: boolean
+                  usr:
+                    type: string
+                  name:
+                    type: string
+                  roles:
+                    type: array
+                    items:
+                      type: string
+  /register:
+    post:
+      tags:
+        - registro
+      summary: Registrar un nuevo usuario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                idUsuario:
+                  type: string
+                  format: email
+                nombre:
+                  type: string
+                password:
+                  type: string
+                  format: password
+        required: true
+      responses:
+        "201":
+          description: Created
+        "400":
+          $ref: "#/components/responses/BadRequest"
+    get:
+      tags:
+        - registro
+      summary: Consultar su usuario
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  idUsuario:
+                    type: string
+                    format: email
+                  nombre:
+                    type: string
+                  roles:
+                    type: array
+                    items:
+                      type: string
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    put:
+      tags:
+        - registro
+      summary: Modificar el nombre de su usuario
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+              required:
+                - nombre
+        required: true
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /register/password:
+    put:
+      tags:
+        - registro
+      summary: Cambiar su contraseña
+      security:
+        - bearerAuth: []
+      description: Es necesario conocer la contraseña actual antes de cambiarla
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                oldPassword:
+                  type: string
+                  format: password
+                newPassword:
+                  type: string
+                  format: password
+        required: true
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
         "403":
           $ref: "#/components/responses/Forbidden"
         "404":
@@ -1037,45 +1668,44 @@ components:
         id:
           title: Id
           type: integer
-          example:
-            - 1
+          example: 1
           default: 0
           description: El 0 actúa como autonumérico en la creación
         tratamiento:
           title: Tratamiento
           type: string
-          default: ""
-          example:
+          enum:
+            - Sr.
+            - Sra.
+            - Srta.
+            - Dr.
+            - Dra.
+            - Ilmo.
+            - Ilma.
             - Excmo.
-          pattern: ^.*$
+            - Excma.
+          example: Excmo.
         nombre:
           title: Nombre
           type: string
-          default: ""
-          example:
-            - Pietro
-          pattern: ^.*$
+          maxLength: 100
+          example: Pietro
         apellidos:
           title: Apellidos
           type: string
-          default: ""
-          example:
-            - Woodall
-          pattern: ^.*$
+          maxLength: 100
+          example: Woodall
         telefono:
           title: Telefono
           type: string
-          default: ""
-          example:
-            - 642 051 348
-          pattern: ^.*$
+          example: 642 051 348
+          pattern: ^(\d{3}\s){2}\d{3}$
         email:
           title: Email
           type: string
           format: email
-          default: ""
-          example:
-            - pwoodall0@army.mil
+          maxLength: 100
+          example: pwoodall0@army.mil
         sexo:
           title: Sexo
           type: string
@@ -1083,42 +1713,35 @@ components:
             - H
             - M
           default: H
-          example:
-            - H
-          pattern: ^.*$
+          example: H
         nacimiento:
           title: Nacimiento
           type: string
-          default: ""
-          example:
-            - 1963-10-11
-          pattern: ^.*$
+          format: date
+          example: 1963-10-11
         avatar:
           title: Avatar
           type: string
-          default: ""
-          example:
-            - https://randomuser.me/api/portraits/men/0.jpg
-          pattern: ^.*$
+          format: uri
+          maxLength: 200
+          example: https://randomuser.me/api/portraits/men/0.jpg
         conflictivo:
           title: Conflictivo
           type: boolean
-          example:
-            - true
-          default: true
+          example: true
+          default: false
         icono:
           title: Icono
           type: string
-          default: ""
-          example:
-            - data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAALJSURBVDjLpVNbS1RRFP72nHGaUedmpamj5pgKSUli0eXJfOipoELs+hA+FFT44oMSRBkZ1GNC/oAoCJ+C8QaSZhdCTEU0rbyP05jTzOTczv20zkz6IBFBBxZrs9f+vv3t76zFNE3D/3zGjYXa01OuKUqtJstZqizPUnSb6+vDem29o8OpiuIFimZFEOZUQXiY09rq0WtMV6B2d98k8F2YTU4YOKjRCKTw+qQqSZcJFKPoTMty7Nu2pwRKJILY2DjiPv9TIrvGlK6uk5osvjSUl4ERGJIEmEyQlpeRmJpeUkQxaikp3mt2u4FwEPoFcDgR6u1FaHzivpGk3uDy88DiccDnBxQVkGWkFReAO3SgUONFcGYLMDxC71RTF1jTYTt2FIEPw1eMJLOCs9mAuXkqyoBGhxQF+PQFBjvtcwyY+aq7BIhyKgeCYCUqFJ636QSmJIAXAEFIEYhSimTFl1STvFkPjfYEqqmUJRFkpmokg9bJ+Z1MpgKfIICSAutAZcs6mSmMBvLCADLRYCCWfnlmBnDlAbEokCASnqcbhFQW+VRO7lPQX0CpG4GB17qCZyzc3u4mFf2WItdu864cYHIKWAv+bg5lU4V3bYxiFLHQd3CZNqT9zIynx7PLuAceTyg2OPiK9/kPqqEfeWmV+8HSqb8WvSkwue5dHUXIHkbFmQaUXmxETrYVIX6FC0YmFtlGK39rabHTm5pIVqOzqtJqzc8F3r2nNoxiaLkT1Q1NsMwOkLFvALsDAWMRPvYNzbOtszDf0FBNRI8dxYWHd9TWJE3rbzuF449egFWd3jwXvpOLkaGAxv40TJ/r6hxEco+8ue4syGVTC88TR85fsmQseSAk/KCWQ2Sdw/QsVtjfpnGipuYs9Ykr4pp3mqwZtwq2y0ajwYvImoyFVU6ReO02+9dxfnuusDkW9F3lFFakcNoKoZ6c6JPbfgHHGqU/+iLy1wAAAABJRU5ErkJggg==
-          pattern: ^.*$
+          maxLength: 65000
+          example: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAALJSURBVDjLpVNbS1RRFP72nHGaUedmpamj5pgKSUli0eXJfOipoELs+hA+FFT44oMSRBkZ1GNC/oAoCJ+C8QaSZhdCTEU0rbyP05jTzOTczv20zkz6IBFBBxZrs9f+vv3t76zFNE3D/3zGjYXa01OuKUqtJstZqizPUnSb6+vDem29o8OpiuIFimZFEOZUQXiY09rq0WtMV6B2d98k8F2YTU4YOKjRCKTw+qQqSZcJFKPoTMty7Nu2pwRKJILY2DjiPv9TIrvGlK6uk5osvjSUl4ERGJIEmEyQlpeRmJpeUkQxaikp3mt2u4FwEPoFcDgR6u1FaHzivpGk3uDy88DiccDnBxQVkGWkFReAO3SgUONFcGYLMDxC71RTF1jTYTt2FIEPw1eMJLOCs9mAuXkqyoBGhxQF+PQFBjvtcwyY+aq7BIhyKgeCYCUqFJ636QSmJIAXAEFIEYhSimTFl1STvFkPjfYEqqmUJRFkpmokg9bJ+Z1MpgKfIICSAutAZcs6mSmMBvLCADLRYCCWfnlmBnDlAbEokCASnqcbhFQW+VRO7lPQX0CpG4GB17qCZyzc3u4mFf2WItdu864cYHIKWAv+bg5lU4V3bYxiFLHQd3CZNqT9zIynx7PLuAceTyg2OPiK9/kPqqEfeWmV+8HSqb8WvSkwue5dHUXIHkbFmQaUXmxETrYVIX6FC0YmFtlGK39rabHTm5pIVqOzqtJqzc8F3r2nNoxiaLkT1Q1NsMwOkLFvALsDAWMRPvYNzbOtszDf0FBNRI8dxYWHd9TWJE3rbzuF449egFWd3jwXvpOLkaGAxv40TJ/r6hxEco+8ue4syGVTC88TR85fsmQseSAk/KCWQ2Sdw/QsVtjfpnGipuYs9Ykr4pp3mqwZtwq2y0ajwYvImoyFVU6ReO02+9dxfnuusDkW9F3lFFakcNoKoZ6c6JPbfgHHGqU/+iLy1wAAAABJRU5ErkJggg==
         direcciones:
           title: Direcciones
           type: array
+          uniqueItems: true
           default: []
           items:
-            title: Items
+            title: Dirección
             type: object
             required:
               - calle
@@ -1129,31 +1752,69 @@ components:
               calle:
                 title: Calle
                 type: string
-                default: ""
-                example:
-                  - 488 Pankratz Junction
-                pattern: ^.*$
+                maxLength: 500
+                example: 488 Pankratz Junction
               codigo:
-                title: Codigo
+                title: Código Postal
                 type: string
-                default: ""
-                example:
-                  - "29071"
-                pattern: ^.*$
+                example: "29071"
+                pattern: ^\d{4,5}$
               provincia:
                 title: Provincia
                 type: string
-                default: ""
-                example:
-                  - Malaga
-                pattern: ^.*$
+                maxLength: 100
+                example: Malaga
               pais:
                 title: Pais
                 type: string
-                default: ""
-                example:
-                  - España
-                pattern: ^.*$
+                maxLength: 100
+                example: España
+    Books:
+      type: array
+      items:
+        $ref: "#/components/schemas/Book"
+    Pagina_books:
+      type: object
+      title: Pagina de books
+      properties:
+        content:
+          $ref: "#/components/schemas/Books"
+          description: Listado de elementos
+        totalElements:
+          type: integer
+          description: Número total de elementos
+        totalPages:
+          type: integer
+          description: Número total de páginas
+        size:
+          type: integer
+          description: Tamaño de página en elementos
+        number:
+          type: integer
+          description: Número de página actual
+        numberOfElements:
+          type: integer
+          description: Número total de elementos en la página
+        empty:
+          type: boolean
+          description: Si la página está vacía
+        first:
+          type: boolean
+          description: Si la página es la primera
+        last:
+          type: boolean
+          description: Si la página es la última
+    Book:
+      type: object
+      additionalProperties: true
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+          format: int32
+          minimum: 0
+          description: El 0 actúa como autonumérico en la creación
     Personas:
       type: array
       items:
@@ -1199,41 +1860,33 @@ components:
         id:
           title: Id
           type: integer
-          example:
-            - 1
+          example: 1
           default: 0
           description: El 0 actúa como autonumérico en la creación
         nombre:
           title: Nombre
           type: string
-          default: ""
-          example:
-            - Camelo
-          pattern: ^.*$
+          example: Pepito
         apellidos:
           title: Apellidos
           type: string
-          default: ""
-          example:
-            - Coton
-          pattern: ^.*$
+          example: Grillo
         edad:
           title: Edad
           type: integer
-          example:
-            - 37
-          default: 0
+          minimum: 16
+          maximum: 67
+          example: 37
         telefonos:
-          title: Telefonos
+          title: Teléfonos
           type: array
+          uniqueItems: true
           default: []
           items:
-            title: telefono
+            title: Teléfono
             type: string
-            default: ""
-            example:
-              - "12342"
-            pattern: ^.*$
+            example: 999 555 555
+            pattern: ^(\d{3}\s){2}\d{3}$
     Tarjetas:
       type: array
       items:
@@ -1283,45 +1936,32 @@ components:
         id:
           title: Id
           type: integer
-          example:
-            - 1
+          example: 0
           default: 0
           description: El 0 actúa como autonumérico en la creación
         idCliente:
           title: IdCliente
           type: string
-          default: ""
-          example:
-            - a.auctor.non@dictummi.ca
-          pattern: ^.*$
-        numero:
-          title: Numero
-          type: string
-          default: ""
-          example:
-            - 4024 0071 1838 5904
-          pattern: ^.*$
-        caducidad:
-          title: Caducidad
-          type: string
-          default: ""
-          example:
-            - 03/2020
-          pattern: ^.*$
-        CVC_CVV:
-          title: Cvc_cvv
-          type: string
-          default: ""
-          example:
-            - "147"
-          pattern: ^.*$
+          format: email
+          example: a.auctor.non@dictummi.ca
         tipo:
           title: Tipo
           type: string
-          default: ""
-          example:
-            - Visa
-          pattern: ^.*$
+          example: Visa
+        numero:
+          title: Numero
+          type: string
+          example: 4024 0071 1838 5904
+          pattern: ^(\d{4}\s){3}\d{4}$
+        caducidad:
+          title: Caducidad
+          type: string
+          example: 03/2020
+          pattern: ^\d{2}\/\d{4}$
+        CVC_CVV:
+          title: Cvc_cvv
+          type: string
+          example: "147"
     Blog:
       type: array
       items:
@@ -1367,54 +2007,41 @@ components:
         id:
           title: Id
           type: integer
-          example:
-            - 1
+          example: 1
           default: 0
           description: El 0 actúa como autonumérico en la creación
         titulo:
           title: Titulo
           type: string
-          default: ""
-          example:
-            - Saludo
-          pattern: ^.*$
+          maxLength: 200
+          example: Saludo
         texto:
           title: Texto
           type: string
-          default: ""
-          example:
-            - Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores
-              eveniet eum nisi expedita ab dolorum labore similique provident
-              officia ipsa, aliquam recusandae dicta id, praesentium quasi
-              consequatur minus laborum perferendis?
-          pattern: ^.*$
+          example: Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores
+            eveniet eum nisi expedita ab dolorum labore similique provident
+            officia ipsa, aliquam recusandae dicta id, praesentium quasi
+            consequatur minus laborum perferendis?
         autor:
           title: Autor
           type: string
-          default: ""
-          example:
-            - Javier
-          pattern: ^.*$
+          maxLength: 200
+          example: Javier
         fecha:
           title: Fecha
           type: string
-          default: ""
-          example:
-            - 2016-02-29
-          pattern: ^.*$
+          format: date
+          example: 2016-02-29
         megusta:
           title: Megusta
           type: integer
-          example:
-            - 0
+          example: 0
           default: 0
         fotourl:
           title: Fotourl
           type: string
-          default: ""
-          example:
-            - https://cdn-images-1.medium.com/max/800/1*V3Kfghg_jIV0ubxmAnCXBA.jpeg
-          pattern: ^.*$
+          format: uri
+          example: https://cdn-images-1.medium.com/max/800/1*V3Kfghg_jIV0ubxmAnCXBA.jpeg
     Libros:
       type: array
       items:
@@ -1460,52 +2087,35 @@ components:
         idLibro:
           title: Idlibro
           type: string
-          default: ""
-          example:
-            - "1"
-          pattern: ^.*$
+          example: "1"
         titulo:
           title: Titulo
           type: string
-          default: ""
-          example:
-            - "El ingenioso hidalgo don Quijote de la Mancha "
-          pattern: ^.*$
+          maxLength: 200
+          example: "El ingenioso hidalgo don Quijote de la Mancha "
         autor:
           title: Autor
           type: string
-          default: ""
-          example:
-            - Miguel de Cervantes
-          pattern: ^.*$
+          maxLength: 100
+          example: Miguel de Cervantes
         pais:
           title: Pais
           type: string
-          default: ""
-          example:
-            - España
-          pattern: ^.*$
+          maxLength: 50
+          example: España
         fecha:
           title: Fecha
           type: string
-          default: ""
-          example:
-            - "1605"
-          pattern: ^.*$
+          example: "1605"
         paginas:
           title: Paginas
           type: string
-          default: ""
-          example:
-            - "377"
-          pattern: ^.*$
+          example: "377"
         wiki:
           title: Wiki
           type: string
-          default: ""
-          example:
-            - https://es.wikipedia.org/wiki/Don_Quijote_de_la_Mancha
-          pattern: ^.*$
+          format: uri
+          example: https://es.wikipedia.org/wiki/Don_Quijote_de_la_Mancha
     Biblioteca:
       type: array
       items:
@@ -1544,39 +2154,34 @@ components:
     Volumen:
       title: Volumen
       type: object
+      additionalProperties: false
       required:
-        - autor
         - id
-        - numPag
         - titulo
+        - autor
       properties:
-        autor:
-          title: Autor
-          type: string
-          default: ""
-          example:
-            - At Mi Imperdiet
-          pattern: ^.*$
         id:
           title: Id
           type: integer
-          example:
-            - 2
+          example: 0
           default: 0
           description: El 0 actúa como autonumérico en la creación
-        numPag:
-          title: Numpag
-          type: integer
-          example:
-            - 22
-          default: 0
         titulo:
           title: Titulo
           type: string
-          default: ""
-          example:
-            - Mauris
-          pattern: ^.*$
+          maxLength: 100
+          example: Mauris
+        autor:
+          title: Autor
+          type: string
+          maxLength: 100
+          example: At Mi Imperdiet
+        numPag:
+          title: Número de páginas
+          type: integer
+          minimum: 0
+          exclusiveMinimum: true
+          example: 22
     Vehiculos:
       type: array
       items:
@@ -1624,37 +2229,25 @@ components:
         id:
           title: Id
           type: integer
-          example:
-            - 1
+          example: 1
           default: 0
           description: El 0 actúa como autonumérico en la creación
         marca:
           title: Marca
           type: string
-          default: ""
-          example:
-            - AUDI
-          pattern: ^.*$
+          example: AUDI
         modelo:
           title: Modelo
           type: string
-          default: ""
-          example:
-            - A3
-          pattern: ^.*$
+          example: A3
         matricula:
           title: Matricula
           type: string
-          default: ""
-          example:
-            - 1234ABC
-          pattern: ^.*$
+          example: 1234ABC
         edad:
           title: Edad
           type: integer
-          example:
-            - 2
-          default: 0
+          example: 2
         propietario:
           title: Propietario
           type: object
@@ -1667,35 +2260,24 @@ components:
             nombre:
               title: Nombre
               type: string
-              default: ""
-              example:
-                - " Penélope"
-              pattern: ^.*$
+              example: Penélope
             apellidos:
               title: Apellidos
               type: string
-              default: ""
-              example:
-                - Glamour
-              pattern: ^.*$
+              example: Glamour
             dni:
               title: Dni
               type: string
-              default: ""
-              example:
-                - 12345678Z
-              pattern: ^.*$
+              example: 12345678Z
             email:
               title: Email
               type: string
               format: email
-              default: ""
-              example:
-                - pglamour@example.com
-              pattern: ^.*$
+              example: pglamour@example.com
         direcciones:
           title: Direcciones
           type: array
+          uniqueItems: true
           default: []
           items:
             title: Dirección
@@ -1710,38 +2292,23 @@ components:
               id:
                 title: Id
                 type: string
-                default: ""
-                example:
-                  - "1"
-                pattern: ^.*$
+                example: "1"
               calle:
                 title: Calle
                 type: string
-                default: ""
-                example:
-                  - Compact Pussycat
-                pattern: ^.*$
+                example: Compact Pussycat
               localidad:
                 title: Localidad
                 type: string
-                default: ""
-                example:
-                  - Rota
-                pattern: ^.*$
+                example: Rota
               cp:
                 title: Cp
                 type: string
-                default: ""
-                example:
-                  - "11080"
-                pattern: ^.*$
+                example: "11080"
               provincia:
                 title: Provincia
                 type: string
-                default: ""
-                example:
-                  - "11"
-                pattern: ^.*$
+                example: "11"
     Marcas:
       type: array
       items:
@@ -1787,21 +2354,42 @@ components:
         marca:
           title: Marca
           type: string
-          default: ""
-          example:
-            - ALFA ROMEO
-          pattern: ^.*$
+          example: ALFA ROMEO
         modelos:
           title: Modelos
           type: array
+          uniqueItems: true
           default: []
           items:
             title: Modelo
             type: string
-            default: ""
-            example:
-              - Giulietta
-            pattern: ^.*$
+            example: Giulietta
+    Login:
+      description: Credenciales de autenticación
+      type: object
+      required:
+        - name
+        - password
+      properties:
+        name:
+          type: string
+        password:
+          type: string
+          format: password
+    RespuestaLogin:
+      type: object
+      title: Respuesta Login
+      properties:
+        success:
+          type: boolean
+        token:
+          type: string
+        name:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
   requestBodies: {}
   responses:
     Created:
@@ -1862,5 +2450,3 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-security:
-  - bearerAuth: []
