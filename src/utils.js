@@ -29,40 +29,28 @@ class ApplicationError extends Error {
 
 const production = process.env.NODE_ENV === 'production';
 
-module.exports.formatError = (error, status = 400) => {
-    if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError')
-        return {
-            type: "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-            status: 400,
-            title: 'One or more validation errors occurred.',
-            errors: Object.assign({}, ...error.errors.map(item => ({ [item.path]: item.message })))
-        }
-    return { status, title: error.message }
-}
-
 const generateError = (title, status = 500, detail = undefined, source = undefined, name = undefined) => {
-    if(!title) title = http.STATUS_CODES[status] || '(desconocido)'
+    if (!title) title = http.STATUS_CODES[status] || '(desconocido)'
     let error = new Error(title)
     error.name = name || 'ApplicationError'
     error.payload = { type: error.name, status, title }
     if (detail) error.payload.detail = detail
     if (source) error.payload.source = source
     return error
-} 
+}
 module.exports.generateError = generateError
 module.exports.generateErrorByStatus = (status = 500) => {
     return generateError(http.STATUS_CODES[status] || '(desconocido)', status)
 }
 module.exports.generateErrorByError = (error, status = 500) => {
-    return generateError(error.message, error.statusCode || error.status || status, null , production ? null : error.trace || error.stack, error.name)
+    switch (error.name) {
+        case 'dbJSONError':
+            return generateError(error.message, error.code)
+        case 'SequelizeValidationError':
+        case 'SequelizeUniqueConstraintError':
+            return generateError('One or more validation errors occurred.', 400,
+                Object.assign({}, ...error.errors.map(item => ({ [item.path]: item.message }))))
+        default:
+            return generateError(error.message, error.statusCode || error.status || status, error.errors, production ? null : error.trace || error.stack, error.name)
+    }
 }
-
-// module.exports.relanzaError = (error, status = 500) => {
-//     error.payload = { type: error.name, status, title: error.message }
-//     if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
-//         error.payload.status = 400,
-//             error.payload.title = 'One or more validation errors occurred.',
-//             error.payload.source = Object.assign({}, ...error.errors.map(item => ({ [item.path]: item.message })))
-//     }
-//     throw error
-// }

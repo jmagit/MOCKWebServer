@@ -57,6 +57,9 @@ paths:
       parameters:
         - $ref: "#/components/parameters/pagina"
         - $ref: "#/components/parameters/filas"
+        - $ref: "#/components/parameters/ordenar"
+        - $ref: "#/components/parameters/buscar"
+        - $ref: "#/components/parameters/proyeccion"
       responses:
         "200":
           description: OK
@@ -64,7 +67,7 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Pagina_contactos"
+                  - $ref: "#/components/schemas/ContactosPage"
                   - $ref: "#/components/schemas/Contactos"
         "401":
           $ref: "#/components/responses/Unauthorized"
@@ -78,7 +81,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Contacto"
+              $ref: "#/components/schemas/ContactoModel"
         required: true
       responses:
         "201":
@@ -103,6 +106,7 @@ paths:
   "/api/contactos/{id}":
     parameters:
       - name: id
+        description: Identificador del recurso
         in: path
         required: true
         schema:
@@ -111,13 +115,23 @@ paths:
       tags:
         - contactos
       summary: Recuperar Contacto
+      parameters:
+        - in: query
+          name: _projection
+          description: Devuelve solo aquellas propiedades de la lista suministrada, los
+            nombres de las propiedades deben ir separadas por comas.
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Contacto"
+                oneOf:
+                  - $ref: "#/components/schemas/ContactoModel"
+                  - $ref: "#/components/schemas/ContactoProjection"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -132,7 +146,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Contacto"
+              $ref: "#/components/schemas/ContactoModel"
         required: true
       responses:
         "204":
@@ -164,108 +178,7 @@ paths:
         content:
           application/json:
             schema:
-              title: Contacto
-              type: object
-              properties:
-                tratamiento:
-                  title: Tratamiento
-                  type: string
-                  enum:
-                    - Sr.
-                    - Sra.
-                    - Srta.
-                    - Dr.
-                    - Dra.
-                    - Ilmo.
-                    - Ilma.
-                    - Excmo.
-                    - Excma.
-                  example: Excmo.
-                nombre:
-                  title: Nombre
-                  type: string
-                  maxLength: 100
-                  example: Pietro
-                apellidos:
-                  title: Apellidos
-                  type: string
-                  maxLength: 100
-                  example: Woodall
-                telefono:
-                  title: Telefono
-                  type: string
-                  example: 642 051 348
-                  pattern: ^(\d{3}\s){2}\d{3}$
-                email:
-                  title: Email
-                  type: string
-                  format: email
-                  maxLength: 100
-                  example: pwoodall0@army.mil
-                sexo:
-                  title: Sexo
-                  type: string
-                  enum:
-                    - H
-                    - M
-                  default: H
-                  example: H
-                nacimiento:
-                  title: Nacimiento
-                  type: string
-                  format: date
-                  example: 1963-10-11
-                avatar:
-                  title: Avatar
-                  type: string
-                  format: uri
-                  maxLength: 200
-                  example: https://randomuser.me/api/portraits/men/0.jpg
-                conflictivo:
-                  title: Conflictivo
-                  type: boolean
-                  example: true
-                  default: false
-                icono:
-                  title: Icono
-                  type: string
-                  maxLength: 65000
-                  example: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAALJSURBVDjLpVNbS1RRFP72nHGaUedmpamj5pgKSUli0eXJfOipoELs+hA+FFT44oMSRBkZ1GNC/oAoCJ+C8QaSZhdCTEU0rbyP05jTzOTczv20zkz6IBFBBxZrs9f+vv3t76zFNE3D/3zGjYXa01OuKUqtJstZqizPUnSb6+vDem29o8OpiuIFimZFEOZUQXiY09rq0WtMV6B2d98k8F2YTU4YOKjRCKTw+qQqSZcJFKPoTMty7Nu2pwRKJILY2DjiPv9TIrvGlK6uk5osvjSUl4ERGJIEmEyQlpeRmJpeUkQxaikp3mt2u4FwEPoFcDgR6u1FaHzivpGk3uDy88DiccDnBxQVkGWkFReAO3SgUONFcGYLMDxC71RTF1jTYTt2FIEPw1eMJLOCs9mAuXkqyoBGhxQF+PQFBjvtcwyY+aq7BIhyKgeCYCUqFJ636QSmJIAXAEFIEYhSimTFl1STvFkPjfYEqqmUJRFkpmokg9bJ+Z1MpgKfIICSAutAZcs6mSmMBvLCADLRYCCWfnlmBnDlAbEokCASnqcbhFQW+VRO7lPQX0CpG4GB17qCZyzc3u4mFf2WItdu864cYHIKWAv+bg5lU4V3bYxiFLHQd3CZNqT9zIynx7PLuAceTyg2OPiK9/kPqqEfeWmV+8HSqb8WvSkwue5dHUXIHkbFmQaUXmxETrYVIX6FC0YmFtlGK39rabHTm5pIVqOzqtJqzc8F3r2nNoxiaLkT1Q1NsMwOkLFvALsDAWMRPvYNzbOtszDf0FBNRI8dxYWHd9TWJE3rbzuF449egFWd3jwXvpOLkaGAxv40TJ/r6hxEco+8ue4syGVTC88TR85fsmQseSAk/KCWQ2Sdw/QsVtjfpnGipuYs9Ykr4pp3mqwZtwq2y0ajwYvImoyFVU6ReO02+9dxfnuusDkW9F3lFFakcNoKoZ6c6JPbfgHHGqU/+iLy1wAAAABJRU5ErkJggg==
-                direcciones:
-                  title: Direcciones
-                  type: array
-                  uniqueItems: true
-                  default: []
-                  items:
-                    title: Dirección
-                    type: object
-                    required:
-                      - calle
-                      - codigo
-                      - provincia
-                      - pais
-                    properties:
-                      calle:
-                        title: Calle
-                        type: string
-                        maxLength: 500
-                        example: 488 Pankratz Junction
-                      codigo:
-                        title: Código Postal
-                        type: string
-                        example: "29071"
-                        pattern: ^\d{4,5}$
-                      provincia:
-                        title: Provincia
-                        type: string
-                        maxLength: 100
-                        example: Malaga
-                      pais:
-                        title: Pais
-                        type: string
-                        maxLength: 100
-                        example: España
-              additionalProperties: false
+              $ref: "#/components/schemas/ContactoProjection"
         required: true
       responses:
         "204":
@@ -297,6 +210,9 @@ paths:
       parameters:
         - $ref: "#/components/parameters/pagina"
         - $ref: "#/components/parameters/filas"
+        - $ref: "#/components/parameters/ordenar"
+        - $ref: "#/components/parameters/buscar"
+        - $ref: "#/components/parameters/proyeccion"
       responses:
         "200":
           description: OK
@@ -304,7 +220,7 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Pagina_books"
+                  - $ref: "#/components/schemas/BooksPage"
                   - $ref: "#/components/schemas/Books"
         "401":
           $ref: "#/components/responses/Unauthorized"
@@ -318,7 +234,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Book"
+              $ref: "#/components/schemas/BookModel"
         required: true
       responses:
         "201":
@@ -351,13 +267,23 @@ paths:
       tags:
         - books
       summary: Recuperar Book
+      parameters:
+        - in: query
+          name: _projection
+          description: Devuelve solo aquellas propiedades de la lista suministrada, los
+            nombres de las propiedades deben ir separadas por comas.
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Book"
+                oneOf:
+                  - $ref: "#/components/schemas/BookModel"
+                  - $ref: "#/components/schemas/BookProjection"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -372,7 +298,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Book"
+              $ref: "#/components/schemas/BookModel"
         required: true
       responses:
         "204":
@@ -404,7 +330,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: "#/components/schemas/BookProjection"
         required: true
       responses:
         "204":
@@ -436,6 +362,9 @@ paths:
       parameters:
         - $ref: "#/components/parameters/pagina"
         - $ref: "#/components/parameters/filas"
+        - $ref: "#/components/parameters/ordenar"
+        - $ref: "#/components/parameters/buscar"
+        - $ref: "#/components/parameters/proyeccion"
       responses:
         "200":
           description: OK
@@ -443,7 +372,7 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Pagina_personas"
+                  - $ref: "#/components/schemas/PersonasPage"
                   - $ref: "#/components/schemas/Personas"
         "401":
           $ref: "#/components/responses/Unauthorized"
@@ -457,7 +386,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Persona"
+              $ref: "#/components/schemas/PersonaModel"
         required: true
       responses:
         "201":
@@ -479,13 +408,23 @@ paths:
       tags:
         - personas
       summary: Recuperar Persona
+      parameters:
+        - in: query
+          name: _projection
+          description: Devuelve solo aquellas propiedades de la lista suministrada, los
+            nombres de las propiedades deben ir separadas por comas.
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Persona"
+                oneOf:
+                  - $ref: "#/components/schemas/PersonaModel"
+                  - $ref: "#/components/schemas/PersonaProjection"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -500,7 +439,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Persona"
+              $ref: "#/components/schemas/PersonaModel"
         required: true
       responses:
         "204":
@@ -532,6 +471,9 @@ paths:
       parameters:
         - $ref: "#/components/parameters/pagina"
         - $ref: "#/components/parameters/filas"
+        - $ref: "#/components/parameters/ordenar"
+        - $ref: "#/components/parameters/buscar"
+        - $ref: "#/components/parameters/proyeccion"
       responses:
         "200":
           description: OK
@@ -539,7 +481,7 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Pagina_tarjetas"
+                  - $ref: "#/components/schemas/TarjetasPage"
                   - $ref: "#/components/schemas/Tarjetas"
         "401":
           $ref: "#/components/responses/Unauthorized"
@@ -555,7 +497,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Tarjeta"
+              $ref: "#/components/schemas/TarjetaModel"
         required: true
       responses:
         "201":
@@ -579,13 +521,23 @@ paths:
       tags:
         - tarjetas
       summary: Recuperar Tarjeta
+      parameters:
+        - in: query
+          name: _projection
+          description: Devuelve solo aquellas propiedades de la lista suministrada, los
+            nombres de las propiedades deben ir separadas por comas.
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Tarjeta"
+                oneOf:
+                  - $ref: "#/components/schemas/TarjetaModel"
+                  - $ref: "#/components/schemas/TarjetaProjection"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -602,7 +554,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Tarjeta"
+              $ref: "#/components/schemas/TarjetaModel"
         required: true
       responses:
         "204":
@@ -625,6 +577,9 @@ paths:
       parameters:
         - $ref: "#/components/parameters/pagina"
         - $ref: "#/components/parameters/filas"
+        - $ref: "#/components/parameters/ordenar"
+        - $ref: "#/components/parameters/buscar"
+        - $ref: "#/components/parameters/proyeccion"
       responses:
         "200":
           description: OK
@@ -632,7 +587,7 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Pagina_blog"
+                  - $ref: "#/components/schemas/BlogPage"
                   - $ref: "#/components/schemas/Blog"
         "401":
           $ref: "#/components/responses/Unauthorized"
@@ -648,7 +603,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Articulo"
+              $ref: "#/components/schemas/ArticuloModel"
         required: true
       responses:
         "201":
@@ -685,13 +640,23 @@ paths:
       tags:
         - blog
       summary: Recuperar Articulo
+      parameters:
+        - in: query
+          name: _projection
+          description: Devuelve solo aquellas propiedades de la lista suministrada, los
+            nombres de las propiedades deben ir separadas por comas.
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Articulo"
+                oneOf:
+                  - $ref: "#/components/schemas/ArticuloModel"
+                  - $ref: "#/components/schemas/ArticuloProjection"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -708,7 +673,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Articulo"
+              $ref: "#/components/schemas/ArticuloModel"
         required: true
       responses:
         "204":
@@ -744,42 +709,7 @@ paths:
         content:
           application/json:
             schema:
-              title: Articulo
-              type: object
-              properties:
-                titulo:
-                  title: Titulo
-                  type: string
-                  maxLength: 200
-                  example: Saludo
-                texto:
-                  title: Texto
-                  type: string
-                  example: Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores
-                    eveniet eum nisi expedita ab dolorum labore similique
-                    provident officia ipsa, aliquam recusandae dicta id,
-                    praesentium quasi consequatur minus laborum perferendis?
-                autor:
-                  title: Autor
-                  type: string
-                  maxLength: 200
-                  example: Javier
-                fecha:
-                  title: Fecha
-                  type: string
-                  format: date
-                  example: 2016-02-29
-                megusta:
-                  title: Megusta
-                  type: integer
-                  example: 0
-                  default: 0
-                fotourl:
-                  title: Fotourl
-                  type: string
-                  format: uri
-                  example: https://cdn-images-1.medium.com/max/800/1*V3Kfghg_jIV0ubxmAnCXBA.jpeg
-              additionalProperties: false
+              $ref: "#/components/schemas/ArticuloProjection"
         required: true
       responses:
         "204":
@@ -815,6 +745,9 @@ paths:
       parameters:
         - $ref: "#/components/parameters/pagina"
         - $ref: "#/components/parameters/filas"
+        - $ref: "#/components/parameters/ordenar"
+        - $ref: "#/components/parameters/buscar"
+        - $ref: "#/components/parameters/proyeccion"
       responses:
         "200":
           description: OK
@@ -822,7 +755,7 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Pagina_libros"
+                  - $ref: "#/components/schemas/LibrosPage"
                   - $ref: "#/components/schemas/Libros"
         "401":
           $ref: "#/components/responses/Unauthorized"
@@ -838,7 +771,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Libro"
+              $ref: "#/components/schemas/LibroModel"
         required: true
       responses:
         "201":
@@ -875,13 +808,23 @@ paths:
       tags:
         - libros
       summary: Recuperar Libro
+      parameters:
+        - in: query
+          name: _projection
+          description: Devuelve solo aquellas propiedades de la lista suministrada, los
+            nombres de las propiedades deben ir separadas por comas.
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Libro"
+                oneOf:
+                  - $ref: "#/components/schemas/LibroModel"
+                  - $ref: "#/components/schemas/LibroProjection"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -898,7 +841,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Libro"
+              $ref: "#/components/schemas/LibroModel"
         required: true
       responses:
         "204":
@@ -934,38 +877,7 @@ paths:
         content:
           application/json:
             schema:
-              title: Libro
-              type: object
-              properties:
-                titulo:
-                  title: Titulo
-                  type: string
-                  maxLength: 200
-                  example: "El ingenioso hidalgo don Quijote de la Mancha "
-                autor:
-                  title: Autor
-                  type: string
-                  maxLength: 100
-                  example: Miguel de Cervantes
-                pais:
-                  title: Pais
-                  type: string
-                  maxLength: 50
-                  example: España
-                fecha:
-                  title: Fecha
-                  type: string
-                  example: "1605"
-                paginas:
-                  title: Paginas
-                  type: string
-                  example: "377"
-                wiki:
-                  title: Wiki
-                  type: string
-                  format: uri
-                  example: https://es.wikipedia.org/wiki/Don_Quijote_de_la_Mancha
-              additionalProperties: false
+              $ref: "#/components/schemas/LibroProjection"
         required: true
       responses:
         "204":
@@ -1001,6 +913,9 @@ paths:
       parameters:
         - $ref: "#/components/parameters/pagina"
         - $ref: "#/components/parameters/filas"
+        - $ref: "#/components/parameters/ordenar"
+        - $ref: "#/components/parameters/buscar"
+        - $ref: "#/components/parameters/proyeccion"
       responses:
         "200":
           description: OK
@@ -1008,7 +923,7 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Pagina_biblioteca"
+                  - $ref: "#/components/schemas/BibliotecaPage"
                   - $ref: "#/components/schemas/Biblioteca"
         "401":
           $ref: "#/components/responses/Unauthorized"
@@ -1022,7 +937,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Volumen"
+              $ref: "#/components/schemas/VolumenModel"
         required: true
       responses:
         "201":
@@ -1057,13 +972,23 @@ paths:
       tags:
         - biblioteca
       summary: Recuperar Volumen
+      parameters:
+        - in: query
+          name: _projection
+          description: Devuelve solo aquellas propiedades de la lista suministrada, los
+            nombres de las propiedades deben ir separadas por comas.
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Volumen"
+                oneOf:
+                  - $ref: "#/components/schemas/VolumenModel"
+                  - $ref: "#/components/schemas/VolumenProjection"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -1078,7 +1003,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Volumen"
+              $ref: "#/components/schemas/VolumenModel"
         required: true
       responses:
         "204":
@@ -1112,26 +1037,7 @@ paths:
         content:
           application/json:
             schema:
-              title: Volumen
-              type: object
-              additionalProperties: false
-              properties:
-                titulo:
-                  title: Titulo
-                  type: string
-                  maxLength: 100
-                  example: Mauris
-                autor:
-                  title: Autor
-                  type: string
-                  maxLength: 100
-                  example: At Mi Imperdiet
-                numPag:
-                  title: Número de páginas
-                  type: integer
-                  minimum: 0
-                  exclusiveMinimum: true
-                  example: 22
+              $ref: "#/components/schemas/VolumenProjection"
         required: true
       responses:
         "204":
@@ -1167,6 +1073,9 @@ paths:
       parameters:
         - $ref: "#/components/parameters/pagina"
         - $ref: "#/components/parameters/filas"
+        - $ref: "#/components/parameters/ordenar"
+        - $ref: "#/components/parameters/buscar"
+        - $ref: "#/components/parameters/proyeccion"
       responses:
         "200":
           description: OK
@@ -1174,7 +1083,7 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Pagina_vehiculos"
+                  - $ref: "#/components/schemas/VehiculosPage"
                   - $ref: "#/components/schemas/Vehiculos"
         "401":
           $ref: "#/components/responses/Unauthorized"
@@ -1190,7 +1099,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Vehiculo"
+              $ref: "#/components/schemas/VehiculoModel"
         required: true
       responses:
         "201":
@@ -1227,13 +1136,23 @@ paths:
       tags:
         - vehiculos
       summary: Recuperar Vehiculo
+      parameters:
+        - in: query
+          name: _projection
+          description: Devuelve solo aquellas propiedades de la lista suministrada, los
+            nombres de las propiedades deben ir separadas por comas.
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Vehiculo"
+                oneOf:
+                  - $ref: "#/components/schemas/VehiculoModel"
+                  - $ref: "#/components/schemas/VehiculoProjection"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -1250,7 +1169,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Vehiculo"
+              $ref: "#/components/schemas/VehiculoModel"
         required: true
       responses:
         "204":
@@ -1286,87 +1205,7 @@ paths:
         content:
           application/json:
             schema:
-              title: Vehículo
-              type: object
-              properties:
-                marca:
-                  title: Marca
-                  type: string
-                  example: AUDI
-                modelo:
-                  title: Modelo
-                  type: string
-                  example: A3
-                matricula:
-                  title: Matricula
-                  type: string
-                  example: 1234ABC
-                edad:
-                  title: Edad
-                  type: integer
-                  example: 2
-                propietario:
-                  title: Propietario
-                  type: object
-                  required:
-                    - nombre
-                    - apellidos
-                    - dni
-                    - email
-                  properties:
-                    nombre:
-                      title: Nombre
-                      type: string
-                      example: Penélope
-                    apellidos:
-                      title: Apellidos
-                      type: string
-                      example: Glamour
-                    dni:
-                      title: Dni
-                      type: string
-                      example: 12345678Z
-                    email:
-                      title: Email
-                      type: string
-                      format: email
-                      example: pglamour@example.com
-                direcciones:
-                  title: Direcciones
-                  type: array
-                  uniqueItems: true
-                  default: []
-                  items:
-                    title: Dirección
-                    type: object
-                    required:
-                      - id
-                      - calle
-                      - localidad
-                      - cp
-                      - provincia
-                    properties:
-                      id:
-                        title: Id
-                        type: string
-                        example: "1"
-                      calle:
-                        title: Calle
-                        type: string
-                        example: Compact Pussycat
-                      localidad:
-                        title: Localidad
-                        type: string
-                        example: Rota
-                      cp:
-                        title: Cp
-                        type: string
-                        example: "11080"
-                      provincia:
-                        title: Provincia
-                        type: string
-                        example: "11"
-              additionalProperties: false
+              $ref: "#/components/schemas/VehiculoProjection"
         required: true
       responses:
         "204":
@@ -1402,6 +1241,9 @@ paths:
       parameters:
         - $ref: "#/components/parameters/pagina"
         - $ref: "#/components/parameters/filas"
+        - $ref: "#/components/parameters/ordenar"
+        - $ref: "#/components/parameters/buscar"
+        - $ref: "#/components/parameters/proyeccion"
       responses:
         "200":
           description: OK
@@ -1409,7 +1251,7 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Pagina_marcas"
+                  - $ref: "#/components/schemas/MarcasPage"
                   - $ref: "#/components/schemas/Marcas"
         "401":
           $ref: "#/components/responses/Unauthorized"
@@ -1426,13 +1268,23 @@ paths:
       tags:
         - vehiculos
       summary: Recuperar Marca
+      parameters:
+        - in: query
+          name: _projection
+          description: Devuelve solo aquellas propiedades de la lista suministrada, los
+            nombres de las propiedades deben ir separadas por comas.
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Marca"
+                oneOf:
+                  - $ref: "#/components/schemas/MarcaModel"
+                  - $ref: "#/components/schemas/MarcaProjection"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -1444,15 +1296,53 @@ paths:
       tags:
         - autenticación
       summary: Iniciar sesión
+      parameters:
+        - name: cookie
+          in: query
+          required: false
+          description: 'true para que genere y envíe la cookie'
+          schema:
+            type: boolean
+        - name: name
+          in: query
+          description: Usuario (en formulario)
+          required: false
+          schema:
+            type: string
+          style: form
+          explode: false
+        - name: password
+          in: query
+          description: Contraseña (en formulario)
+          required: false
+          schema:
+            type: string
+            format: password
+          style: form
+          explode: false
       requestBody:
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/Login"
-        required: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  description: Usuario
+                  type: string
+                password:
+                  description: Contraseña
+                  type: string
+                  format: password
       responses:
         "200":
           description: Resultado de la autenticación
+          headers: 
+            Set-Cookie:
+              schema: 
+                type: string
           content:
             application/json:
               schema:
@@ -1626,14 +1516,20 @@ components:
     Contactos:
       type: array
       items:
-        $ref: "#/components/schemas/Contacto"
-    Pagina_contactos:
+        $ref: "#/components/schemas/ContactoModel"
+    ContactosProjections:
+      type: array
+      title: Contactos (Proyecciones)
+      items:
+        $ref: "#/components/schemas/ContactoProjection"
+    ContactosPage:
       type: object
       title: Pagina de contactos
       properties:
         content:
-          $ref: "#/components/schemas/Contactos"
-          description: Listado de elementos
+          oneOf:
+            - $ref: "#/components/schemas/Contactos"
+            - $ref: "#/components/schemas/ContactosProjections"
         totalElements:
           type: integer
           description: Número total de elementos
@@ -1658,12 +1554,9 @@ components:
         last:
           type: boolean
           description: Si la página es la última
-    Contacto:
-      title: Contacto
+    ContactoProjection:
+      title: Contacto (Proyección)
       type: object
-      required:
-        - id
-        - nombre
       properties:
         id:
           title: Id
@@ -1769,17 +1662,32 @@ components:
                 type: string
                 maxLength: 100
                 example: España
+      additionalProperties: false
+    ContactoModel:
+      title: Contacto (Modelo)
+      allOf:
+        - $ref: "#/components/schemas/ContactoProjection"
+      additionalProperties: false
+      required:
+        - id
+        - nombre
     Books:
       type: array
       items:
-        $ref: "#/components/schemas/Book"
-    Pagina_books:
+        $ref: "#/components/schemas/BookModel"
+    BooksProjections:
+      type: array
+      title: Books (Proyecciones)
+      items:
+        $ref: "#/components/schemas/BookProjection"
+    BooksPage:
       type: object
       title: Pagina de books
       properties:
         content:
-          $ref: "#/components/schemas/Books"
-          description: Listado de elementos
+          oneOf:
+            - $ref: "#/components/schemas/Books"
+            - $ref: "#/components/schemas/BooksProjections"
         totalElements:
           type: integer
           description: Número total de elementos
@@ -1804,28 +1712,38 @@ components:
         last:
           type: boolean
           description: Si la página es la última
-    Book:
+    BookProjection:
       type: object
-      additionalProperties: true
-      required:
-        - id
       properties:
         id:
           type: integer
           format: int32
           minimum: 0
           description: El 0 actúa como autonumérico en la creación
+      title: Book (Proyección)
+      additionalProperties: false
+    BookModel:
+      title: Book (Modelo)
+      allOf:
+        - $ref: "#/components/schemas/BookProjection"
+      additionalProperties: false
     Personas:
       type: array
       items:
-        $ref: "#/components/schemas/Persona"
-    Pagina_personas:
+        $ref: "#/components/schemas/PersonaModel"
+    PersonasProjections:
+      type: array
+      title: Personas (Proyecciones)
+      items:
+        $ref: "#/components/schemas/PersonaProjection"
+    PersonasPage:
       type: object
       title: Pagina de personas
       properties:
         content:
-          $ref: "#/components/schemas/Personas"
-          description: Listado de elementos
+          oneOf:
+            - $ref: "#/components/schemas/Personas"
+            - $ref: "#/components/schemas/PersonasProjections"
         totalElements:
           type: integer
           description: Número total de elementos
@@ -1850,12 +1768,9 @@ components:
         last:
           type: boolean
           description: Si la página es la última
-    Persona:
-      title: Persona
+    PersonaProjection:
+      title: Persona (Proyección)
       type: object
-      required:
-        - id
-        - nombre
       properties:
         id:
           title: Id
@@ -1887,17 +1802,32 @@ components:
             type: string
             example: 999 555 555
             pattern: ^(\d{3}\s){2}\d{3}$
+      additionalProperties: false
+    PersonaModel:
+      title: Persona (Modelo)
+      allOf:
+        - $ref: "#/components/schemas/PersonaProjection"
+      additionalProperties: false
+      required:
+        - id
+        - nombre
     Tarjetas:
       type: array
       items:
-        $ref: "#/components/schemas/Tarjeta"
-    Pagina_tarjetas:
+        $ref: "#/components/schemas/TarjetaModel"
+    TarjetasProjections:
+      type: array
+      title: Tarjetas (Proyecciones)
+      items:
+        $ref: "#/components/schemas/TarjetaProjection"
+    TarjetasPage:
       type: object
       title: Pagina de tarjetas
       properties:
         content:
-          $ref: "#/components/schemas/Tarjetas"
-          description: Listado de elementos
+          oneOf:
+            - $ref: "#/components/schemas/Tarjetas"
+            - $ref: "#/components/schemas/TarjetasProjections"
         totalElements:
           type: integer
           description: Número total de elementos
@@ -1922,16 +1852,9 @@ components:
         last:
           type: boolean
           description: Si la página es la última
-    Tarjeta:
-      title: Tarjeta
+    TarjetaProjection:
+      title: Tarjeta (Proyección)
       type: object
-      required:
-        - id
-        - idCliente
-        - numero
-        - caducidad
-        - CVC_CVV
-        - tipo
       properties:
         id:
           title: Id
@@ -1962,17 +1885,36 @@ components:
           title: Cvc_cvv
           type: string
           example: "147"
+      additionalProperties: false
+    TarjetaModel:
+      title: Tarjeta (Modelo)
+      allOf:
+        - $ref: "#/components/schemas/TarjetaProjection"
+      additionalProperties: false
+      required:
+        - id
+        - idCliente
+        - numero
+        - caducidad
+        - CVC_CVV
+        - tipo
     Blog:
       type: array
       items:
-        $ref: "#/components/schemas/Articulo"
-    Pagina_blog:
+        $ref: "#/components/schemas/ArticuloModel"
+    BlogProjections:
+      type: array
+      title: Blog (Proyecciones)
+      items:
+        $ref: "#/components/schemas/ArticuloProjection"
+    BlogPage:
       type: object
       title: Pagina de blog
       properties:
         content:
-          $ref: "#/components/schemas/Blog"
-          description: Listado de elementos
+          oneOf:
+            - $ref: "#/components/schemas/Blog"
+            - $ref: "#/components/schemas/BlogProjections"
         totalElements:
           type: integer
           description: Número total de elementos
@@ -1997,12 +1939,9 @@ components:
         last:
           type: boolean
           description: Si la página es la última
-    Articulo:
-      title: Articulo
+    ArticuloProjection:
+      title: Articulo (Proyección)
       type: object
-      required:
-        - id
-        - titulo
       properties:
         id:
           title: Id
@@ -2042,17 +1981,32 @@ components:
           type: string
           format: uri
           example: https://cdn-images-1.medium.com/max/800/1*V3Kfghg_jIV0ubxmAnCXBA.jpeg
+      additionalProperties: false
+    ArticuloModel:
+      title: Articulo (Modelo)
+      allOf:
+        - $ref: "#/components/schemas/ArticuloProjection"
+      additionalProperties: false
+      required:
+        - id
+        - titulo
     Libros:
       type: array
       items:
-        $ref: "#/components/schemas/Libro"
-    Pagina_libros:
+        $ref: "#/components/schemas/LibroModel"
+    LibrosProjections:
+      type: array
+      title: Libros (Proyecciones)
+      items:
+        $ref: "#/components/schemas/LibroProjection"
+    LibrosPage:
       type: object
       title: Pagina de libros
       properties:
         content:
-          $ref: "#/components/schemas/Libros"
-          description: Listado de elementos
+          oneOf:
+            - $ref: "#/components/schemas/Libros"
+            - $ref: "#/components/schemas/LibrosProjections"
         totalElements:
           type: integer
           description: Número total de elementos
@@ -2077,12 +2031,9 @@ components:
         last:
           type: boolean
           description: Si la página es la última
-    Libro:
-      title: Libro
+    LibroProjection:
+      title: Libro (Proyección)
       type: object
-      required:
-        - idLibro
-        - titulo
       properties:
         idLibro:
           title: Idlibro
@@ -2116,17 +2067,32 @@ components:
           type: string
           format: uri
           example: https://es.wikipedia.org/wiki/Don_Quijote_de_la_Mancha
+      additionalProperties: false
+    LibroModel:
+      title: Libro (Modelo)
+      allOf:
+        - $ref: "#/components/schemas/LibroProjection"
+      additionalProperties: false
+      required:
+        - idLibro
+        - titulo
     Biblioteca:
       type: array
       items:
-        $ref: "#/components/schemas/Volumen"
-    Pagina_biblioteca:
+        $ref: "#/components/schemas/VolumenModel"
+    BibliotecaProjections:
+      type: array
+      title: Biblioteca (Proyecciones)
+      items:
+        $ref: "#/components/schemas/VolumenProjection"
+    BibliotecaPage:
       type: object
       title: Pagina de biblioteca
       properties:
         content:
-          $ref: "#/components/schemas/Biblioteca"
-          description: Listado de elementos
+          oneOf:
+            - $ref: "#/components/schemas/Biblioteca"
+            - $ref: "#/components/schemas/BibliotecaProjections"
         totalElements:
           type: integer
           description: Número total de elementos
@@ -2151,14 +2117,10 @@ components:
         last:
           type: boolean
           description: Si la página es la última
-    Volumen:
-      title: Volumen
+    VolumenProjection:
+      title: Volumen (Proyección)
       type: object
       additionalProperties: false
-      required:
-        - id
-        - titulo
-        - autor
       properties:
         id:
           title: Id
@@ -2182,17 +2144,32 @@ components:
           minimum: 0
           exclusiveMinimum: true
           example: 22
+    VolumenModel:
+      title: Volumen (Modelo)
+      allOf:
+        - $ref: "#/components/schemas/VolumenProjection"
+      additionalProperties: false
+      required:
+        - id
+        - titulo
+        - autor
     Vehiculos:
       type: array
       items:
-        $ref: "#/components/schemas/Vehiculo"
-    Pagina_vehiculos:
+        $ref: "#/components/schemas/VehiculoModel"
+    VehiculosProjections:
+      type: array
+      title: Vehiculos (Proyecciones)
+      items:
+        $ref: "#/components/schemas/VehiculoProjection"
+    VehiculosPage:
       type: object
       title: Pagina de vehiculos
       properties:
         content:
-          $ref: "#/components/schemas/Vehiculos"
-          description: Listado de elementos
+          oneOf:
+            - $ref: "#/components/schemas/Vehiculos"
+            - $ref: "#/components/schemas/VehiculosProjections"
         totalElements:
           type: integer
           description: Número total de elementos
@@ -2217,14 +2194,9 @@ components:
         last:
           type: boolean
           description: Si la página es la última
-    Vehiculo:
-      title: Vehículo
+    VehiculoProjection:
+      title: Vehiculo (Proyección)
       type: object
-      required:
-        - id
-        - marca
-        - modelo
-        - matricula
       properties:
         id:
           title: Id
@@ -2309,17 +2281,34 @@ components:
                 title: Provincia
                 type: string
                 example: "11"
+      additionalProperties: false
+    VehiculoModel:
+      title: Vehiculo (Modelo)
+      allOf:
+        - $ref: "#/components/schemas/VehiculoProjection"
+      additionalProperties: false
+      required:
+        - id
+        - marca
+        - modelo
+        - matricula
     Marcas:
       type: array
       items:
-        $ref: "#/components/schemas/Marca"
-    Pagina_marcas:
+        $ref: "#/components/schemas/MarcaModel"
+    MarcasProjections:
+      type: array
+      title: Marcas (Proyecciones)
+      items:
+        $ref: "#/components/schemas/MarcaProjection"
+    MarcasPage:
       type: object
       title: Pagina de marcas
       properties:
         content:
-          $ref: "#/components/schemas/Marcas"
-          description: Listado de elementos
+          oneOf:
+            - $ref: "#/components/schemas/Marcas"
+            - $ref: "#/components/schemas/MarcasProjections"
         totalElements:
           type: integer
           description: Número total de elementos
@@ -2344,12 +2333,9 @@ components:
         last:
           type: boolean
           description: Si la página es la última
-    Marca:
-      title: Marca
+    MarcaProjection:
+      title: Marca (Proyección)
       type: object
-      required:
-        - marca
-        - modelos
       properties:
         marca:
           title: Marca
@@ -2364,6 +2350,15 @@ components:
             title: Modelo
             type: string
             example: Giulietta
+      additionalProperties: false
+    MarcaModel:
+      title: Marca (Modelo)
+      allOf:
+        - $ref: "#/components/schemas/MarcaProjection"
+      additionalProperties: false
+      required:
+        - marca
+        - modelos
     Login:
       description: Credenciales de autenticación
       type: object
@@ -2430,21 +2425,46 @@ components:
     pagina:
       in: query
       name: _page
-      description: Número de página, siendo 0 la primera
+      description: Número de página empezando en 0 (primera página).
       required: false
       schema:
         type: integer
         minimum: 0
-        default: 0
     filas:
       in: query
       name: _rows
-      description: Número de filas por página
+      description: Número de filas por página, por defecto 20 si se omite pero aparece
+        el parámetro *_page*.
       required: false
       schema:
         type: integer
         minimum: 0
-        default: 20
+    ordenar:
+      in: query
+      name: _sort
+      description: Indica la lista de propiedades (separadas por comas) por la que se
+        ordenaran los resultados, en caso de omitirse se utilizará la propiedad
+        que actúa como primary key. Si el nombre de la propiedad está precedido
+        por un guion (signo negativo) la ordenación será descendente.
+      required: false
+      schema:
+        type: string
+    buscar:
+      in: query
+      name: _search
+      description: Selecciona todos aquellos que en alguna de sus propiedades contenga
+        el valor proporcionado.
+      required: false
+      schema:
+        type: string
+    proyeccion:
+      in: query
+      name: _projection
+      description: Devuelve solo aquellas propiedades de la lista suministrada, los
+        nombres de las propiedades deben ir separadas por comas.
+      required: false
+      schema:
+        type: string
   securitySchemes:
     bearerAuth:
       type: http

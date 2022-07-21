@@ -21,8 +21,7 @@
                 "id": {
                     "title": "Id",
                     "type": "integer",
-                    "example": 1,
-                    "default": 0
+                    "example": 1
                 },
                 "tratamiento": {
                     "title": "Tratamiento",
@@ -65,6 +64,12 @@
                     "maxLength": 100,
                     "example": "pwoodall0@army.mil"
                 },
+                "nif": {
+                    "title": "N.I.F.",
+                    "type": "string",
+                    "format" : "nif",
+                    "example": "12345678Z"
+                },
                 "sexo": {
                     "title": "Sexo",
                     "type": "string",
@@ -72,7 +77,6 @@
                         "H",
                         "M"
                     ],
-                    "default": "H",
                     "example": "H"
                 },
                 "nacimiento": {
@@ -91,8 +95,7 @@
                 "conflictivo": {
                     "title": "Conflictivo",
                     "type": "boolean",
-                    "example": true,
-                    "default": false
+                    "example": true
                 },
                 "icono": {
                     "title": "Icono",
@@ -104,7 +107,6 @@
                     "title": "Direcciones",
                     "type": "array",
                     "uniqueItems": true,
-                    "default": [],
                     "items": {
                         "title": "Dirección",
                         "type": "object",
@@ -186,6 +188,12 @@
                     "type": "string",
                     "example": "Grillo"
                 },
+                "correo": {
+                    "title": "Correo",
+                    "type": "string",
+                    "format": "email",
+                    "example": "pepito@grillo.tv"
+                },
                 "edad": {
                     "title": "Edad",
                     "type": "integer",
@@ -193,7 +201,7 @@
                     "maximum": 67,
                     "example": 37
                 },
-                "telefonos": {
+                "telefono": {
                     "title": "Teléfonos",
                     "type": "array",
                     "uniqueItems": true,
@@ -401,8 +409,7 @@
                 "id": {
                     "title": "Id",
                     "type": "integer",
-                    "example": 0,
-                    "default": 0
+                    "example": 0
                 },
                 "titulo": {
                     "title": "Titulo",
@@ -492,6 +499,7 @@
                         "dni": {
                             "title": "Dni",
                             "type": "string",
+                            "format" : "nif",
                             "example": "12345678Z"
                         },
                         "email": {

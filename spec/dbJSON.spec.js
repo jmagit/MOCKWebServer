@@ -318,17 +318,17 @@ describe('dbJSON: Base de datos JSON', () => {
             });
             it('update: Missing data', () => {
                 let nuevo = Object.assign({}, elemento, { id: 0 })
-                expect(() => db.update(nuevo)).toThrow(/Missing data/)
+                expect(() => db.update(nuevo)).toThrow(/Not Found/)
                 let data = JSON.parse(fsMock.__getMockFile(nombreFichero))
                 expect(data).toEqual(sourceFile)
             });
             it('change: Missing data', () => {
-                expect(() => db.change(999, {})).toThrow(/Missing data/)
+                expect(() => db.change(999, {})).toThrow(/Not Found/)
                 let data = JSON.parse(fsMock.__getMockFile(nombreFichero))
                 expect(data).toEqual(sourceFile)
             });
             it('delete: Missing data', () => {
-                expect(() => db.delete(999, {})).toThrow(/Missing data/)
+                expect(() => db.delete(999, {})).toThrow(/Not Found/)
                 let data = JSON.parse(fsMock.__getMockFile(nombreFichero))
                 expect(data).toEqual(sourceFile)
             });

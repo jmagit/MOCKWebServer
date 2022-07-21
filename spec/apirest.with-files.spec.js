@@ -13,7 +13,7 @@ describe('API Rest: Ficheros reales', () => {
         if (typeof (security) === 'string')
             auth = seguridad.generarTokenScheme({ "idUsuario": "admin", "password": "", "nombre": "Administrador", "roles": security.split(",") })
         let response = await request(app)
-            .get("/api/" + endpoint)
+            .get("/api/" + endpoint.toLowerCase())
             .set('authorization', auth)
         expect(response.statusCode).toBe(200)
         expect(response.body.length).toBeGreaterThan(1)
