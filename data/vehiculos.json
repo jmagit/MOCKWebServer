@@ -13,11 +13,11 @@
     },
     "direcciones": [
       {
-        "id": "1",
+        "id": 1,
         "calle": "Compact Pussycat",
         "localidad": "Rota",
         "cp": "11080",
-        "provincia": "11"
+        "provincia": 11
       }
     ]
   },
@@ -30,7 +30,7 @@
     "propietario": {
       "nombre": "Pedro",
       "apellidos": "Pica Piedra",
-      "dni": "00000001R",
+      "dni": "00000004G",
       "email": "ppicap@flintstone.kk"
     },
     "direcciones": [
