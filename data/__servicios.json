@@ -260,7 +260,7 @@
                     "title": "Numero",
                     "type": "string",
                     "example": "4024 0071 1838 5904",
-                    "pattern": "^(\\d{4}\\s){3}\\d{4}$"
+                    "pattern": "^(((\\d{4}\\s){3}\\d{4})|(\\d{13}))$"
                 },
                 "caducidad": {
                     "title": "Caducidad",
@@ -453,8 +453,7 @@
                 "id": {
                     "title": "Id",
                     "type": "integer",
-                    "example": 1,
-                    "default": 0
+                    "example": 1
                 },
                 "marca": {
                     "title": "Marca",
@@ -528,8 +527,8 @@
                         "properties": {
                             "id": {
                                 "title": "Id",
-                                "type": "string",
-                                "example": "1"
+                                "type": "integer",
+                                "example": 1
                             },
                             "calle": {
                                 "title": "Calle",
@@ -548,8 +547,8 @@
                             },
                             "provincia": {
                                 "title": "Provincia",
-                                "type": "string",
-                                "example": "11"
+                                "type": "integer",
+                                "example": 11
                             }
                         }
                     }

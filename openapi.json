@@ -47,31 +47,31 @@
     },
     {
       "name": "books",
-      "description": "Mantenimiento de Books"
+      "description": "Mantenimiento de books"
     },
     {
       "name": "personas",
-      "description": "Mantenimiento de Personas"
+      "description": "Mantenimiento de personas"
     },
     {
       "name": "tarjetas",
-      "description": "Mantenimiento de Tarjetas"
+      "description": "Mantenimiento de tarjetas"
     },
     {
       "name": "blog",
-      "description": "Mantenimiento de Blog"
+      "description": "Mantenimiento de blog"
     },
     {
       "name": "libros",
-      "description": "Mantenimiento de Libros"
+      "description": "Mantenimiento de libros"
     },
     {
       "name": "biblioteca",
-      "description": "Mantenimiento de Biblioteca"
+      "description": "Mantenimiento de biblioteca"
     },
     {
       "name": "vehiculos",
-      "description": "Mantenimiento de Vehiculos"
+      "description": "Mantenimiento de vehiculos"
     },
     {
       "name": "autenticación",
@@ -95,6 +95,15 @@
           },
           {
             "$ref": "#/components/parameters/filas"
+          },
+          {
+            "$ref": "#/components/parameters/ordenar"
+          },
+          {
+            "$ref": "#/components/parameters/buscar"
+          },
+          {
+            "$ref": "#/components/parameters/proyeccion"
           }
         ],
         "responses": {
@@ -105,10 +114,10 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/Pagina_contactos"
+                      "$ref": "#/components/schemas/Contactos"
                     },
                     {
-                      "$ref": "#/components/schemas/Contactos"
+                      "$ref": "#/components/schemas/ContactosPage"
                     }
                   ]
                 }
@@ -127,12 +136,12 @@
         "tags": [
           "contactos"
         ],
-        "summary": "Crear Contacto",
+        "summary": "Crear contacto",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Contacto"
+                "$ref": "#/components/schemas/ContactoModel"
               }
             }
           },
@@ -177,6 +186,7 @@
           "name": "id",
           "in": "path",
           "required": true,
+          "description": "Identificador del recurso",
           "schema": {
             "type": "integer"
           }
@@ -186,14 +196,25 @@
         "tags": [
           "contactos"
         ],
-        "summary": "Recuperar Contacto",
+        "summary": "Recuperar contacto",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "_projection",
+            "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Contacto"
+                  "$ref": "#/components/schemas/ContactoProjection"
                 }
               }
             }
@@ -213,20 +234,27 @@
         "tags": [
           "contactos"
         ],
-        "summary": "Reemplazar Contacto",
+        "summary": "Reemplazar contacto",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Contacto"
+                "$ref": "#/components/schemas/ContactoModel"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "204": {
-            "$ref": "#/components/responses/NoContent"
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactoProjection"
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -263,142 +291,27 @@
         "tags": [
           "contactos"
         ],
-        "summary": "Actualiza parte de Contacto",
+        "summary": "Actualizar parcialmente contacto",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "title": "Contacto",
-                "type": "object",
-                "properties": {
-                  "tratamiento": {
-                    "title": "Tratamiento",
-                    "type": "string",
-                    "enum": [
-                      "Sr.",
-                      "Sra.",
-                      "Srta.",
-                      "Dr.",
-                      "Dra.",
-                      "Ilmo.",
-                      "Ilma.",
-                      "Excmo.",
-                      "Excma."
-                    ],
-                    "example": "Excmo."
-                  },
-                  "nombre": {
-                    "title": "Nombre",
-                    "type": "string",
-                    "maxLength": 100,
-                    "example": "Pietro"
-                  },
-                  "apellidos": {
-                    "title": "Apellidos",
-                    "type": "string",
-                    "maxLength": 100,
-                    "example": "Woodall"
-                  },
-                  "telefono": {
-                    "title": "Telefono",
-                    "type": "string",
-                    "example": "642 051 348",
-                    "pattern": "^(\\d{3}\\s){2}\\d{3}$"
-                  },
-                  "email": {
-                    "title": "Email",
-                    "type": "string",
-                    "format": "email",
-                    "maxLength": 100,
-                    "example": "pwoodall0@army.mil"
-                  },
-                  "sexo": {
-                    "title": "Sexo",
-                    "type": "string",
-                    "enum": [
-                      "H",
-                      "M"
-                    ],
-                    "default": "H",
-                    "example": "H"
-                  },
-                  "nacimiento": {
-                    "title": "Nacimiento",
-                    "type": "string",
-                    "format": "date",
-                    "example": "1963-10-11"
-                  },
-                  "avatar": {
-                    "title": "Avatar",
-                    "type": "string",
-                    "format": "uri",
-                    "maxLength": 200,
-                    "example": "https://randomuser.me/api/portraits/men/0.jpg"
-                  },
-                  "conflictivo": {
-                    "title": "Conflictivo",
-                    "type": "boolean",
-                    "example": true,
-                    "default": false
-                  },
-                  "icono": {
-                    "title": "Icono",
-                    "type": "string",
-                    "maxLength": 65000,
-                    "example": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAALJSURBVDjLpVNbS1RRFP72nHGaUedmpamj5pgKSUli0eXJfOipoELs+hA+FFT44oMSRBkZ1GNC/oAoCJ+C8QaSZhdCTEU0rbyP05jTzOTczv20zkz6IBFBBxZrs9f+vv3t76zFNE3D/3zGjYXa01OuKUqtJstZqizPUnSb6+vDem29o8OpiuIFimZFEOZUQXiY09rq0WtMV6B2d98k8F2YTU4YOKjRCKTw+qQqSZcJFKPoTMty7Nu2pwRKJILY2DjiPv9TIrvGlK6uk5osvjSUl4ERGJIEmEyQlpeRmJpeUkQxaikp3mt2u4FwEPoFcDgR6u1FaHzivpGk3uDy88DiccDnBxQVkGWkFReAO3SgUONFcGYLMDxC71RTF1jTYTt2FIEPw1eMJLOCs9mAuXkqyoBGhxQF+PQFBjvtcwyY+aq7BIhyKgeCYCUqFJ636QSmJIAXAEFIEYhSimTFl1STvFkPjfYEqqmUJRFkpmokg9bJ+Z1MpgKfIICSAutAZcs6mSmMBvLCADLRYCCWfnlmBnDlAbEokCASnqcbhFQW+VRO7lPQX0CpG4GB17qCZyzc3u4mFf2WItdu864cYHIKWAv+bg5lU4V3bYxiFLHQd3CZNqT9zIynx7PLuAceTyg2OPiK9/kPqqEfeWmV+8HSqb8WvSkwue5dHUXIHkbFmQaUXmxETrYVIX6FC0YmFtlGK39rabHTm5pIVqOzqtJqzc8F3r2nNoxiaLkT1Q1NsMwOkLFvALsDAWMRPvYNzbOtszDf0FBNRI8dxYWHd9TWJE3rbzuF449egFWd3jwXvpOLkaGAxv40TJ/r6hxEco+8ue4syGVTC88TR85fsmQseSAk/KCWQ2Sdw/QsVtjfpnGipuYs9Ykr4pp3mqwZtwq2y0ajwYvImoyFVU6ReO02+9dxfnuusDkW9F3lFFakcNoKoZ6c6JPbfgHHGqU/+iLy1wAAAABJRU5ErkJggg=="
-                  },
-                  "direcciones": {
-                    "title": "Direcciones",
-                    "type": "array",
-                    "uniqueItems": true,
-                    "default": [],
-                    "items": {
-                      "title": "Dirección",
-                      "type": "object",
-                      "required": [
-                        "calle",
-                        "codigo",
-                        "provincia",
-                        "pais"
-                      ],
-                      "properties": {
-                        "calle": {
-                          "title": "Calle",
-                          "type": "string",
-                          "maxLength": 500,
-                          "example": "488 Pankratz Junction"
-                        },
-                        "codigo": {
-                          "title": "Código Postal",
-                          "type": "string",
-                          "example": "29071",
-                          "pattern": "^\\d{4,5}$"
-                        },
-                        "provincia": {
-                          "title": "Provincia",
-                          "type": "string",
-                          "maxLength": 100,
-                          "example": "Malaga"
-                        },
-                        "pais": {
-                          "title": "Pais",
-                          "type": "string",
-                          "maxLength": 100,
-                          "example": "España"
-                        }
-                      }
-                    }
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/components/schemas/ContactoProjection"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "204": {
-            "$ref": "#/components/responses/NoContent"
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactoProjection"
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -418,7 +331,7 @@
         "tags": [
           "contactos"
         ],
-        "summary": "Borrar Contacto",
+        "summary": "Borrar contacto",
         "responses": {
           "204": {
             "$ref": "#/components/responses/NoContent"
@@ -428,6 +341,9 @@
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
           }
         }
       }
@@ -444,6 +360,15 @@
           },
           {
             "$ref": "#/components/parameters/filas"
+          },
+          {
+            "$ref": "#/components/parameters/ordenar"
+          },
+          {
+            "$ref": "#/components/parameters/buscar"
+          },
+          {
+            "$ref": "#/components/parameters/proyeccion"
           }
         ],
         "responses": {
@@ -454,10 +379,10 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/Pagina_books"
+                      "$ref": "#/components/schemas/Books"
                     },
                     {
-                      "$ref": "#/components/schemas/Books"
+                      "$ref": "#/components/schemas/BooksPage"
                     }
                   ]
                 }
@@ -476,12 +401,12 @@
         "tags": [
           "books"
         ],
-        "summary": "Crear Book",
+        "summary": "Crear book",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Book"
+                "$ref": "#/components/schemas/BookModel"
               }
             }
           },
@@ -526,6 +451,7 @@
           "name": "id",
           "in": "path",
           "required": true,
+          "description": "Identificador del recurso",
           "schema": {
             "type": "integer"
           }
@@ -535,14 +461,25 @@
         "tags": [
           "books"
         ],
-        "summary": "Recuperar Book",
+        "summary": "Recuperar book",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "_projection",
+            "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Book"
+                  "$ref": "#/components/schemas/BookProjection"
                 }
               }
             }
@@ -562,20 +499,27 @@
         "tags": [
           "books"
         ],
-        "summary": "Reemplazar Book",
+        "summary": "Reemplazar book",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Book"
+                "$ref": "#/components/schemas/BookModel"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "204": {
-            "$ref": "#/components/responses/NoContent"
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookProjection"
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -612,20 +556,27 @@
         "tags": [
           "books"
         ],
-        "summary": "Actualiza parte de Book",
+        "summary": "Actualizar parcialmente book",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "type": "object"
+                "$ref": "#/components/schemas/BookProjection"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "204": {
-            "$ref": "#/components/responses/NoContent"
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookProjection"
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -645,7 +596,7 @@
         "tags": [
           "books"
         ],
-        "summary": "Borrar Book",
+        "summary": "Borrar book",
         "responses": {
           "204": {
             "$ref": "#/components/responses/NoContent"
@@ -655,6 +606,9 @@
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
           }
         }
       }
@@ -671,6 +625,15 @@
           },
           {
             "$ref": "#/components/parameters/filas"
+          },
+          {
+            "$ref": "#/components/parameters/ordenar"
+          },
+          {
+            "$ref": "#/components/parameters/buscar"
+          },
+          {
+            "$ref": "#/components/parameters/proyeccion"
           }
         ],
         "responses": {
@@ -681,10 +644,10 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/Pagina_personas"
+                      "$ref": "#/components/schemas/Personas"
                     },
                     {
-                      "$ref": "#/components/schemas/Personas"
+                      "$ref": "#/components/schemas/PersonasPage"
                     }
                   ]
                 }
@@ -703,12 +666,12 @@
         "tags": [
           "personas"
         ],
-        "summary": "Crear Persona",
+        "summary": "Crear persona",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Persona"
+                "$ref": "#/components/schemas/PersonaModel"
               }
             }
           },
@@ -736,6 +699,7 @@
           "name": "id",
           "in": "path",
           "required": true,
+          "description": "Identificador del recurso",
           "schema": {
             "type": "integer"
           }
@@ -745,14 +709,25 @@
         "tags": [
           "personas"
         ],
-        "summary": "Recuperar Persona",
+        "summary": "Recuperar persona",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "_projection",
+            "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Persona"
+                  "$ref": "#/components/schemas/PersonaProjection"
                 }
               }
             }
@@ -772,20 +747,27 @@
         "tags": [
           "personas"
         ],
-        "summary": "Reemplazar Persona",
+        "summary": "Reemplazar persona",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Persona"
+                "$ref": "#/components/schemas/PersonaModel"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "204": {
-            "$ref": "#/components/responses/NoContent"
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaProjection"
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -805,7 +787,7 @@
         "tags": [
           "personas"
         ],
-        "summary": "Borrar Persona",
+        "summary": "Borrar persona",
         "responses": {
           "204": {
             "$ref": "#/components/responses/NoContent"
@@ -815,6 +797,9 @@
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
           }
         }
       }
@@ -831,6 +816,15 @@
           },
           {
             "$ref": "#/components/parameters/filas"
+          },
+          {
+            "$ref": "#/components/parameters/ordenar"
+          },
+          {
+            "$ref": "#/components/parameters/buscar"
+          },
+          {
+            "$ref": "#/components/parameters/proyeccion"
           }
         ],
         "responses": {
@@ -841,10 +835,10 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/Pagina_tarjetas"
+                      "$ref": "#/components/schemas/Tarjetas"
                     },
                     {
-                      "$ref": "#/components/schemas/Tarjetas"
+                      "$ref": "#/components/schemas/TarjetasPage"
                     }
                   ]
                 }
@@ -861,6 +855,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -868,12 +865,12 @@
         "tags": [
           "tarjetas"
         ],
-        "summary": "Crear Tarjeta",
+        "summary": "Crear tarjeta",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Tarjeta"
+                "$ref": "#/components/schemas/TarjetaModel"
               }
             }
           },
@@ -896,6 +893,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       }
@@ -906,6 +906,7 @@
           "name": "id",
           "in": "path",
           "required": true,
+          "description": "Identificador del recurso",
           "schema": {
             "type": "integer"
           }
@@ -915,14 +916,25 @@
         "tags": [
           "tarjetas"
         ],
-        "summary": "Recuperar Tarjeta",
+        "summary": "Recuperar tarjeta",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "_projection",
+            "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Tarjeta"
+                  "$ref": "#/components/schemas/TarjetaProjection"
                 }
               }
             }
@@ -940,6 +952,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -947,20 +962,27 @@
         "tags": [
           "tarjetas"
         ],
-        "summary": "Reemplazar Tarjeta",
+        "summary": "Reemplazar tarjeta",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Tarjeta"
+                "$ref": "#/components/schemas/TarjetaModel"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "204": {
-            "$ref": "#/components/responses/NoContent"
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TarjetaProjection"
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -978,6 +1000,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       }
@@ -994,6 +1019,15 @@
           },
           {
             "$ref": "#/components/parameters/filas"
+          },
+          {
+            "$ref": "#/components/parameters/ordenar"
+          },
+          {
+            "$ref": "#/components/parameters/buscar"
+          },
+          {
+            "$ref": "#/components/parameters/proyeccion"
           }
         ],
         "responses": {
@@ -1004,10 +1038,10 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/Pagina_blog"
+                      "$ref": "#/components/schemas/Blog"
                     },
                     {
-                      "$ref": "#/components/schemas/Blog"
+                      "$ref": "#/components/schemas/BlogPage"
                     }
                   ]
                 }
@@ -1024,6 +1058,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -1031,12 +1068,12 @@
         "tags": [
           "blog"
         ],
-        "summary": "Crear Articulo",
+        "summary": "Crear articulo",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Articulo"
+                "$ref": "#/components/schemas/ArticuloModel"
               }
             }
           },
@@ -1059,6 +1096,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -1081,6 +1121,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       }
@@ -1091,6 +1134,7 @@
           "name": "id",
           "in": "path",
           "required": true,
+          "description": "Identificador del recurso",
           "schema": {
             "type": "integer"
           }
@@ -1100,14 +1144,25 @@
         "tags": [
           "blog"
         ],
-        "summary": "Recuperar Articulo",
+        "summary": "Recuperar articulo",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "_projection",
+            "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Articulo"
+                  "$ref": "#/components/schemas/ArticuloProjection"
                 }
               }
             }
@@ -1125,6 +1180,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -1132,20 +1190,27 @@
         "tags": [
           "blog"
         ],
-        "summary": "Reemplazar Articulo",
+        "summary": "Reemplazar articulo",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Articulo"
+                "$ref": "#/components/schemas/ArticuloModel"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "204": {
-            "$ref": "#/components/responses/NoContent"
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticuloProjection"
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -1163,6 +1228,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -1185,6 +1253,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -1192,59 +1263,27 @@
         "tags": [
           "blog"
         ],
-        "summary": "Actualiza parte de Articulo",
+        "summary": "Actualizar parcialmente articulo",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "title": "Articulo",
-                "type": "object",
-                "properties": {
-                  "titulo": {
-                    "title": "Titulo",
-                    "type": "string",
-                    "maxLength": 200,
-                    "example": "Saludo"
-                  },
-                  "texto": {
-                    "title": "Texto",
-                    "type": "string",
-                    "example": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores eveniet eum nisi expedita ab dolorum labore similique provident officia ipsa, aliquam recusandae dicta id, praesentium quasi consequatur minus laborum perferendis?"
-                  },
-                  "autor": {
-                    "title": "Autor",
-                    "type": "string",
-                    "maxLength": 200,
-                    "example": "Javier"
-                  },
-                  "fecha": {
-                    "title": "Fecha",
-                    "type": "string",
-                    "format": "date",
-                    "example": "2016-02-29"
-                  },
-                  "megusta": {
-                    "title": "Megusta",
-                    "type": "integer",
-                    "example": 0,
-                    "default": 0
-                  },
-                  "fotourl": {
-                    "title": "Fotourl",
-                    "type": "string",
-                    "format": "uri",
-                    "example": "https://cdn-images-1.medium.com/max/800/1*V3Kfghg_jIV0ubxmAnCXBA.jpeg"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/components/schemas/ArticuloProjection"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "204": {
-            "$ref": "#/components/responses/NoContent"
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticuloProjection"
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -1262,6 +1301,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -1269,7 +1311,7 @@
         "tags": [
           "blog"
         ],
-        "summary": "Borrar Articulo",
+        "summary": "Borrar articulo",
         "responses": {
           "204": {
             "$ref": "#/components/responses/NoContent"
@@ -1279,11 +1321,17 @@
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
           }
         },
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       }
@@ -1300,6 +1348,15 @@
           },
           {
             "$ref": "#/components/parameters/filas"
+          },
+          {
+            "$ref": "#/components/parameters/ordenar"
+          },
+          {
+            "$ref": "#/components/parameters/buscar"
+          },
+          {
+            "$ref": "#/components/parameters/proyeccion"
           }
         ],
         "responses": {
@@ -1310,10 +1367,10 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/Pagina_libros"
+                      "$ref": "#/components/schemas/Libros"
                     },
                     {
-                      "$ref": "#/components/schemas/Libros"
+                      "$ref": "#/components/schemas/LibrosPage"
                     }
                   ]
                 }
@@ -1330,6 +1387,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -1337,12 +1397,12 @@
         "tags": [
           "libros"
         ],
-        "summary": "Crear Libro",
+        "summary": "Crear libro",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Libro"
+                "$ref": "#/components/schemas/LibroModel"
               }
             }
           },
@@ -1365,6 +1425,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -1387,6 +1450,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       }
@@ -1397,6 +1463,7 @@
           "name": "id",
           "in": "path",
           "required": true,
+          "description": "Identificador del recurso",
           "schema": {
             "type": "string"
           }
@@ -1406,14 +1473,25 @@
         "tags": [
           "libros"
         ],
-        "summary": "Recuperar Libro",
+        "summary": "Recuperar libro",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "_projection",
+            "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Libro"
+                  "$ref": "#/components/schemas/LibroProjection"
                 }
               }
             }
@@ -1431,6 +1509,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -1438,20 +1519,27 @@
         "tags": [
           "libros"
         ],
-        "summary": "Reemplazar Libro",
+        "summary": "Reemplazar libro",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Libro"
+                "$ref": "#/components/schemas/LibroModel"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "204": {
-            "$ref": "#/components/responses/NoContent"
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibroProjection"
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -1469,6 +1557,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -1491,6 +1582,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -1498,58 +1592,27 @@
         "tags": [
           "libros"
         ],
-        "summary": "Actualiza parte de Libro",
+        "summary": "Actualizar parcialmente libro",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "title": "Libro",
-                "type": "object",
-                "properties": {
-                  "titulo": {
-                    "title": "Titulo",
-                    "type": "string",
-                    "maxLength": 200,
-                    "example": "El ingenioso hidalgo don Quijote de la Mancha "
-                  },
-                  "autor": {
-                    "title": "Autor",
-                    "type": "string",
-                    "maxLength": 100,
-                    "example": "Miguel de Cervantes"
-                  },
-                  "pais": {
-                    "title": "Pais",
-                    "type": "string",
-                    "maxLength": 50,
-                    "example": "España"
-                  },
-                  "fecha": {
-                    "title": "Fecha",
-                    "type": "string",
-                    "example": "1605"
-                  },
-                  "paginas": {
-                    "title": "Paginas",
-                    "type": "string",
-                    "example": "377"
-                  },
-                  "wiki": {
-                    "title": "Wiki",
-                    "type": "string",
-                    "format": "uri",
-                    "example": "https://es.wikipedia.org/wiki/Don_Quijote_de_la_Mancha"
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/components/schemas/LibroProjection"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "204": {
-            "$ref": "#/components/responses/NoContent"
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibroProjection"
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -1567,6 +1630,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -1574,7 +1640,7 @@
         "tags": [
           "libros"
         ],
-        "summary": "Borrar Libro",
+        "summary": "Borrar libro",
         "responses": {
           "204": {
             "$ref": "#/components/responses/NoContent"
@@ -1584,11 +1650,17 @@
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
           }
         },
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       }
@@ -1605,6 +1677,15 @@
           },
           {
             "$ref": "#/components/parameters/filas"
+          },
+          {
+            "$ref": "#/components/parameters/ordenar"
+          },
+          {
+            "$ref": "#/components/parameters/buscar"
+          },
+          {
+            "$ref": "#/components/parameters/proyeccion"
           }
         ],
         "responses": {
@@ -1615,10 +1696,10 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/Pagina_biblioteca"
+                      "$ref": "#/components/schemas/Biblioteca"
                     },
                     {
-                      "$ref": "#/components/schemas/Biblioteca"
+                      "$ref": "#/components/schemas/BibliotecaPage"
                     }
                   ]
                 }
@@ -1637,12 +1718,12 @@
         "tags": [
           "biblioteca"
         ],
-        "summary": "Crear Volumen",
+        "summary": "Crear volumen",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Volumen"
+                "$ref": "#/components/schemas/VolumenModel"
               }
             }
           },
@@ -1665,6 +1746,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -1692,6 +1776,7 @@
           "name": "id",
           "in": "path",
           "required": true,
+          "description": "Identificador del recurso",
           "schema": {
             "type": "integer"
           }
@@ -1701,14 +1786,25 @@
         "tags": [
           "biblioteca"
         ],
-        "summary": "Recuperar Volumen",
+        "summary": "Recuperar volumen",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "_projection",
+            "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Volumen"
+                  "$ref": "#/components/schemas/VolumenProjection"
                 }
               }
             }
@@ -1728,20 +1824,27 @@
         "tags": [
           "biblioteca"
         ],
-        "summary": "Reemplazar Volumen",
+        "summary": "Reemplazar volumen",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Volumen"
+                "$ref": "#/components/schemas/VolumenModel"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "204": {
-            "$ref": "#/components/responses/NoContent"
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VolumenProjection"
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -1759,6 +1862,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -1783,43 +1889,27 @@
         "tags": [
           "biblioteca"
         ],
-        "summary": "Actualiza parte de Volumen",
+        "summary": "Actualizar parcialmente volumen",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "title": "Volumen",
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                  "titulo": {
-                    "title": "Titulo",
-                    "type": "string",
-                    "maxLength": 100,
-                    "example": "Mauris"
-                  },
-                  "autor": {
-                    "title": "Autor",
-                    "type": "string",
-                    "maxLength": 100,
-                    "example": "At Mi Imperdiet"
-                  },
-                  "numPag": {
-                    "title": "Número de páginas",
-                    "type": "integer",
-                    "minimum": 0,
-                    "exclusiveMinimum": true,
-                    "example": 22
-                  }
-                }
+                "$ref": "#/components/schemas/VolumenProjection"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "204": {
-            "$ref": "#/components/responses/NoContent"
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VolumenProjection"
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -1837,6 +1927,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -1844,7 +1937,7 @@
         "tags": [
           "biblioteca"
         ],
-        "summary": "Borrar Volumen",
+        "summary": "Borrar volumen",
         "responses": {
           "204": {
             "$ref": "#/components/responses/NoContent"
@@ -1854,11 +1947,17 @@
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
           }
         },
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       }
@@ -1875,6 +1974,15 @@
           },
           {
             "$ref": "#/components/parameters/filas"
+          },
+          {
+            "$ref": "#/components/parameters/ordenar"
+          },
+          {
+            "$ref": "#/components/parameters/buscar"
+          },
+          {
+            "$ref": "#/components/parameters/proyeccion"
           }
         ],
         "responses": {
@@ -1885,10 +1993,10 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/Pagina_vehiculos"
+                      "$ref": "#/components/schemas/Vehiculos"
                     },
                     {
-                      "$ref": "#/components/schemas/Vehiculos"
+                      "$ref": "#/components/schemas/VehiculosPage"
                     }
                   ]
                 }
@@ -1905,6 +2013,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -1912,12 +2023,12 @@
         "tags": [
           "vehiculos"
         ],
-        "summary": "Crear Vehiculo",
+        "summary": "Crear vehiculo",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Vehiculo"
+                "$ref": "#/components/schemas/VehiculoModel"
               }
             }
           },
@@ -1940,6 +2051,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -1962,6 +2076,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       }
@@ -1972,6 +2089,7 @@
           "name": "id",
           "in": "path",
           "required": true,
+          "description": "Identificador del recurso",
           "schema": {
             "type": "integer"
           }
@@ -1981,14 +2099,25 @@
         "tags": [
           "vehiculos"
         ],
-        "summary": "Recuperar Vehiculo",
+        "summary": "Recuperar vehiculo",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "_projection",
+            "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Vehiculo"
+                  "$ref": "#/components/schemas/VehiculoProjection"
                 }
               }
             }
@@ -2006,6 +2135,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -2013,20 +2145,27 @@
         "tags": [
           "vehiculos"
         ],
-        "summary": "Reemplazar Vehiculo",
+        "summary": "Reemplazar vehiculo",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Vehiculo"
+                "$ref": "#/components/schemas/VehiculoModel"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "204": {
-            "$ref": "#/components/responses/NoContent"
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehiculoProjection"
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -2044,6 +2183,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -2066,6 +2208,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -2073,121 +2218,27 @@
         "tags": [
           "vehiculos"
         ],
-        "summary": "Actualiza parte de Vehiculo",
+        "summary": "Actualizar parcialmente vehiculo",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "title": "Vehículo",
-                "type": "object",
-                "properties": {
-                  "marca": {
-                    "title": "Marca",
-                    "type": "string",
-                    "example": "AUDI"
-                  },
-                  "modelo": {
-                    "title": "Modelo",
-                    "type": "string",
-                    "example": "A3"
-                  },
-                  "matricula": {
-                    "title": "Matricula",
-                    "type": "string",
-                    "example": "1234ABC"
-                  },
-                  "edad": {
-                    "title": "Edad",
-                    "type": "integer",
-                    "example": 2
-                  },
-                  "propietario": {
-                    "title": "Propietario",
-                    "type": "object",
-                    "required": [
-                      "nombre",
-                      "apellidos",
-                      "dni",
-                      "email"
-                    ],
-                    "properties": {
-                      "nombre": {
-                        "title": "Nombre",
-                        "type": "string",
-                        "example": "Penélope"
-                      },
-                      "apellidos": {
-                        "title": "Apellidos",
-                        "type": "string",
-                        "example": "Glamour"
-                      },
-                      "dni": {
-                        "title": "Dni",
-                        "type": "string",
-                        "example": "12345678Z"
-                      },
-                      "email": {
-                        "title": "Email",
-                        "type": "string",
-                        "format": "email",
-                        "example": "pglamour@example.com"
-                      }
-                    }
-                  },
-                  "direcciones": {
-                    "title": "Direcciones",
-                    "type": "array",
-                    "uniqueItems": true,
-                    "default": [],
-                    "items": {
-                      "title": "Dirección",
-                      "type": "object",
-                      "required": [
-                        "id",
-                        "calle",
-                        "localidad",
-                        "cp",
-                        "provincia"
-                      ],
-                      "properties": {
-                        "id": {
-                          "title": "Id",
-                          "type": "string",
-                          "example": "1"
-                        },
-                        "calle": {
-                          "title": "Calle",
-                          "type": "string",
-                          "example": "Compact Pussycat"
-                        },
-                        "localidad": {
-                          "title": "Localidad",
-                          "type": "string",
-                          "example": "Rota"
-                        },
-                        "cp": {
-                          "title": "Cp",
-                          "type": "string",
-                          "example": "11080"
-                        },
-                        "provincia": {
-                          "title": "Provincia",
-                          "type": "string",
-                          "example": "11"
-                        }
-                      }
-                    }
-                  }
-                },
-                "additionalProperties": false
+                "$ref": "#/components/schemas/VehiculoProjection"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "204": {
-            "$ref": "#/components/responses/NoContent"
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehiculoProjection"
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -2205,6 +2256,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       },
@@ -2212,7 +2266,7 @@
         "tags": [
           "vehiculos"
         ],
-        "summary": "Borrar Vehiculo",
+        "summary": "Borrar vehiculo",
         "responses": {
           "204": {
             "$ref": "#/components/responses/NoContent"
@@ -2222,11 +2276,17 @@
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
           }
         },
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ]
       }
@@ -2243,6 +2303,15 @@
           },
           {
             "$ref": "#/components/parameters/filas"
+          },
+          {
+            "$ref": "#/components/parameters/ordenar"
+          },
+          {
+            "$ref": "#/components/parameters/buscar"
+          },
+          {
+            "$ref": "#/components/parameters/proyeccion"
           }
         ],
         "responses": {
@@ -2253,10 +2322,10 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/Pagina_marcas"
+                      "$ref": "#/components/schemas/Marcas"
                     },
                     {
-                      "$ref": "#/components/schemas/Marcas"
+                      "$ref": "#/components/schemas/MarcasPage"
                     }
                   ]
                 }
@@ -2278,6 +2347,7 @@
           "name": "id",
           "in": "path",
           "required": true,
+          "description": "Identificador del recurso",
           "schema": {
             "type": "string"
           }
@@ -2287,14 +2357,25 @@
         "tags": [
           "vehiculos"
         ],
-        "summary": "Recuperar Marca",
+        "summary": "Recuperar marca",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "_projection",
+            "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Marca"
+                  "$ref": "#/components/schemas/MarcaProjection"
                 }
               }
             }
@@ -2317,11 +2398,38 @@
           "autenticación"
         ],
         "summary": "Iniciar sesión",
+        "parameters": [
+          {
+            "name": "cookie",
+            "in": "query",
+            "required": false,
+            "description": "true para que genere y envíe la cookie",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Login"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Usuario",
+                    "type": "string"
+                  },
+                  "password": {
+                    "description": "Contraseña",
+                    "type": "string",
+                    "format": "password"
+                  }
+                }
               }
             }
           },
@@ -2329,6 +2437,13 @@
         },
         "responses": {
           "200": {
+            "headers": {
+              "Set-Cookie": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "description": "Resultado de la autenticación",
             "content": {
               "application/json": {
@@ -2377,6 +2492,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ],
         "responses": {
@@ -2456,6 +2574,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ],
         "responses": {
@@ -2497,6 +2618,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ],
         "requestBody": {
@@ -2539,6 +2663,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
           }
         ],
         "description": "Es necesario conocer la contraseña actual antes de cambiarla",
@@ -2607,67 +2734,26 @@
           }
         }
       },
-      "Contactos": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/Contacto"
-        }
-      },
-      "Pagina_contactos": {
-        "type": "object",
-        "title": "Pagina de contactos",
-        "properties": {
-          "content": {
-            "$ref": "#/components/schemas/Contactos",
-            "description": "Listado de elementos"
-          },
-          "totalElements": {
-            "type": "integer",
-            "description": "Número total de elementos"
-          },
-          "totalPages": {
-            "type": "integer",
-            "description": "Número total de páginas"
-          },
-          "size": {
-            "type": "integer",
-            "description": "Tamaño de página en elementos"
-          },
-          "number": {
-            "type": "integer",
-            "description": "Número de página actual"
-          },
-          "numberOfElements": {
-            "type": "integer",
-            "description": "Número total de elementos en la página"
-          },
-          "empty": {
-            "type": "boolean",
-            "description": "Si la página está vacía"
-          },
-          "first": {
-            "type": "boolean",
-            "description": "Si la página es la primera"
-          },
-          "last": {
-            "type": "boolean",
-            "description": "Si la página es la última"
+      "ContactoModel": {
+        "title": "Contacto (Modelo)",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ContactoProjection"
           }
-        }
-      },
-      "Contacto": {
-        "title": "Contacto",
-        "type": "object",
+        ],
         "required": [
           "id",
           "nombre"
-        ],
+        ]
+      },
+      "ContactoProjection": {
+        "title": "Contacto (Proyección)",
+        "type": "object",
         "properties": {
           "id": {
             "title": "Id",
             "type": "integer",
             "example": 1,
-            "default": 0,
             "description": "El 0 actúa como autonumérico en la creación"
           },
           "tratamiento": {
@@ -2711,6 +2797,12 @@
             "maxLength": 100,
             "example": "pwoodall0@army.mil"
           },
+          "nif": {
+            "title": "N.I.F.",
+            "type": "string",
+            "format": "nif",
+            "example": "12345678Z"
+          },
           "sexo": {
             "title": "Sexo",
             "type": "string",
@@ -2718,7 +2810,6 @@
               "H",
               "M"
             ],
-            "default": "H",
             "example": "H"
           },
           "nacimiento": {
@@ -2737,8 +2828,7 @@
           "conflictivo": {
             "title": "Conflictivo",
             "type": "boolean",
-            "example": true,
-            "default": false
+            "example": true
           },
           "icono": {
             "title": "Icono",
@@ -2750,7 +2840,6 @@
             "title": "Direcciones",
             "type": "array",
             "uniqueItems": true,
-            "default": [],
             "items": {
               "title": "Dirección",
               "type": "object",
@@ -2788,21 +2877,23 @@
               }
             }
           }
-        }
+        },
+        "additionalProperties": false,
+        "minProperties": 1
       },
-      "Books": {
+      "Contactos": {
         "type": "array",
+        "title": "Contactos (Listado)",
         "items": {
-          "$ref": "#/components/schemas/Book"
+          "$ref": "#/components/schemas/ContactoProjection"
         }
       },
-      "Pagina_books": {
+      "ContactosPage": {
         "type": "object",
-        "title": "Pagina de books",
+        "title": "Contactos (Página)",
         "properties": {
           "content": {
-            "$ref": "#/components/schemas/Books",
-            "description": "Listado de elementos"
+            "$ref": "#/components/schemas/Contactos"
           },
           "totalElements": {
             "type": "integer",
@@ -2838,12 +2929,16 @@
           }
         }
       },
-      "Book": {
+      "BookModel": {
+        "title": "Book (Modelo)",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BookProjection"
+          }
+        ]
+      },
+      "BookProjection": {
         "type": "object",
-        "additionalProperties": true,
-        "required": [
-          "id"
-        ],
         "properties": {
           "id": {
             "type": "integer",
@@ -2851,21 +2946,24 @@
             "minimum": 0,
             "description": "El 0 actúa como autonumérico en la creación"
           }
-        }
+        },
+        "minProperties": 1,
+        "title": "Book (Proyección)",
+        "additionalProperties": false
       },
-      "Personas": {
+      "Books": {
         "type": "array",
+        "title": "Books (Listado)",
         "items": {
-          "$ref": "#/components/schemas/Persona"
+          "$ref": "#/components/schemas/BookProjection"
         }
       },
-      "Pagina_personas": {
+      "BooksPage": {
         "type": "object",
-        "title": "Pagina de personas",
+        "title": "Books (Página)",
         "properties": {
           "content": {
-            "$ref": "#/components/schemas/Personas",
-            "description": "Listado de elementos"
+            "$ref": "#/components/schemas/Books"
           },
           "totalElements": {
             "type": "integer",
@@ -2901,13 +2999,21 @@
           }
         }
       },
-      "Persona": {
-        "title": "Persona",
-        "type": "object",
+      "PersonaModel": {
+        "title": "Persona (Modelo)",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PersonaProjection"
+          }
+        ],
         "required": [
           "id",
           "nombre"
-        ],
+        ]
+      },
+      "PersonaProjection": {
+        "title": "Persona (Proyección)",
+        "type": "object",
         "properties": {
           "id": {
             "title": "Id",
@@ -2926,6 +3032,12 @@
             "type": "string",
             "example": "Grillo"
           },
+          "correo": {
+            "title": "Correo",
+            "type": "string",
+            "format": "email",
+            "example": "pepito@grillo.tv"
+          },
           "edad": {
             "title": "Edad",
             "type": "integer",
@@ -2933,7 +3045,7 @@
             "maximum": 67,
             "example": 37
           },
-          "telefonos": {
+          "telefono": {
             "title": "Teléfonos",
             "type": "array",
             "uniqueItems": true,
@@ -2945,21 +3057,23 @@
               "pattern": "^(\\d{3}\\s){2}\\d{3}$"
             }
           }
-        }
+        },
+        "additionalProperties": false,
+        "minProperties": 1
       },
-      "Tarjetas": {
+      "Personas": {
         "type": "array",
+        "title": "Personas (Listado)",
         "items": {
-          "$ref": "#/components/schemas/Tarjeta"
+          "$ref": "#/components/schemas/PersonaProjection"
         }
       },
-      "Pagina_tarjetas": {
+      "PersonasPage": {
         "type": "object",
-        "title": "Pagina de tarjetas",
+        "title": "Personas (Página)",
         "properties": {
           "content": {
-            "$ref": "#/components/schemas/Tarjetas",
-            "description": "Listado de elementos"
+            "$ref": "#/components/schemas/Personas"
           },
           "totalElements": {
             "type": "integer",
@@ -2995,9 +3109,13 @@
           }
         }
       },
-      "Tarjeta": {
-        "title": "Tarjeta",
-        "type": "object",
+      "TarjetaModel": {
+        "title": "Tarjeta (Modelo)",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/TarjetaProjection"
+          }
+        ],
         "required": [
           "id",
           "idCliente",
@@ -3005,7 +3123,11 @@
           "caducidad",
           "CVC_CVV",
           "tipo"
-        ],
+        ]
+      },
+      "TarjetaProjection": {
+        "title": "Tarjeta (Proyección)",
+        "type": "object",
         "properties": {
           "id": {
             "title": "Id",
@@ -3029,7 +3151,7 @@
             "title": "Numero",
             "type": "string",
             "example": "4024 0071 1838 5904",
-            "pattern": "^(\\d{4}\\s){3}\\d{4}$"
+            "pattern": "^(((\\d{4}\\s){3}\\d{4})|(\\d{13}))$"
           },
           "caducidad": {
             "title": "Caducidad",
@@ -3042,21 +3164,23 @@
             "type": "string",
             "example": "147"
           }
-        }
+        },
+        "additionalProperties": false,
+        "minProperties": 1
       },
-      "Blog": {
+      "Tarjetas": {
         "type": "array",
+        "title": "Tarjetas (Listado)",
         "items": {
-          "$ref": "#/components/schemas/Articulo"
+          "$ref": "#/components/schemas/TarjetaProjection"
         }
       },
-      "Pagina_blog": {
+      "TarjetasPage": {
         "type": "object",
-        "title": "Pagina de blog",
+        "title": "Tarjetas (Página)",
         "properties": {
           "content": {
-            "$ref": "#/components/schemas/Blog",
-            "description": "Listado de elementos"
+            "$ref": "#/components/schemas/Tarjetas"
           },
           "totalElements": {
             "type": "integer",
@@ -3092,13 +3216,21 @@
           }
         }
       },
-      "Articulo": {
-        "title": "Articulo",
-        "type": "object",
+      "ArticuloModel": {
+        "title": "Articulo (Modelo)",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ArticuloProjection"
+          }
+        ],
         "required": [
           "id",
           "titulo"
-        ],
+        ]
+      },
+      "ArticuloProjection": {
+        "title": "Articulo (Proyección)",
+        "type": "object",
         "properties": {
           "id": {
             "title": "Id",
@@ -3142,21 +3274,23 @@
             "format": "uri",
             "example": "https://cdn-images-1.medium.com/max/800/1*V3Kfghg_jIV0ubxmAnCXBA.jpeg"
           }
-        }
+        },
+        "additionalProperties": false,
+        "minProperties": 1
       },
-      "Libros": {
+      "Blog": {
         "type": "array",
+        "title": "Blog (Listado)",
         "items": {
-          "$ref": "#/components/schemas/Libro"
+          "$ref": "#/components/schemas/ArticuloProjection"
         }
       },
-      "Pagina_libros": {
+      "BlogPage": {
         "type": "object",
-        "title": "Pagina de libros",
+        "title": "Blog (Página)",
         "properties": {
           "content": {
-            "$ref": "#/components/schemas/Libros",
-            "description": "Listado de elementos"
+            "$ref": "#/components/schemas/Blog"
           },
           "totalElements": {
             "type": "integer",
@@ -3192,13 +3326,21 @@
           }
         }
       },
-      "Libro": {
-        "title": "Libro",
-        "type": "object",
+      "LibroModel": {
+        "title": "Libro (Modelo)",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/LibroProjection"
+          }
+        ],
         "required": [
           "idLibro",
           "titulo"
-        ],
+        ]
+      },
+      "LibroProjection": {
+        "title": "Libro (Proyección)",
+        "type": "object",
         "properties": {
           "idLibro": {
             "title": "Idlibro",
@@ -3239,21 +3381,23 @@
             "format": "uri",
             "example": "https://es.wikipedia.org/wiki/Don_Quijote_de_la_Mancha"
           }
-        }
+        },
+        "additionalProperties": false,
+        "minProperties": 1
       },
-      "Biblioteca": {
+      "Libros": {
         "type": "array",
+        "title": "Libros (Listado)",
         "items": {
-          "$ref": "#/components/schemas/Volumen"
+          "$ref": "#/components/schemas/LibroProjection"
         }
       },
-      "Pagina_biblioteca": {
+      "LibrosPage": {
         "type": "object",
-        "title": "Pagina de biblioteca",
+        "title": "Libros (Página)",
         "properties": {
           "content": {
-            "$ref": "#/components/schemas/Biblioteca",
-            "description": "Listado de elementos"
+            "$ref": "#/components/schemas/Libros"
           },
           "totalElements": {
             "type": "integer",
@@ -3289,21 +3433,28 @@
           }
         }
       },
-      "Volumen": {
-        "title": "Volumen",
-        "type": "object",
-        "additionalProperties": false,
+      "VolumenModel": {
+        "title": "Volumen (Modelo)",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/VolumenProjection"
+          }
+        ],
         "required": [
           "id",
           "titulo",
           "autor"
-        ],
+        ]
+      },
+      "VolumenProjection": {
+        "title": "Volumen (Proyección)",
+        "type": "object",
+        "additionalProperties": false,
         "properties": {
           "id": {
             "title": "Id",
             "type": "integer",
             "example": 0,
-            "default": 0,
             "description": "El 0 actúa como autonumérico en la creación"
           },
           "titulo": {
@@ -3325,21 +3476,22 @@
             "exclusiveMinimum": true,
             "example": 22
           }
-        }
+        },
+        "minProperties": 1
       },
-      "Vehiculos": {
+      "Biblioteca": {
         "type": "array",
+        "title": "Biblioteca (Listado)",
         "items": {
-          "$ref": "#/components/schemas/Vehiculo"
+          "$ref": "#/components/schemas/VolumenProjection"
         }
       },
-      "Pagina_vehiculos": {
+      "BibliotecaPage": {
         "type": "object",
-        "title": "Pagina de vehiculos",
+        "title": "Biblioteca (Página)",
         "properties": {
           "content": {
-            "$ref": "#/components/schemas/Vehiculos",
-            "description": "Listado de elementos"
+            "$ref": "#/components/schemas/Biblioteca"
           },
           "totalElements": {
             "type": "integer",
@@ -3375,21 +3527,28 @@
           }
         }
       },
-      "Vehiculo": {
-        "title": "Vehículo",
-        "type": "object",
+      "VehiculoModel": {
+        "title": "Vehiculo (Modelo)",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/VehiculoProjection"
+          }
+        ],
         "required": [
           "id",
           "marca",
           "modelo",
           "matricula"
-        ],
+        ]
+      },
+      "VehiculoProjection": {
+        "title": "Vehiculo (Proyección)",
+        "type": "object",
         "properties": {
           "id": {
             "title": "Id",
             "type": "integer",
             "example": 1,
-            "default": 0,
             "description": "El 0 actúa como autonumérico en la creación"
           },
           "marca": {
@@ -3435,6 +3594,7 @@
               "dni": {
                 "title": "Dni",
                 "type": "string",
+                "format": "nif",
                 "example": "12345678Z"
               },
               "email": {
@@ -3463,8 +3623,8 @@
               "properties": {
                 "id": {
                   "title": "Id",
-                  "type": "string",
-                  "example": "1"
+                  "type": "integer",
+                  "example": 1
                 },
                 "calle": {
                   "title": "Calle",
@@ -3483,27 +3643,29 @@
                 },
                 "provincia": {
                   "title": "Provincia",
-                  "type": "string",
-                  "example": "11"
+                  "type": "integer",
+                  "example": 11
                 }
               }
             }
           }
-        }
+        },
+        "additionalProperties": false,
+        "minProperties": 1
       },
-      "Marcas": {
+      "Vehiculos": {
         "type": "array",
+        "title": "Vehiculos (Listado)",
         "items": {
-          "$ref": "#/components/schemas/Marca"
+          "$ref": "#/components/schemas/VehiculoProjection"
         }
       },
-      "Pagina_marcas": {
+      "VehiculosPage": {
         "type": "object",
-        "title": "Pagina de marcas",
+        "title": "Vehiculos (Página)",
         "properties": {
           "content": {
-            "$ref": "#/components/schemas/Marcas",
-            "description": "Listado de elementos"
+            "$ref": "#/components/schemas/Vehiculos"
           },
           "totalElements": {
             "type": "integer",
@@ -3539,13 +3701,21 @@
           }
         }
       },
-      "Marca": {
-        "title": "Marca",
-        "type": "object",
+      "MarcaModel": {
+        "title": "Marca (Modelo)",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/MarcaProjection"
+          }
+        ],
         "required": [
           "marca",
           "modelos"
-        ],
+        ]
+      },
+      "MarcaProjection": {
+        "title": "Marca (Proyección)",
+        "type": "object",
         "properties": {
           "marca": {
             "title": "Marca",
@@ -3562,6 +3732,56 @@
               "type": "string",
               "example": "Giulietta"
             }
+          }
+        },
+        "additionalProperties": false,
+        "minProperties": 1
+      },
+      "Marcas": {
+        "type": "array",
+        "title": "Marcas (Listado)",
+        "items": {
+          "$ref": "#/components/schemas/MarcaProjection"
+        }
+      },
+      "MarcasPage": {
+        "type": "object",
+        "title": "Marcas (Página)",
+        "properties": {
+          "content": {
+            "$ref": "#/components/schemas/Marcas"
+          },
+          "totalElements": {
+            "type": "integer",
+            "description": "Número total de elementos"
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "Número total de páginas"
+          },
+          "size": {
+            "type": "integer",
+            "description": "Tamaño de página en elementos"
+          },
+          "number": {
+            "type": "integer",
+            "description": "Número de página actual"
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "description": "Número total de elementos en la página"
+          },
+          "empty": {
+            "type": "boolean",
+            "description": "Si la página está vacía"
+          },
+          "first": {
+            "type": "boolean",
+            "description": "Si la página es la primera"
+          },
+          "last": {
+            "type": "boolean",
+            "description": "Si la página es la última"
           }
         }
       },
@@ -3666,23 +3886,58 @@
       "pagina": {
         "in": "query",
         "name": "_page",
-        "description": "Número de página, siendo 0 la primera",
+        "description": "Número de página empezando en 0 (primera página).",
         "required": false,
         "schema": {
-          "type": "integer",
-          "minimum": 0,
-          "default": 0
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "string",
+              "enum": [
+                "COUNT"
+              ]
+            }
+          ]
         }
       },
       "filas": {
         "in": "query",
         "name": "_rows",
-        "description": "Número de filas por página",
+        "description": "Número de filas por página, por defecto 20 si se omite pero aparece el parámetro *_page*.",
         "required": false,
         "schema": {
           "type": "integer",
-          "minimum": 0,
-          "default": 20
+          "minimum": 0
+        }
+      },
+      "ordenar": {
+        "in": "query",
+        "name": "_sort",
+        "description": "Indica la lista de propiedades (separadas por comas) por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "buscar": {
+        "in": "query",
+        "name": "_search",
+        "description": "Selecciona todos aquellos que en alguna de sus propiedades contenga el valor proporcionado.",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "proyeccion": {
+        "in": "query",
+        "name": "_projection",
+        "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+        "required": false,
+        "schema": {
+          "type": "string"
         }
       }
     },
@@ -3691,6 +3946,11 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "JWT"
+      },
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "Authorization"
       }
     }
   }

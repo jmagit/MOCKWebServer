@@ -193,7 +193,7 @@ const swaggerDocument = {
             }
         },
     },
-    // "security": [{ bearerAuth: [], cookieAuth: [] }]
+    // "security": [{ bearerAuth: []}, {cookieAuth: [] }]
 }
 
 const generaGetAll = (servicio) => {
@@ -238,7 +238,7 @@ const generaGetAll = (servicio) => {
         }
     }
     if (servicio.security)
-        result.get.security = [{ bearerAuth: [], cookieAuth: [] }]
+        result.get.security = [{ bearerAuth: []}, {cookieAuth: [] }]
     return result
 }
 const generaPost = (servicio) => {
@@ -265,7 +265,7 @@ const generaPost = (servicio) => {
         }
     }
     if (servicio.security || servicio.readonly)
-        result.post.security = [{ bearerAuth: [], cookieAuth: [] }]
+        result.post.security = [{ bearerAuth: []}, {cookieAuth: [] }]
     return result
 }
 const generaGetOne = (servicio) => {
@@ -300,7 +300,7 @@ const generaGetOne = (servicio) => {
         }
     }
     if (servicio.security)
-        result.get.security = [{ bearerAuth: [], cookieAuth: [] }]
+        result.get.security = [{ bearerAuth: []}, {cookieAuth: [] }]
     return result
 }
 const generaPut = (servicio) => {
@@ -335,7 +335,7 @@ const generaPut = (servicio) => {
         }
     }
     if (servicio.security || servicio.readonly)
-        result.put.security = [{ bearerAuth: [], cookieAuth: [] }]
+        result.put.security = [{ bearerAuth: []}, {cookieAuth: [] }]
     return result
 }
 const generaPatch = (servicio) => {
@@ -368,7 +368,7 @@ const generaPatch = (servicio) => {
         }
     }
     if (servicio.security || servicio.readonly)
-        result.patch.security = [{ bearerAuth: [], cookieAuth: [] }]
+        result.patch.security = [{ bearerAuth: []}, {cookieAuth: [] }]
     return result
 }
 const generaDelete = (servicio) => {
@@ -385,7 +385,7 @@ const generaDelete = (servicio) => {
         }
     }
     if (servicio.security || servicio.readonly)
-        result.delete.security = [{ bearerAuth: [], cookieAuth: [] }]
+        result.delete.security = [{ bearerAuth: []}, {cookieAuth: [] }]
     return result
 }
 const generaOptions = (servicio) => {
@@ -401,7 +401,7 @@ const generaOptions = (servicio) => {
         }
     }
     if (servicio.security)
-        result.options.security = [{ bearerAuth: [], cookieAuth: [] }]
+        result.options.security = [{ bearerAuth: []}, {cookieAuth: [] }]
     return result
 }
 const preparaService = (servicio) => {

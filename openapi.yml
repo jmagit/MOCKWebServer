@@ -31,19 +31,19 @@ tags:
   - name: contactos
     description: Gestión de contactos
   - name: books
-    description: Mantenimiento de Books
+    description: Mantenimiento de books
   - name: personas
-    description: Mantenimiento de Personas
+    description: Mantenimiento de personas
   - name: tarjetas
-    description: Mantenimiento de Tarjetas
+    description: Mantenimiento de tarjetas
   - name: blog
-    description: Mantenimiento de Blog
+    description: Mantenimiento de blog
   - name: libros
-    description: Mantenimiento de Libros
+    description: Mantenimiento de libros
   - name: biblioteca
-    description: Mantenimiento de Biblioteca
+    description: Mantenimiento de biblioteca
   - name: vehiculos
-    description: Mantenimiento de Vehiculos
+    description: Mantenimiento de vehiculos
   - name: autenticación
     description: Login
   - name: registro
@@ -67,8 +67,8 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/ContactosPage"
                   - $ref: "#/components/schemas/Contactos"
+                  - $ref: "#/components/schemas/ContactosPage"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -76,7 +76,7 @@ paths:
     post:
       tags:
         - contactos
-      summary: Crear Contacto
+      summary: Crear contacto
       requestBody:
         content:
           application/json:
@@ -106,15 +106,15 @@ paths:
   "/api/contactos/{id}":
     parameters:
       - name: id
-        description: Identificador del recurso
         in: path
         required: true
+        description: Identificador del recurso
         schema:
           type: integer
     get:
       tags:
         - contactos
-      summary: Recuperar Contacto
+      summary: Recuperar contacto
       parameters:
         - in: query
           name: _projection
@@ -129,9 +129,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/ContactoModel"
-                  - $ref: "#/components/schemas/ContactoProjection"
+                $ref: "#/components/schemas/ContactoProjection"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -141,7 +139,7 @@ paths:
     put:
       tags:
         - contactos
-      summary: Reemplazar Contacto
+      summary: Reemplazar contacto
       requestBody:
         content:
           application/json:
@@ -149,8 +147,12 @@ paths:
               $ref: "#/components/schemas/ContactoModel"
         required: true
       responses:
-        "204":
-          $ref: "#/components/responses/NoContent"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactoProjection"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -173,7 +175,7 @@ paths:
     patch:
       tags:
         - contactos
-      summary: Actualiza parte de Contacto
+      summary: Actualizar parcialmente contacto
       requestBody:
         content:
           application/json:
@@ -181,8 +183,12 @@ paths:
               $ref: "#/components/schemas/ContactoProjection"
         required: true
       responses:
-        "204":
-          $ref: "#/components/responses/NoContent"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactoProjection"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -194,7 +200,7 @@ paths:
     delete:
       tags:
         - contactos
-      summary: Borrar Contacto
+      summary: Borrar contacto
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
@@ -202,6 +208,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
   /api/books:
     get:
       tags:
@@ -220,8 +228,8 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/BooksPage"
                   - $ref: "#/components/schemas/Books"
+                  - $ref: "#/components/schemas/BooksPage"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -229,7 +237,7 @@ paths:
     post:
       tags:
         - books
-      summary: Crear Book
+      summary: Crear book
       requestBody:
         content:
           application/json:
@@ -261,12 +269,13 @@ paths:
       - name: id
         in: path
         required: true
+        description: Identificador del recurso
         schema:
           type: integer
     get:
       tags:
         - books
-      summary: Recuperar Book
+      summary: Recuperar book
       parameters:
         - in: query
           name: _projection
@@ -281,9 +290,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/BookModel"
-                  - $ref: "#/components/schemas/BookProjection"
+                $ref: "#/components/schemas/BookProjection"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -293,7 +300,7 @@ paths:
     put:
       tags:
         - books
-      summary: Reemplazar Book
+      summary: Reemplazar book
       requestBody:
         content:
           application/json:
@@ -301,8 +308,12 @@ paths:
               $ref: "#/components/schemas/BookModel"
         required: true
       responses:
-        "204":
-          $ref: "#/components/responses/NoContent"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookProjection"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -325,7 +336,7 @@ paths:
     patch:
       tags:
         - books
-      summary: Actualiza parte de Book
+      summary: Actualizar parcialmente book
       requestBody:
         content:
           application/json:
@@ -333,8 +344,12 @@ paths:
               $ref: "#/components/schemas/BookProjection"
         required: true
       responses:
-        "204":
-          $ref: "#/components/responses/NoContent"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookProjection"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -346,7 +361,7 @@ paths:
     delete:
       tags:
         - books
-      summary: Borrar Book
+      summary: Borrar book
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
@@ -354,6 +369,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
   /api/personas:
     get:
       tags:
@@ -372,8 +389,8 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/PersonasPage"
                   - $ref: "#/components/schemas/Personas"
+                  - $ref: "#/components/schemas/PersonasPage"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -381,7 +398,7 @@ paths:
     post:
       tags:
         - personas
-      summary: Crear Persona
+      summary: Crear persona
       requestBody:
         content:
           application/json:
@@ -402,12 +419,13 @@ paths:
       - name: id
         in: path
         required: true
+        description: Identificador del recurso
         schema:
           type: integer
     get:
       tags:
         - personas
-      summary: Recuperar Persona
+      summary: Recuperar persona
       parameters:
         - in: query
           name: _projection
@@ -422,9 +440,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/PersonaModel"
-                  - $ref: "#/components/schemas/PersonaProjection"
+                $ref: "#/components/schemas/PersonaProjection"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -434,7 +450,7 @@ paths:
     put:
       tags:
         - personas
-      summary: Reemplazar Persona
+      summary: Reemplazar persona
       requestBody:
         content:
           application/json:
@@ -442,8 +458,12 @@ paths:
               $ref: "#/components/schemas/PersonaModel"
         required: true
       responses:
-        "204":
-          $ref: "#/components/responses/NoContent"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonaProjection"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -455,7 +475,7 @@ paths:
     delete:
       tags:
         - personas
-      summary: Borrar Persona
+      summary: Borrar persona
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
@@ -463,6 +483,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
   /api/tarjetas:
     get:
       tags:
@@ -481,18 +503,19 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/TarjetasPage"
                   - $ref: "#/components/schemas/Tarjetas"
+                  - $ref: "#/components/schemas/TarjetasPage"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     post:
       tags:
         - tarjetas
-      summary: Crear Tarjeta
+      summary: Crear tarjeta
       requestBody:
         content:
           application/json:
@@ -510,17 +533,19 @@ paths:
           $ref: "#/components/responses/Forbidden"
       security:
         - bearerAuth: []
+        - cookieAuth: []
   "/api/tarjetas/{id}":
     parameters:
       - name: id
         in: path
         required: true
+        description: Identificador del recurso
         schema:
           type: integer
     get:
       tags:
         - tarjetas
-      summary: Recuperar Tarjeta
+      summary: Recuperar tarjeta
       parameters:
         - in: query
           name: _projection
@@ -535,9 +560,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/TarjetaModel"
-                  - $ref: "#/components/schemas/TarjetaProjection"
+                $ref: "#/components/schemas/TarjetaProjection"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -546,10 +569,11 @@ paths:
           $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     put:
       tags:
         - tarjetas
-      summary: Reemplazar Tarjeta
+      summary: Reemplazar tarjeta
       requestBody:
         content:
           application/json:
@@ -557,8 +581,12 @@ paths:
               $ref: "#/components/schemas/TarjetaModel"
         required: true
       responses:
-        "204":
-          $ref: "#/components/responses/NoContent"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TarjetaProjection"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -569,6 +597,7 @@ paths:
           $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
+        - cookieAuth: []
   /api/blog:
     get:
       tags:
@@ -587,18 +616,19 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/BlogPage"
                   - $ref: "#/components/schemas/Blog"
+                  - $ref: "#/components/schemas/BlogPage"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     post:
       tags:
         - blog
-      summary: Crear Articulo
+      summary: Crear articulo
       requestBody:
         content:
           application/json:
@@ -616,6 +646,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     options:
       tags:
         - blog
@@ -629,17 +660,19 @@ paths:
           $ref: "#/components/responses/Forbidden"
       security:
         - bearerAuth: []
+        - cookieAuth: []
   "/api/blog/{id}":
     parameters:
       - name: id
         in: path
         required: true
+        description: Identificador del recurso
         schema:
           type: integer
     get:
       tags:
         - blog
-      summary: Recuperar Articulo
+      summary: Recuperar articulo
       parameters:
         - in: query
           name: _projection
@@ -654,9 +687,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/ArticuloModel"
-                  - $ref: "#/components/schemas/ArticuloProjection"
+                $ref: "#/components/schemas/ArticuloProjection"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -665,10 +696,11 @@ paths:
           $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     put:
       tags:
         - blog
-      summary: Reemplazar Articulo
+      summary: Reemplazar articulo
       requestBody:
         content:
           application/json:
@@ -676,8 +708,12 @@ paths:
               $ref: "#/components/schemas/ArticuloModel"
         required: true
       responses:
-        "204":
-          $ref: "#/components/responses/NoContent"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticuloProjection"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -688,6 +724,7 @@ paths:
           $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     options:
       tags:
         - blog
@@ -701,10 +738,11 @@ paths:
           $ref: "#/components/responses/Forbidden"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     patch:
       tags:
         - blog
-      summary: Actualiza parte de Articulo
+      summary: Actualizar parcialmente articulo
       requestBody:
         content:
           application/json:
@@ -712,8 +750,12 @@ paths:
               $ref: "#/components/schemas/ArticuloProjection"
         required: true
       responses:
-        "204":
-          $ref: "#/components/responses/NoContent"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticuloProjection"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -724,10 +766,11 @@ paths:
           $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     delete:
       tags:
         - blog
-      summary: Borrar Articulo
+      summary: Borrar articulo
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
@@ -735,8 +778,11 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
+        - cookieAuth: []
   /api/libros:
     get:
       tags:
@@ -755,18 +801,19 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/LibrosPage"
                   - $ref: "#/components/schemas/Libros"
+                  - $ref: "#/components/schemas/LibrosPage"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     post:
       tags:
         - libros
-      summary: Crear Libro
+      summary: Crear libro
       requestBody:
         content:
           application/json:
@@ -784,6 +831,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     options:
       tags:
         - libros
@@ -797,17 +845,19 @@ paths:
           $ref: "#/components/responses/Forbidden"
       security:
         - bearerAuth: []
+        - cookieAuth: []
   "/api/libros/{id}":
     parameters:
       - name: id
         in: path
         required: true
+        description: Identificador del recurso
         schema:
           type: string
     get:
       tags:
         - libros
-      summary: Recuperar Libro
+      summary: Recuperar libro
       parameters:
         - in: query
           name: _projection
@@ -822,9 +872,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/LibroModel"
-                  - $ref: "#/components/schemas/LibroProjection"
+                $ref: "#/components/schemas/LibroProjection"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -833,10 +881,11 @@ paths:
           $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     put:
       tags:
         - libros
-      summary: Reemplazar Libro
+      summary: Reemplazar libro
       requestBody:
         content:
           application/json:
@@ -844,8 +893,12 @@ paths:
               $ref: "#/components/schemas/LibroModel"
         required: true
       responses:
-        "204":
-          $ref: "#/components/responses/NoContent"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LibroProjection"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -856,6 +909,7 @@ paths:
           $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     options:
       tags:
         - libros
@@ -869,10 +923,11 @@ paths:
           $ref: "#/components/responses/Forbidden"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     patch:
       tags:
         - libros
-      summary: Actualiza parte de Libro
+      summary: Actualizar parcialmente libro
       requestBody:
         content:
           application/json:
@@ -880,8 +935,12 @@ paths:
               $ref: "#/components/schemas/LibroProjection"
         required: true
       responses:
-        "204":
-          $ref: "#/components/responses/NoContent"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LibroProjection"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -892,10 +951,11 @@ paths:
           $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     delete:
       tags:
         - libros
-      summary: Borrar Libro
+      summary: Borrar libro
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
@@ -903,8 +963,11 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
+        - cookieAuth: []
   /api/biblioteca:
     get:
       tags:
@@ -923,8 +986,8 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/BibliotecaPage"
                   - $ref: "#/components/schemas/Biblioteca"
+                  - $ref: "#/components/schemas/BibliotecaPage"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -932,7 +995,7 @@ paths:
     post:
       tags:
         - biblioteca
-      summary: Crear Volumen
+      summary: Crear volumen
       requestBody:
         content:
           application/json:
@@ -950,6 +1013,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     options:
       tags:
         - biblioteca
@@ -966,12 +1030,13 @@ paths:
       - name: id
         in: path
         required: true
+        description: Identificador del recurso
         schema:
           type: integer
     get:
       tags:
         - biblioteca
-      summary: Recuperar Volumen
+      summary: Recuperar volumen
       parameters:
         - in: query
           name: _projection
@@ -986,9 +1051,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/VolumenModel"
-                  - $ref: "#/components/schemas/VolumenProjection"
+                $ref: "#/components/schemas/VolumenProjection"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -998,7 +1061,7 @@ paths:
     put:
       tags:
         - biblioteca
-      summary: Reemplazar Volumen
+      summary: Reemplazar volumen
       requestBody:
         content:
           application/json:
@@ -1006,8 +1069,12 @@ paths:
               $ref: "#/components/schemas/VolumenModel"
         required: true
       responses:
-        "204":
-          $ref: "#/components/responses/NoContent"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VolumenProjection"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -1018,6 +1085,7 @@ paths:
           $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     options:
       tags:
         - biblioteca
@@ -1032,7 +1100,7 @@ paths:
     patch:
       tags:
         - biblioteca
-      summary: Actualiza parte de Volumen
+      summary: Actualizar parcialmente volumen
       requestBody:
         content:
           application/json:
@@ -1040,8 +1108,12 @@ paths:
               $ref: "#/components/schemas/VolumenProjection"
         required: true
       responses:
-        "204":
-          $ref: "#/components/responses/NoContent"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VolumenProjection"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -1052,10 +1124,11 @@ paths:
           $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     delete:
       tags:
         - biblioteca
-      summary: Borrar Volumen
+      summary: Borrar volumen
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
@@ -1063,8 +1136,11 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
+        - cookieAuth: []
   /api/vehiculos:
     get:
       tags:
@@ -1083,18 +1159,19 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/VehiculosPage"
                   - $ref: "#/components/schemas/Vehiculos"
+                  - $ref: "#/components/schemas/VehiculosPage"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     post:
       tags:
         - vehiculos
-      summary: Crear Vehiculo
+      summary: Crear vehiculo
       requestBody:
         content:
           application/json:
@@ -1112,6 +1189,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     options:
       tags:
         - vehiculos
@@ -1125,17 +1203,19 @@ paths:
           $ref: "#/components/responses/Forbidden"
       security:
         - bearerAuth: []
+        - cookieAuth: []
   "/api/vehiculos/{id}":
     parameters:
       - name: id
         in: path
         required: true
+        description: Identificador del recurso
         schema:
           type: integer
     get:
       tags:
         - vehiculos
-      summary: Recuperar Vehiculo
+      summary: Recuperar vehiculo
       parameters:
         - in: query
           name: _projection
@@ -1150,9 +1230,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/VehiculoModel"
-                  - $ref: "#/components/schemas/VehiculoProjection"
+                $ref: "#/components/schemas/VehiculoProjection"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -1161,10 +1239,11 @@ paths:
           $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     put:
       tags:
         - vehiculos
-      summary: Reemplazar Vehiculo
+      summary: Reemplazar vehiculo
       requestBody:
         content:
           application/json:
@@ -1172,8 +1251,12 @@ paths:
               $ref: "#/components/schemas/VehiculoModel"
         required: true
       responses:
-        "204":
-          $ref: "#/components/responses/NoContent"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VehiculoProjection"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -1184,6 +1267,7 @@ paths:
           $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     options:
       tags:
         - vehiculos
@@ -1197,10 +1281,11 @@ paths:
           $ref: "#/components/responses/Forbidden"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     patch:
       tags:
         - vehiculos
-      summary: Actualiza parte de Vehiculo
+      summary: Actualizar parcialmente vehiculo
       requestBody:
         content:
           application/json:
@@ -1208,8 +1293,12 @@ paths:
               $ref: "#/components/schemas/VehiculoProjection"
         required: true
       responses:
-        "204":
-          $ref: "#/components/responses/NoContent"
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VehiculoProjection"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -1220,10 +1309,11 @@ paths:
           $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
+        - cookieAuth: []
     delete:
       tags:
         - vehiculos
-      summary: Borrar Vehiculo
+      summary: Borrar vehiculo
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
@@ -1231,8 +1321,11 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
       security:
         - bearerAuth: []
+        - cookieAuth: []
   /api/marcas:
     get:
       tags:
@@ -1251,8 +1344,8 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/MarcasPage"
                   - $ref: "#/components/schemas/Marcas"
+                  - $ref: "#/components/schemas/MarcasPage"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -1262,12 +1355,13 @@ paths:
       - name: id
         in: path
         required: true
+        description: Identificador del recurso
         schema:
           type: string
     get:
       tags:
         - vehiculos
-      summary: Recuperar Marca
+      summary: Recuperar marca
       parameters:
         - in: query
           name: _projection
@@ -1282,9 +1376,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: "#/components/schemas/MarcaModel"
-                  - $ref: "#/components/schemas/MarcaProjection"
+                $ref: "#/components/schemas/MarcaProjection"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -1300,26 +1392,9 @@ paths:
         - name: cookie
           in: query
           required: false
-          description: 'true para que genere y envíe la cookie'
+          description: true para que genere y envíe la cookie
           schema:
             type: boolean
-        - name: name
-          in: query
-          description: Usuario (en formulario)
-          required: false
-          schema:
-            type: string
-          style: form
-          explode: false
-        - name: password
-          in: query
-          description: Contraseña (en formulario)
-          required: false
-          schema:
-            type: string
-            format: password
-          style: form
-          explode: false
       requestBody:
         content:
           application/json:
@@ -1336,13 +1411,14 @@ paths:
                   description: Contraseña
                   type: string
                   format: password
+        required: true
       responses:
         "200":
-          description: Resultado de la autenticación
-          headers: 
+          headers:
             Set-Cookie:
-              schema: 
+              schema:
                 type: string
+          description: Resultado de la autenticación
           content:
             application/json:
               schema:
@@ -1371,6 +1447,7 @@ paths:
       summary: Obtener estado de sesión
       security:
         - bearerAuth: []
+        - cookieAuth: []
       responses:
         "200":
           description: OK
@@ -1420,6 +1497,7 @@ paths:
       summary: Consultar su usuario
       security:
         - bearerAuth: []
+        - cookieAuth: []
       responses:
         "200":
           description: OK
@@ -1445,6 +1523,7 @@ paths:
       summary: Modificar el nombre de su usuario
       security:
         - bearerAuth: []
+        - cookieAuth: []
       requestBody:
         content:
           application/json:
@@ -1470,6 +1549,7 @@ paths:
       summary: Cambiar su contraseña
       security:
         - bearerAuth: []
+        - cookieAuth: []
       description: Es necesario conocer la contraseña actual antes de cambiarla
       requestBody:
         content:
@@ -1513,47 +1593,13 @@ components:
           type: string
         source:
           type: string
-    Contactos:
-      type: array
-      items:
-        $ref: "#/components/schemas/ContactoModel"
-    ContactosProjections:
-      type: array
-      title: Contactos (Proyecciones)
-      items:
-        $ref: "#/components/schemas/ContactoProjection"
-    ContactosPage:
-      type: object
-      title: Pagina de contactos
-      properties:
-        content:
-          oneOf:
-            - $ref: "#/components/schemas/Contactos"
-            - $ref: "#/components/schemas/ContactosProjections"
-        totalElements:
-          type: integer
-          description: Número total de elementos
-        totalPages:
-          type: integer
-          description: Número total de páginas
-        size:
-          type: integer
-          description: Tamaño de página en elementos
-        number:
-          type: integer
-          description: Número de página actual
-        numberOfElements:
-          type: integer
-          description: Número total de elementos en la página
-        empty:
-          type: boolean
-          description: Si la página está vacía
-        first:
-          type: boolean
-          description: Si la página es la primera
-        last:
-          type: boolean
-          description: Si la página es la última
+    ContactoModel:
+      title: Contacto (Modelo)
+      allOf:
+        - $ref: "#/components/schemas/ContactoProjection"
+      required:
+        - id
+        - nombre
     ContactoProjection:
       title: Contacto (Proyección)
       type: object
@@ -1562,7 +1608,6 @@ components:
           title: Id
           type: integer
           example: 1
-          default: 0
           description: El 0 actúa como autonumérico en la creación
         tratamiento:
           title: Tratamiento
@@ -1599,13 +1644,17 @@ components:
           format: email
           maxLength: 100
           example: pwoodall0@army.mil
+        nif:
+          title: N.I.F.
+          type: string
+          format: nif
+          example: 12345678Z
         sexo:
           title: Sexo
           type: string
           enum:
             - H
             - M
-          default: H
           example: H
         nacimiento:
           title: Nacimiento
@@ -1622,7 +1671,6 @@ components:
           title: Conflictivo
           type: boolean
           example: true
-          default: false
         icono:
           title: Icono
           type: string
@@ -1632,7 +1680,6 @@ components:
           title: Direcciones
           type: array
           uniqueItems: true
-          default: []
           items:
             title: Dirección
             type: object
@@ -1663,31 +1710,18 @@ components:
                 maxLength: 100
                 example: España
       additionalProperties: false
-    ContactoModel:
-      title: Contacto (Modelo)
-      allOf:
-        - $ref: "#/components/schemas/ContactoProjection"
-      additionalProperties: false
-      required:
-        - id
-        - nombre
-    Books:
+      minProperties: 1
+    Contactos:
       type: array
+      title: Contactos (Listado)
       items:
-        $ref: "#/components/schemas/BookModel"
-    BooksProjections:
-      type: array
-      title: Books (Proyecciones)
-      items:
-        $ref: "#/components/schemas/BookProjection"
-    BooksPage:
+        $ref: "#/components/schemas/ContactoProjection"
+    ContactosPage:
       type: object
-      title: Pagina de books
+      title: Contactos (Página)
       properties:
         content:
-          oneOf:
-            - $ref: "#/components/schemas/Books"
-            - $ref: "#/components/schemas/BooksProjections"
+          $ref: "#/components/schemas/Contactos"
         totalElements:
           type: integer
           description: Número total de elementos
@@ -1712,6 +1746,10 @@ components:
         last:
           type: boolean
           description: Si la página es la última
+    BookModel:
+      title: Book (Modelo)
+      allOf:
+        - $ref: "#/components/schemas/BookProjection"
     BookProjection:
       type: object
       properties:
@@ -1720,30 +1758,20 @@ components:
           format: int32
           minimum: 0
           description: El 0 actúa como autonumérico en la creación
+      minProperties: 1
       title: Book (Proyección)
       additionalProperties: false
-    BookModel:
-      title: Book (Modelo)
-      allOf:
-        - $ref: "#/components/schemas/BookProjection"
-      additionalProperties: false
-    Personas:
+    Books:
       type: array
+      title: Books (Listado)
       items:
-        $ref: "#/components/schemas/PersonaModel"
-    PersonasProjections:
-      type: array
-      title: Personas (Proyecciones)
-      items:
-        $ref: "#/components/schemas/PersonaProjection"
-    PersonasPage:
+        $ref: "#/components/schemas/BookProjection"
+    BooksPage:
       type: object
-      title: Pagina de personas
+      title: Books (Página)
       properties:
         content:
-          oneOf:
-            - $ref: "#/components/schemas/Personas"
-            - $ref: "#/components/schemas/PersonasProjections"
+          $ref: "#/components/schemas/Books"
         totalElements:
           type: integer
           description: Número total de elementos
@@ -1768,6 +1796,13 @@ components:
         last:
           type: boolean
           description: Si la página es la última
+    PersonaModel:
+      title: Persona (Modelo)
+      allOf:
+        - $ref: "#/components/schemas/PersonaProjection"
+      required:
+        - id
+        - nombre
     PersonaProjection:
       title: Persona (Proyección)
       type: object
@@ -1786,13 +1821,18 @@ components:
           title: Apellidos
           type: string
           example: Grillo
+        correo:
+          title: Correo
+          type: string
+          format: email
+          example: pepito@grillo.tv
         edad:
           title: Edad
           type: integer
           minimum: 16
           maximum: 67
           example: 37
-        telefonos:
+        telefono:
           title: Teléfonos
           type: array
           uniqueItems: true
@@ -1803,31 +1843,18 @@ components:
             example: 999 555 555
             pattern: ^(\d{3}\s){2}\d{3}$
       additionalProperties: false
-    PersonaModel:
-      title: Persona (Modelo)
-      allOf:
-        - $ref: "#/components/schemas/PersonaProjection"
-      additionalProperties: false
-      required:
-        - id
-        - nombre
-    Tarjetas:
+      minProperties: 1
+    Personas:
       type: array
+      title: Personas (Listado)
       items:
-        $ref: "#/components/schemas/TarjetaModel"
-    TarjetasProjections:
-      type: array
-      title: Tarjetas (Proyecciones)
-      items:
-        $ref: "#/components/schemas/TarjetaProjection"
-    TarjetasPage:
+        $ref: "#/components/schemas/PersonaProjection"
+    PersonasPage:
       type: object
-      title: Pagina de tarjetas
+      title: Personas (Página)
       properties:
         content:
-          oneOf:
-            - $ref: "#/components/schemas/Tarjetas"
-            - $ref: "#/components/schemas/TarjetasProjections"
+          $ref: "#/components/schemas/Personas"
         totalElements:
           type: integer
           description: Número total de elementos
@@ -1852,6 +1879,17 @@ components:
         last:
           type: boolean
           description: Si la página es la última
+    TarjetaModel:
+      title: Tarjeta (Modelo)
+      allOf:
+        - $ref: "#/components/schemas/TarjetaProjection"
+      required:
+        - id
+        - idCliente
+        - numero
+        - caducidad
+        - CVC_CVV
+        - tipo
     TarjetaProjection:
       title: Tarjeta (Proyección)
       type: object
@@ -1875,7 +1913,7 @@ components:
           title: Numero
           type: string
           example: 4024 0071 1838 5904
-          pattern: ^(\d{4}\s){3}\d{4}$
+          pattern: ^(((\d{4}\s){3}\d{4})|(\d{13}))$
         caducidad:
           title: Caducidad
           type: string
@@ -1886,35 +1924,18 @@ components:
           type: string
           example: "147"
       additionalProperties: false
-    TarjetaModel:
-      title: Tarjeta (Modelo)
-      allOf:
-        - $ref: "#/components/schemas/TarjetaProjection"
-      additionalProperties: false
-      required:
-        - id
-        - idCliente
-        - numero
-        - caducidad
-        - CVC_CVV
-        - tipo
-    Blog:
+      minProperties: 1
+    Tarjetas:
       type: array
+      title: Tarjetas (Listado)
       items:
-        $ref: "#/components/schemas/ArticuloModel"
-    BlogProjections:
-      type: array
-      title: Blog (Proyecciones)
-      items:
-        $ref: "#/components/schemas/ArticuloProjection"
-    BlogPage:
+        $ref: "#/components/schemas/TarjetaProjection"
+    TarjetasPage:
       type: object
-      title: Pagina de blog
+      title: Tarjetas (Página)
       properties:
         content:
-          oneOf:
-            - $ref: "#/components/schemas/Blog"
-            - $ref: "#/components/schemas/BlogProjections"
+          $ref: "#/components/schemas/Tarjetas"
         totalElements:
           type: integer
           description: Número total de elementos
@@ -1939,6 +1960,13 @@ components:
         last:
           type: boolean
           description: Si la página es la última
+    ArticuloModel:
+      title: Articulo (Modelo)
+      allOf:
+        - $ref: "#/components/schemas/ArticuloProjection"
+      required:
+        - id
+        - titulo
     ArticuloProjection:
       title: Articulo (Proyección)
       type: object
@@ -1982,31 +2010,18 @@ components:
           format: uri
           example: https://cdn-images-1.medium.com/max/800/1*V3Kfghg_jIV0ubxmAnCXBA.jpeg
       additionalProperties: false
-    ArticuloModel:
-      title: Articulo (Modelo)
-      allOf:
-        - $ref: "#/components/schemas/ArticuloProjection"
-      additionalProperties: false
-      required:
-        - id
-        - titulo
-    Libros:
+      minProperties: 1
+    Blog:
       type: array
+      title: Blog (Listado)
       items:
-        $ref: "#/components/schemas/LibroModel"
-    LibrosProjections:
-      type: array
-      title: Libros (Proyecciones)
-      items:
-        $ref: "#/components/schemas/LibroProjection"
-    LibrosPage:
+        $ref: "#/components/schemas/ArticuloProjection"
+    BlogPage:
       type: object
-      title: Pagina de libros
+      title: Blog (Página)
       properties:
         content:
-          oneOf:
-            - $ref: "#/components/schemas/Libros"
-            - $ref: "#/components/schemas/LibrosProjections"
+          $ref: "#/components/schemas/Blog"
         totalElements:
           type: integer
           description: Número total de elementos
@@ -2031,6 +2046,13 @@ components:
         last:
           type: boolean
           description: Si la página es la última
+    LibroModel:
+      title: Libro (Modelo)
+      allOf:
+        - $ref: "#/components/schemas/LibroProjection"
+      required:
+        - idLibro
+        - titulo
     LibroProjection:
       title: Libro (Proyección)
       type: object
@@ -2068,31 +2090,18 @@ components:
           format: uri
           example: https://es.wikipedia.org/wiki/Don_Quijote_de_la_Mancha
       additionalProperties: false
-    LibroModel:
-      title: Libro (Modelo)
-      allOf:
-        - $ref: "#/components/schemas/LibroProjection"
-      additionalProperties: false
-      required:
-        - idLibro
-        - titulo
-    Biblioteca:
+      minProperties: 1
+    Libros:
       type: array
+      title: Libros (Listado)
       items:
-        $ref: "#/components/schemas/VolumenModel"
-    BibliotecaProjections:
-      type: array
-      title: Biblioteca (Proyecciones)
-      items:
-        $ref: "#/components/schemas/VolumenProjection"
-    BibliotecaPage:
+        $ref: "#/components/schemas/LibroProjection"
+    LibrosPage:
       type: object
-      title: Pagina de biblioteca
+      title: Libros (Página)
       properties:
         content:
-          oneOf:
-            - $ref: "#/components/schemas/Biblioteca"
-            - $ref: "#/components/schemas/BibliotecaProjections"
+          $ref: "#/components/schemas/Libros"
         totalElements:
           type: integer
           description: Número total de elementos
@@ -2117,6 +2126,14 @@ components:
         last:
           type: boolean
           description: Si la página es la última
+    VolumenModel:
+      title: Volumen (Modelo)
+      allOf:
+        - $ref: "#/components/schemas/VolumenProjection"
+      required:
+        - id
+        - titulo
+        - autor
     VolumenProjection:
       title: Volumen (Proyección)
       type: object
@@ -2126,7 +2143,6 @@ components:
           title: Id
           type: integer
           example: 0
-          default: 0
           description: El 0 actúa como autonumérico en la creación
         titulo:
           title: Titulo
@@ -2144,32 +2160,18 @@ components:
           minimum: 0
           exclusiveMinimum: true
           example: 22
-    VolumenModel:
-      title: Volumen (Modelo)
-      allOf:
-        - $ref: "#/components/schemas/VolumenProjection"
-      additionalProperties: false
-      required:
-        - id
-        - titulo
-        - autor
-    Vehiculos:
+      minProperties: 1
+    Biblioteca:
       type: array
+      title: Biblioteca (Listado)
       items:
-        $ref: "#/components/schemas/VehiculoModel"
-    VehiculosProjections:
-      type: array
-      title: Vehiculos (Proyecciones)
-      items:
-        $ref: "#/components/schemas/VehiculoProjection"
-    VehiculosPage:
+        $ref: "#/components/schemas/VolumenProjection"
+    BibliotecaPage:
       type: object
-      title: Pagina de vehiculos
+      title: Biblioteca (Página)
       properties:
         content:
-          oneOf:
-            - $ref: "#/components/schemas/Vehiculos"
-            - $ref: "#/components/schemas/VehiculosProjections"
+          $ref: "#/components/schemas/Biblioteca"
         totalElements:
           type: integer
           description: Número total de elementos
@@ -2194,6 +2196,15 @@ components:
         last:
           type: boolean
           description: Si la página es la última
+    VehiculoModel:
+      title: Vehiculo (Modelo)
+      allOf:
+        - $ref: "#/components/schemas/VehiculoProjection"
+      required:
+        - id
+        - marca
+        - modelo
+        - matricula
     VehiculoProjection:
       title: Vehiculo (Proyección)
       type: object
@@ -2240,6 +2251,7 @@ components:
             dni:
               title: Dni
               type: string
+              format: nif
               example: 12345678Z
             email:
               title: Email
@@ -2282,33 +2294,18 @@ components:
                 type: string
                 example: "11"
       additionalProperties: false
-    VehiculoModel:
-      title: Vehiculo (Modelo)
-      allOf:
-        - $ref: "#/components/schemas/VehiculoProjection"
-      additionalProperties: false
-      required:
-        - id
-        - marca
-        - modelo
-        - matricula
-    Marcas:
+      minProperties: 1
+    Vehiculos:
       type: array
+      title: Vehiculos (Listado)
       items:
-        $ref: "#/components/schemas/MarcaModel"
-    MarcasProjections:
-      type: array
-      title: Marcas (Proyecciones)
-      items:
-        $ref: "#/components/schemas/MarcaProjection"
-    MarcasPage:
+        $ref: "#/components/schemas/VehiculoProjection"
+    VehiculosPage:
       type: object
-      title: Pagina de marcas
+      title: Vehiculos (Página)
       properties:
         content:
-          oneOf:
-            - $ref: "#/components/schemas/Marcas"
-            - $ref: "#/components/schemas/MarcasProjections"
+          $ref: "#/components/schemas/Vehiculos"
         totalElements:
           type: integer
           description: Número total de elementos
@@ -2333,6 +2330,13 @@ components:
         last:
           type: boolean
           description: Si la página es la última
+    MarcaModel:
+      title: Marca (Modelo)
+      allOf:
+        - $ref: "#/components/schemas/MarcaProjection"
+      required:
+        - marca
+        - modelos
     MarcaProjection:
       title: Marca (Proyección)
       type: object
@@ -2351,14 +2355,42 @@ components:
             type: string
             example: Giulietta
       additionalProperties: false
-    MarcaModel:
-      title: Marca (Modelo)
-      allOf:
-        - $ref: "#/components/schemas/MarcaProjection"
-      additionalProperties: false
-      required:
-        - marca
-        - modelos
+      minProperties: 1
+    Marcas:
+      type: array
+      title: Marcas (Listado)
+      items:
+        $ref: "#/components/schemas/MarcaProjection"
+    MarcasPage:
+      type: object
+      title: Marcas (Página)
+      properties:
+        content:
+          $ref: "#/components/schemas/Marcas"
+        totalElements:
+          type: integer
+          description: Número total de elementos
+        totalPages:
+          type: integer
+          description: Número total de páginas
+        size:
+          type: integer
+          description: Tamaño de página en elementos
+        number:
+          type: integer
+          description: Número de página actual
+        numberOfElements:
+          type: integer
+          description: Número total de elementos en la página
+        empty:
+          type: boolean
+          description: Si la página está vacía
+        first:
+          type: boolean
+          description: Si la página es la primera
+        last:
+          type: boolean
+          description: Si la página es la última
     Login:
       description: Credenciales de autenticación
       type: object
@@ -2428,8 +2460,12 @@ components:
       description: Número de página empezando en 0 (primera página).
       required: false
       schema:
-        type: integer
-        minimum: 0
+        oneOf:
+          - type: integer
+            minimum: 0
+          - type: string
+            enum:
+              - COUNT
     filas:
       in: query
       name: _rows
@@ -2470,3 +2506,7 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: Authorization
