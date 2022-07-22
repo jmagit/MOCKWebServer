@@ -33,5 +33,15 @@
             "Usuarios",
             "Empleados"
         ]
+    },
+    {
+        "idUsuario": "test@kk.kk",
+        "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
+        "nombre": "Tester",
+        "roles": [
+            "Usuarios",
+            "Empleados",
+            "Administradores"
+        ]
     }
 ]

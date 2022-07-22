@@ -1,5 +1,76 @@
+const Ajv = require("ajv")
+const addFormats = require("ajv-formats")
 const swaggerJsdoc = require('swagger-jsdoc')
 const serviciosConfig = require('../data/__servicios.json');
+
+const ajv = new Ajv()
+addFormats(ajv)
+
+const serviciosConfigSchema = {
+    "type": "array",
+    "uniqueItems": true,
+    "items": {
+        "type": "object",
+        "required": ["endpoint", "model", "pk", "file"],
+        "additionalProperties": false,
+        "properties": {
+            "endpoint": {
+                "type": "string",
+                "pattern": "^[a-z]([a-z0-9]|\\/)*"
+            },
+            "summary": {
+                "type": "string",
+            },
+            "description": {
+                "type": "string",
+            },
+            "models": {
+                "type": "string",
+                "pattern": "^[A-Z][a-z]*$"
+            },
+            "model": {
+                "type": "string",
+                "pattern": "^[A-Z][a-z]*$"
+            },
+            "pk": {
+                "type": "string",
+                "pattern": "^.*$"
+            },
+            "file": {
+                "type": "string",
+                "pattern": "^.*$"
+            },
+            "operations": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                    "type": "string",
+                    "enum": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+                }
+            },
+            "security": {
+                "anyOf": [
+                    { "type": "string" },
+                    { "type": "boolean" }
+                  ]
+            },
+            "readonly": {
+                "type": "boolean",
+            },
+            "tag": {
+                "type": "string",
+            },
+            "schema": {
+                "type": "object",
+            },
+            "db": { // uso interno
+                "type": "object",
+            }
+        }
+    }
+}
+
+const validate = ajv.compile(serviciosConfigSchema)
 
 const Capitalize = cad => cad.charAt(0).toUpperCase() + cad.substring(1).toLowerCase()
 
@@ -137,10 +208,12 @@ const swaggerDocument = {
                 "name": "_page",
                 "description": "Número de página empezando en 0 (primera página).",
                 "required": false,
-                "schema": {"oneOf": [
-                    { "type": "integer", "minimum": 0 },
-                    { "type": "string", "enum": [ "COUNT" ] },
-                ]}
+                "schema": {
+                    "oneOf": [
+                        { "type": "integer", "minimum": 0 },
+                        { "type": "string", "enum": ["COUNT"] },
+                    ]
+                }
             },
             "filas": {
                 "in": "query",
@@ -238,7 +311,7 @@ const generaGetAll = (servicio) => {
         }
     }
     if (servicio.security)
-        result.get.security = [{ bearerAuth: []}, {cookieAuth: [] }]
+        result.get.security = [{ bearerAuth: [] }, { cookieAuth: [] }]
     return result
 }
 const generaPost = (servicio) => {
@@ -265,7 +338,7 @@ const generaPost = (servicio) => {
         }
     }
     if (servicio.security || servicio.readonly)
-        result.post.security = [{ bearerAuth: []}, {cookieAuth: [] }]
+        result.post.security = [{ bearerAuth: [] }, { cookieAuth: [] }]
     return result
 }
 const generaGetOne = (servicio) => {
@@ -300,7 +373,7 @@ const generaGetOne = (servicio) => {
         }
     }
     if (servicio.security)
-        result.get.security = [{ bearerAuth: []}, {cookieAuth: [] }]
+        result.get.security = [{ bearerAuth: [] }, { cookieAuth: [] }]
     return result
 }
 const generaPut = (servicio) => {
@@ -335,11 +408,11 @@ const generaPut = (servicio) => {
         }
     }
     if (servicio.security || servicio.readonly)
-        result.put.security = [{ bearerAuth: []}, {cookieAuth: [] }]
+        result.put.security = [{ bearerAuth: [] }, { cookieAuth: [] }]
     return result
 }
 const generaPatch = (servicio) => {
-     let result = {
+    let result = {
         "patch": {
             "tags": [servicio.tag],
             "summary": `Actualizar parcialmente ${servicio.model.toLowerCase()}`,
@@ -368,7 +441,7 @@ const generaPatch = (servicio) => {
         }
     }
     if (servicio.security || servicio.readonly)
-        result.patch.security = [{ bearerAuth: []}, {cookieAuth: [] }]
+        result.patch.security = [{ bearerAuth: [] }, { cookieAuth: [] }]
     return result
 }
 const generaDelete = (servicio) => {
@@ -385,7 +458,7 @@ const generaDelete = (servicio) => {
         }
     }
     if (servicio.security || servicio.readonly)
-        result.delete.security = [{ bearerAuth: []}, {cookieAuth: [] }]
+        result.delete.security = [{ bearerAuth: [] }, { cookieAuth: [] }]
     return result
 }
 const generaOptions = (servicio) => {
@@ -401,7 +474,7 @@ const generaOptions = (servicio) => {
         }
     }
     if (servicio.security)
-        result.options.security = [{ bearerAuth: []}, {cookieAuth: [] }]
+        result.options.security = [{ bearerAuth: [] }, { cookieAuth: [] }]
     return result
 }
 const preparaService = (servicio) => {
@@ -532,7 +605,15 @@ const addServiceDocumentation = (servicio, dirAPIs) => {
         }, conID)
     }
 }
-const generaSwaggerSpecification = (server, dirAPIs) => {
+
+const generaSwaggerSpecification = (server, dirAPIs, shutdown) => {
+    const valid = validate(serviciosConfig)
+    if (!valid) {
+        validate.errors.forEach(err => console.log(serviciosConfig[/\/(\d*)/.exec(err.instancePath)[1]], err))
+//        console.log(validate.errors)
+        shutdown()
+    }
+
     swaggerDocument.servers[0].variables.port.default = server
     serviciosConfig.forEach(servicio => addServiceDocumentation(servicio, dirAPIs))
     const options = {
@@ -542,4 +623,4 @@ const generaSwaggerSpecification = (server, dirAPIs) => {
     return swaggerJsdoc(options);
 }
 
-module.exports.generaSwaggerSpecification = (servidor, DIR_API_REST) => generaSwaggerSpecification(servidor, DIR_API_REST)
+module.exports.generaSwaggerSpecification = (servidor, DIR_API_REST, shutdown) => generaSwaggerSpecification(servidor, DIR_API_REST, shutdown)
