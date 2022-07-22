@@ -3,7 +3,7 @@
         "endpoint": "contactos",
         "summary": "Gestión de contactos",
         "description": "",
-        "models": "contactos",
+        "models": "Contactos",
         "model": "Contacto",
         "pk": "id",
         "file": "contactos.json",
@@ -175,8 +175,7 @@
                 "id": {
                     "title": "Id",
                     "type": "integer",
-                    "example": 1,
-                    "default": 0
+                    "example": 1
                 },
                 "nombre": {
                     "title": "Nombre",
@@ -205,7 +204,6 @@
                     "title": "Teléfonos",
                     "type": "array",
                     "uniqueItems": true,
-                    "default": [],
                     "items": {
                         "title": "Teléfono",
                         "type": "string",
@@ -242,8 +240,7 @@
                 "id": {
                     "title": "Id",
                     "type": "integer",
-                    "example": 0,
-                    "default": 0
+                    "example": 0
                 },
                 "idCliente": {
                     "title": "IdCliente",
@@ -293,8 +290,7 @@
                 "id": {
                     "title": "Id",
                     "type": "integer",
-                    "example": 1,
-                    "default": 0
+                    "example": 1
                 },
                 "titulo": {
                     "title": "Titulo",
@@ -322,8 +318,7 @@
                 "megusta": {
                     "title": "Megusta",
                     "type": "integer",
-                    "example": 0,
-                    "default": 0
+                    "example": 0
                 },
                 "fotourl": {
                     "title": "Fotourl",
@@ -513,7 +508,6 @@
                     "title": "Direcciones",
                     "type": "array",
                     "uniqueItems": true,
-                    "default": [],
                     "items": {
                         "title": "Dirección",
                         "type": "object",
@@ -582,7 +576,6 @@
                     "title": "Modelos",
                     "type": "array",
                     "uniqueItems": true,
-                    "default": [],
                     "items": {
                         "title": "Modelo",
                         "type": "string",

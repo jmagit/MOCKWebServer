@@ -2,7 +2,7 @@ POST http://localhost:4321/login
 Content-Type: application/json
 
 {
-    "name": "admin", 
+    "username": "admin", 
     "password": "P@$$w0rd" 
 }
 ###

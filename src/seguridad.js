@@ -154,7 +154,7 @@ module.exports.generarTokenScheme = (usuario) => {
  *      description: Credenciales de autenticación
  *      type: object
  *      required:
- *        - name
+ *        - username
  *        - password
  *      properties:
  *        name:
@@ -226,11 +226,11 @@ router.post('/login', async function (req, res, next) {
     let payload = {
         success: false
     }
-    if (!req.body || !req.body.name || !req.body.password) {
+    if (!req.body || !req.body.username || !req.body.password) {
         // setTimeout(() => next(generateErrorByStatus(400)), 1000)
         return next(generateErrorByStatus(400))
     }
-    let usr = req.body.name
+    let usr = req.body.username
     let pwd = req.body.password
     if (!PASSWORD_PATTERN.test(pwd)) {
         // setTimeout(() => next(generateErrorByStatus(400)), 1000)

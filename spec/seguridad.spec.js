@@ -340,7 +340,7 @@ describe('Seguridad', () => {
                     request(app)
                         .post('/login')
                         .set('Content-Type', 'application/json')
-                        .send({ "name": "admin@kk.kk", "password": "P@$$w0rd" })
+                        .send({ "username": "admin@kk.kk", "password": "P@$$w0rd" })
                         .expect('Content-Type', /json/)
                         .then(response => {
                             expect(response.statusCode).toBe(200);
@@ -353,7 +353,7 @@ describe('Seguridad', () => {
                     let response = await request(app)
                         .post('/login?cookie=true')
                         .set('Content-Type', 'application/json')
-                        .send({ "name": "admin@kk.kk", "password": "P@$$w0rd" })
+                        .send({ "username": "admin@kk.kk", "password": "P@$$w0rd" })
                     expect(response.statusCode).toBe(200)
                     expect(response.headers['set-cookie']).toBeTruthy()
                     let cookie = response.headers['set-cookie']
@@ -368,13 +368,13 @@ describe('Seguridad', () => {
                 it('POST: Sin body', done => {
                     request(app)
                         .post('/login')
-                        .expect(415, done)
+                        .expect(400, done)
                 });
-                it('POST: Usuario invalido: name', async () => {
+                it('POST: Usuario invalido: username', async () => {
                     await request(app)
                         .post('/login')
                         .set('Content-Type', 'application/json')
-                        .send({ "name": "admina", "password": "P@$$w0rd" })
+                        .send({ "username": "admina", "password": "P@$$w0rd" })
                         .expect(200)
                         .expect('Content-Type', /json/)
                         .expect(response => expect(response.body.success).toBeFalsy())
@@ -383,7 +383,7 @@ describe('Seguridad', () => {
                     return request(app)
                         .post('/login')
                         .set('Content-Type', 'application/json')
-                        .send({ "name": "admin@kk.kk", "password": "P@$Sw0rd" })
+                        .send({ "username": "admin@kk.kk", "password": "P@$Sw0rd" })
                         .expect(200)
                         .expect('Content-Type', /json/)
                         .expect('{"success":false}')
@@ -392,7 +392,7 @@ describe('Seguridad', () => {
                     return request(app)
                         .post('/login')
                         .set('Content-Type', 'application/json')
-                        .send({ "name": "admin", "password": "P@$Sword" })
+                        .send({ "username": "admin", "password": "P@$Sword" })
                         .expect(400)
                 });
             });

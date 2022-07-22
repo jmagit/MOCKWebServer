@@ -3019,7 +3019,6 @@
             "title": "Id",
             "type": "integer",
             "example": 1,
-            "default": 0,
             "description": "El 0 actúa como autonumérico en la creación"
           },
           "nombre": {
@@ -3049,7 +3048,6 @@
             "title": "Teléfonos",
             "type": "array",
             "uniqueItems": true,
-            "default": [],
             "items": {
               "title": "Teléfono",
               "type": "string",
@@ -3133,7 +3131,6 @@
             "title": "Id",
             "type": "integer",
             "example": 0,
-            "default": 0,
             "description": "El 0 actúa como autonumérico en la creación"
           },
           "idCliente": {
@@ -3236,7 +3233,6 @@
             "title": "Id",
             "type": "integer",
             "example": 1,
-            "default": 0,
             "description": "El 0 actúa como autonumérico en la creación"
           },
           "titulo": {
@@ -3265,8 +3261,7 @@
           "megusta": {
             "title": "Megusta",
             "type": "integer",
-            "example": 0,
-            "default": 0
+            "example": 0
           },
           "fotourl": {
             "title": "Fotourl",
@@ -3609,7 +3604,6 @@
             "title": "Direcciones",
             "type": "array",
             "uniqueItems": true,
-            "default": [],
             "items": {
               "title": "Dirección",
               "type": "object",
@@ -3726,7 +3720,6 @@
             "title": "Modelos",
             "type": "array",
             "uniqueItems": true,
-            "default": [],
             "items": {
               "title": "Modelo",
               "type": "string",
@@ -3789,7 +3782,7 @@
         "description": "Credenciales de autenticación",
         "type": "object",
         "required": [
-          "name",
+          "username",
           "password"
         ],
         "properties": {

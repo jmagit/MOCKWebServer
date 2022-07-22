@@ -20,7 +20,7 @@ const DIR_API_REST = '/api'
 const DIR_API_AUTH = '/' // DIR_API_REST
 const DIR_PUBLIC = './public'
 const DIR_UPLOADS = './uploads/'
-const USERNAME = 'admin'
+const USERNAME = 'adm@kk.kk'
 const PASSWORD = 'P@$$w0rd'
 
 
@@ -31,6 +31,13 @@ app.disable('x-powered-by');
 app.PUERTO = process.env.PORT || '4321';
 app.URL_SERVER = ''
 app.DIR_API_REST = DIR_API_REST
+
+const shutdown = () => {
+  if (app.server) {
+    app.server.close()
+  }
+  process.kill(process.pid, 'SIGTERM');
+}
 
 // Argumentos de entrada
 process.argv.forEach(val => {
@@ -136,16 +143,55 @@ if (VALIDATE_XSRF_TOKEN) {
 // Autenticación
 app.use(seguridad.useAuthentication)
 
-// Autorespondedor de formularios
+// Control de acceso
+// app.use(DIR_API_REST, seguridad)
+app.use(DIR_API_AUTH, seguridad)
+
+// Validación OpenApi
+app.use(
+  OpenApiValidator.middleware({
+    apiSpec: generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown),
+    validateRequests: true, // (default)
+    validateResponses: true, // false by default
+    ignoreUndocumented: true,
+    formats: [
+      { name: 'nif', type: 'string', validate: (v) => validator.isIdentityCard(v, 'ES') },
+    ]
+  })
+)
+
+// Servicios web
+app.use(DIR_API_REST, apiRouter.router);
+
+// Documentación OpenApi
+app.all('/api-docs/v1/openapi.json', async function (_req, res) {
+  let result = await generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown)
+  res.json(result)
+});
+app.all('/api-docs/v1/openapi.yml', async function (_req, res) {
+  let result = await generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown)
+  res.contentType('text/yaml').end(YAML.stringify(result))
+});
+
+// Swaggger-ui
+const options = {
+  explorer: true
+};
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown), options));
+
+
+// Páginas HTML
 function plantillaHTML(titulo, body) {
   return `<!DOCTYPE html>
-  <html>
+    <html lang="es">
     <head>
-      <meta charset="UTF-8">
-      <title>${titulo}</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link rel="stylesheet" href="/mockwebserver/style.css">
-      <link rel="icon" href="/mockwebserver/favicon.ico" >
+        <meta charset="UTF-8">
+        <title>${titulo}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/mockwebserver/style.css">
+        <link rel="icon" href="/mockwebserver/favicon.ico">
+        <style>
+        </style>
     </head>
     <body>
       ${body}
@@ -153,6 +199,7 @@ function plantillaHTML(titulo, body) {
   </html>`
 }
 
+// Autorespondedor de formularios
 function formatColeccion(titulo, col) {
   let rslt = `<tr><th colspan="2">${titulo}</th></tr>`;
   for (let c in col)
@@ -167,7 +214,7 @@ app.all('/form', function (req, res) {
   peticion['AJAX'] = req.xhr
   if (req.header('referer'))
     volver = `<center><a href="${req.header('referer')}">Volver</a></center>`
-  rslt = `<h1>Datos de la petici&oacute;n</h1>
+  rslt = `<h1>Datos de la petición</h1>
   <table border="1">
   ${formatColeccion('Petici&oacuten', peticion)}
   ${formatColeccion('Cabeceras', req.headers)}
@@ -176,7 +223,7 @@ app.all('/form', function (req, res) {
   </table>
   ${volver}
   `
-  res.status(200).end(plantillaHTML('Petici&oacute;n', rslt))
+  res.status(200).end(plantillaHTML('Petición', rslt))
 })
 
 // Eco de la petición
@@ -195,64 +242,66 @@ app.all('/eco(/*)?', function (req, res) {
   }).end();
 });
 
-// Servicios web
-app.use(
-  OpenApiValidator.middleware({
-    apiSpec: generaSwaggerSpecification(app.PUERTO, DIR_API_REST),
-    validateRequests: true, // (default)
-    validateResponses: true, // false by default
-    ignoreUndocumented: true,
-    formats: [
-      { name: 'nif', type: 'string', validate: (v) =>  validator.isIdentityCard(v, 'ES') },
-    ]
-  })
-)
-
-// Control de acceso
-// app.use(DIR_API_REST, seguridad)
-app.use(DIR_API_AUTH, seguridad)
-
-app.use(DIR_API_REST, apiRouter.router);
-
-const options = {
-  explorer: true
-};
-app.all('/api-docs/v1/openapi.json', async function (_req, res) {
-  let result = await generaSwaggerSpecification(app.PUERTO, DIR_API_REST)
-  res.json(result)
-});
-app.all('/api-docs/v1/openapi.yml', async function (_req, res) {
-  let result = await generaSwaggerSpecification(app.PUERTO, DIR_API_REST)
-  res.contentType('text/yaml').end(YAML.stringify(result))
-});
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(generaSwaggerSpecification(app.PUERTO, DIR_API_REST), options));
-
+// Página principal
 app.get('/', function (req, res) {
   let rslt = ''
   let srv = app.URL_SERVER
-  rslt = `<h1>MOCK Server</h1>
-  <ul>
-    <li><b>Esp&iacute;a de la Petici&oacute;n</b><ul><a href='${srv}/form'>${srv}/form</a></li></ul></li>
-    <li><b>Subir ficheros</b><ul><a href='${srv}/fileupload'>${srv}/fileupload</a></li></ul></li>
-    <li><b>Servicios REST</b><ul><li><a href='${srv}/eco'>${srv}/eco</a></li>`
+  let apis = `<li><a href='${srv}/eco'>${srv}/eco</a>`
   serviciosConfig.forEach(servicio => {
-    rslt += `<li><a href='${srv}${DIR_API_REST}/${servicio.endpoint}'>${srv}${DIR_API_REST}/${servicio.endpoint}</a></li>`
+    apis += `<li><a href='${srv}${DIR_API_REST}/${servicio.endpoint}'>${srv}${DIR_API_REST}/${servicio.endpoint}</a></li>`
   })
   let token = ''
   if (VALIDATE_XSRF_TOKEN) {
     // eslint-disable-next-line no-undef
     token = `<input type="hidden" name="xsrftoken" value="${seguridad.generateXsrfToken(req)}">`
   }
-  rslt += `</ul></li>
-    <li><b>Formulario AUTH</b> <br>action=${srv}${DIR_API_AUTH}login <br>method=post: name=${USERNAME}&password=${PASSWORD}<br><br>
-    <form action='${srv}${DIR_API_AUTH}login?cookie=true' method='post'>
-    ${token}
-    <label>Name: <input type='text' name='name' value='${USERNAME}'></label><br>
-    <label>Password: <input type='text' name='password' value='${PASSWORD}'></label><br>
-    <input type='submit' value='Log In'>
-    </form></li>
-    </ul>`
-  rslt += `<center><a href='https://github.com/jmagit/MOCKWebServer/blob/master/README.md' target='_blank'>Documentaci&oacute;n</center>`
+  rslt = `<h1>MOCK Server</h1>
+  <h2>Servicios REST</h2>
+  <div><a href="${srv}/api-docs">Documentación OpenApi</a> | <a
+          href="${srv}/api-docs/v1/openapi.yml">YAML</a> | <a
+          href="${srv}/api-docs/v1/openapi.json">JSON</a></div>
+  <ul>
+      ${apis}
+  </ul>
+  <h2>Formulario AUTH</h2>
+  <table>
+      <tr>
+          <td>
+              <form action="${srv}/login?cookie=true" method="post">
+                  ${token}
+                  <div class="container">
+                      <label for="username"><b>Username</b></label>
+                      <input type="text" placeholder="Enter Username" name="username" required value="${USERNAME}">
+                      <label for="password"><b>Password</b></label>
+                      <input type="password" placeholder="Enter Password" name="password" required pattern= "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).{8,}$" value="${PASSWORD}">
+                      <button type="submit">Login</button>
+                  </div>
+              </form>
+          </td>
+          <td>
+              <ul>
+                  <li>action="${srv}/login"</li>
+                  <li>method="post"</li>
+                  <li>enctype="application/x-www-form-urlencoded"</li>
+                  <li>body: username=${USERNAME}&password=${PASSWORD}</li>
+                  <li>password: al menos 8 caracteres con minúsculas, mayúsculas, dígitos y símbolos</li>
+              </ul>
+          </td>
+      </tr>
+  </table>
+  <h2>Subir ficheros</h2>
+  <ul>
+      <li><a href='${srv}/fileupload'>${srv}/fileupload</a></li>
+  </ul>
+  <h2>Espía de la Petición</h2>
+  <ul>
+      <li><a href='${srv}/form'>${srv}/form</a></li>
+  </ul>
+  <footer><span style="margin-right: 15px;">&copy; ${(new Date()).getFullYear()} JMA</span> <a
+          href="https://github.com/jmagit/MOCKWebServer/blob/master/README.md" target="_blank"
+          rel="noopener">Documentación</a>
+  </footer>
+`
   res.status(200).end(plantillaHTML('MOCK Server', rslt))
 })
 

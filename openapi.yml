@@ -1811,7 +1811,6 @@ components:
           title: Id
           type: integer
           example: 1
-          default: 0
           description: El 0 actúa como autonumérico en la creación
         nombre:
           title: Nombre
@@ -1836,7 +1835,6 @@ components:
           title: Teléfonos
           type: array
           uniqueItems: true
-          default: []
           items:
             title: Teléfono
             type: string
@@ -1898,7 +1896,6 @@ components:
           title: Id
           type: integer
           example: 0
-          default: 0
           description: El 0 actúa como autonumérico en la creación
         idCliente:
           title: IdCliente
@@ -1975,7 +1972,6 @@ components:
           title: Id
           type: integer
           example: 1
-          default: 0
           description: El 0 actúa como autonumérico en la creación
         titulo:
           title: Titulo
@@ -2003,7 +1999,6 @@ components:
           title: Megusta
           type: integer
           example: 0
-          default: 0
         fotourl:
           title: Fotourl
           type: string
@@ -2213,7 +2208,6 @@ components:
           title: Id
           type: integer
           example: 1
-          default: 0
           description: El 0 actúa como autonumérico en la creación
         marca:
           title: Marca
@@ -2262,7 +2256,6 @@ components:
           title: Direcciones
           type: array
           uniqueItems: true
-          default: []
           items:
             title: Dirección
             type: object
@@ -2275,8 +2268,8 @@ components:
             properties:
               id:
                 title: Id
-                type: string
-                example: "1"
+                type: integer
+                example: 1
               calle:
                 title: Calle
                 type: string
@@ -2291,8 +2284,8 @@ components:
                 example: "11080"
               provincia:
                 title: Provincia
-                type: string
-                example: "11"
+                type: integer
+                example: 11
       additionalProperties: false
       minProperties: 1
     Vehiculos:
@@ -2349,7 +2342,6 @@ components:
           title: Modelos
           type: array
           uniqueItems: true
-          default: []
           items:
             title: Modelo
             type: string
@@ -2395,7 +2387,7 @@ components:
       description: Credenciales de autenticación
       type: object
       required:
-        - name
+        - username
         - password
       properties:
         name:
