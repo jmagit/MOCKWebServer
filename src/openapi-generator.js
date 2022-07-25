@@ -3,6 +3,10 @@ const addFormats = require("ajv-formats")
 const swaggerJsdoc = require('swagger-jsdoc')
 const serviciosConfig = require('../data/__servicios.json');
 
+const TITLE = "MOCK Web Server"
+const DESCRIPTION = "Versión NodeJS del **servidor de pruebas** para cursos de FrontEnd."
+const REPOSITORIO = "https://github.com/jmagit/MOCKWebServer"
+
 const ajv = new Ajv()
 addFormats(ajv)
 
@@ -77,12 +81,12 @@ const Capitalize = cad => cad.charAt(0).toUpperCase() + cad.substring(1).toLower
 const swaggerDocument = {
     "openapi": "3.0.0",
     "info": {
-        "title": "MOCK Web Server",
-        "version": "1.0.0",
-        "description": "Versión NodeJS del **servidor de pruebas** para cursos de FrontEnd",
+        "title": TITLE,
+        "version": "2.0.0",
+        "description": DESCRIPTION,
         "contact": {
             "name": "Javier Martín",
-            "url": "https://www.example.com/support",
+            "url": "https://github.com/jmagit",
             "email": "support@example.com"
         },
         "license": {
@@ -114,7 +118,7 @@ const swaggerDocument = {
     ],
     "externalDocs": {
         "description": "Repositorio del proyecto",
-        "url": "https://github.com/jmagit/MOCKWebServer"
+        "url": REPOSITORIO
     },
     "tags": [],
     "paths": {},
@@ -606,21 +610,33 @@ const addServiceDocumentation = (servicio, dirAPIs) => {
     }
 }
 
-const generaSwaggerSpecification = (server, dirAPIs, shutdown) => {
+let cache = false
+const generaSwaggerSpecification = (server, dirAPIs, shutdown, dirAPIsSeguridad) => {
+    if(cache)
+        return swaggerDocument
+    cache = true
     const valid = validate(serviciosConfig)
     if (!valid) {
         validate.errors.forEach(err => console.log(serviciosConfig[/\/(\d*)/.exec(err.instancePath)[1]], err))
-//        console.log(validate.errors)
         shutdown()
     }
 
     swaggerDocument.servers[0].variables.port.default = server
     serviciosConfig.forEach(servicio => addServiceDocumentation(servicio, dirAPIs))
-    const options = {
-        swaggerDefinition: swaggerDocument, //  { openapi: '3.0.0' },
-        apis: [`${__dirname}/seguridad.js`],
-    };
-    return swaggerJsdoc(options);
+    let apisSeguridad = swaggerJsdoc({
+        swaggerDefinition: { openapi: swaggerDocument.openapi },
+        apis: [`${__dirname}/seguridad.js`]
+    });
+    dirAPIsSeguridad = dirAPIsSeguridad || dirAPIs
+    Object.assign(swaggerDocument.tags, swaggerDocument.tags,  apisSeguridad.tags)
+    for(let path in apisSeguridad.paths) {
+        swaggerDocument.paths[dirAPIsSeguridad + path] = apisSeguridad.paths[path]
+    }
+    for(let component in apisSeguridad.components) {
+            if(!swaggerDocument.components[component]) swaggerDocument.components[component] = {}
+            Object.assign(swaggerDocument.components[component], swaggerDocument.components[component],  apisSeguridad.components[component])
+    }
+    return swaggerDocument;
 }
 
 module.exports.generaSwaggerSpecification = (servidor, DIR_API_REST, shutdown) => generaSwaggerSpecification(servidor, DIR_API_REST, shutdown)
