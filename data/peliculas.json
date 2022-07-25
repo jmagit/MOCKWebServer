@@ -1,0 +1,1002 @@
+[
+    {
+        "id": 1,
+        "titulo": "Pat Garrett and Billy the Kid",
+        "director": "Johnette Bulle",
+        "duración": 90,
+        "genero": "Western",
+        "idioma": "Spanish",
+        "precio": 9.95,
+        "año": 2003
+    },
+    {
+        "id": 2,
+        "titulo": "Perils of Pauline, The",
+        "director": "Costanza Simoes",
+        "duración": 86,
+        "genero": "Action",
+        "idioma": "Italian",
+        "precio": 18.5,
+        "año": 2001
+    },
+    {
+        "id": 3,
+        "titulo": "Joy of Sex",
+        "director": "Myrwyn Dabney",
+        "duración": 169,
+        "genero": "Comedy|Romance",
+        "idioma": "Spanish",
+        "precio": 15,
+        "año": 1994
+    },
+    {
+        "id": 4,
+        "titulo": "Snake Woman's Curse",
+        "director": "Westleigh Salvin",
+        "duración": 84,
+        "genero": "Horror",
+        "idioma": "English",
+        "precio": 20,
+        "año": 1992
+    },
+    {
+        "id": 5,
+        "titulo": "Intimate Relations",
+        "director": "Devon Giacomozzo",
+        "duración": 180,
+        "genero": "Comedy",
+        "idioma": "Spanish",
+        "precio": 9.95,
+        "año": 2001
+    },
+    {
+        "id": 6,
+        "titulo": "George and the Dragon",
+        "director": "Olga Alabastar",
+        "duración": 115,
+        "genero": "Action|Adventure|Children|Comedy|Fantasy",
+        "idioma": "Spanish",
+        "precio": 15,
+        "año": 2003
+    },
+    {
+        "id": 7,
+        "titulo": "Brother Bear 2",
+        "director": "Chrysler Andreoletti",
+        "duración": 99,
+        "genero": "Adventure|Animation|Children|Comedy|Fantasy",
+        "idioma": "French",
+        "precio": 9.95,
+        "año": 2000
+    },
+    {
+        "id": 8,
+        "titulo": "Last Cowboy Standing (Skavabölen pojat)",
+        "director": "Rosanne Langcaster",
+        "duración": 142,
+        "genero": "Drama",
+        "idioma": "Spanish",
+        "precio": 15,
+        "año": 1996
+    },
+    {
+        "id": 9,
+        "titulo": "Accident (Yi ngoi)",
+        "director": "Louis Campaigne",
+        "duración": 92,
+        "genero": "Thriller",
+        "idioma": "French",
+        "precio": 18.5,
+        "año": 2012
+    },
+    {
+        "id": 10,
+        "titulo": "Silent Night, Bloody Night",
+        "director": "Marta Callingham",
+        "duración": 131,
+        "genero": "Horror",
+        "idioma": "English",
+        "precio": 18.5,
+        "año": 2004
+    },
+    {
+        "id": 11,
+        "titulo": "Art and Craft",
+        "director": "Mella Gatch",
+        "duración": 161,
+        "genero": "Documentary",
+        "idioma": "Italian",
+        "precio": 18.5,
+        "año": 2004
+    },
+    {
+        "id": 12,
+        "titulo": "Story of Marie and Julien, The (Histoire de Marie et Julien)",
+        "director": "Dacey Britian",
+        "duración": 82,
+        "genero": "Drama|Mystery|Romance",
+        "idioma": "French",
+        "precio": 15,
+        "año": 1997
+    },
+    {
+        "id": 13,
+        "titulo": "Officer Down",
+        "director": "Cele Briscoe",
+        "duración": 123,
+        "genero": "Crime|Drama",
+        "idioma": "Italian",
+        "precio": 9.95,
+        "año": 1987
+    },
+    {
+        "id": 14,
+        "titulo": "Congress, The",
+        "director": "Betteann Ayars",
+        "duración": 88,
+        "genero": "Documentary",
+        "idioma": "Spanish",
+        "precio": 18.5,
+        "año": 2001
+    },
+    {
+        "id": 15,
+        "titulo": "Triple Cross",
+        "director": "Ruy Emanuele",
+        "duración": 159,
+        "genero": "Action|Adventure|Drama|Thriller|War",
+        "idioma": "Italian",
+        "precio": 20,
+        "año": 2011
+    },
+    {
+        "id": 16,
+        "titulo": "Carriers Are Waiting, The (Convoyeurs attendent, Les)",
+        "director": "Rog Phelps",
+        "duración": 146,
+        "genero": "Comedy|Drama",
+        "idioma": "French",
+        "precio": 9.95,
+        "año": 2001
+    },
+    {
+        "id": 17,
+        "titulo": "It's Impossible to Learn to Plow by Reading Books",
+        "director": "Cherry Frye",
+        "duración": 102,
+        "genero": "Drama",
+        "idioma": "French",
+        "precio": 20,
+        "año": 2009
+    },
+    {
+        "id": 18,
+        "titulo": "Hobbit, The",
+        "director": "Keely Danton",
+        "duración": 140,
+        "genero": "Animation|Children|Fantasy",
+        "idioma": "English",
+        "precio": 20,
+        "año": 1986
+    },
+    {
+        "id": 19,
+        "titulo": "Siberia",
+        "director": "Hugo Duerden",
+        "duración": 139,
+        "genero": "Comedy",
+        "idioma": "French",
+        "precio": 15,
+        "año": 1995
+    },
+    {
+        "id": 20,
+        "titulo": "Indian Tomb, The (Das indische Grabmal)",
+        "director": "Karyl Martinez",
+        "duración": 138,
+        "genero": "Adventure",
+        "idioma": "English",
+        "precio": 9.95,
+        "año": 1994
+    },
+    {
+        "id": 21,
+        "titulo": "Wasabi",
+        "director": "Orion Cracoe",
+        "duración": 120,
+        "genero": "Action|Comedy|Crime|Drama|Thriller",
+        "idioma": "Italian",
+        "precio": 18.5,
+        "año": 2004
+    },
+    {
+        "id": 22,
+        "titulo": "Sällskapsresan II - Snowroller",
+        "director": "Annamaria Prium",
+        "duración": 99,
+        "genero": "Comedy",
+        "idioma": "French",
+        "precio": 20,
+        "año": 1985
+    },
+    {
+        "id": 23,
+        "titulo": "Speed 2: Cruise Control",
+        "director": "Boy Smeall",
+        "duración": 88,
+        "genero": "Action|Romance|Thriller",
+        "idioma": "Italian",
+        "precio": 20,
+        "año": 2009
+    },
+    {
+        "id": 24,
+        "titulo": "Pirate, The",
+        "director": "Julita Pawfoot",
+        "duración": 145,
+        "genero": "Adventure|Comedy|Musical|Romance",
+        "idioma": "French",
+        "precio": 15,
+        "año": 1972
+    },
+    {
+        "id": 25,
+        "titulo": "No Blade of Grass",
+        "director": "Izabel Punshon",
+        "duración": 162,
+        "genero": "Drama|Sci-Fi",
+        "idioma": "Italian",
+        "precio": 20,
+        "año": 2011
+    },
+    {
+        "id": 26,
+        "titulo": "Sintel",
+        "director": "Kiri Kluge",
+        "duración": 83,
+        "genero": "Animation|Fantasy",
+        "idioma": "English",
+        "precio": 18.5,
+        "año": 2009
+    },
+    {
+        "id": 27,
+        "titulo": "Hot Fuzz",
+        "director": "Danielle Cauldfield",
+        "duración": 177,
+        "genero": "Action|Comedy|Crime|Mystery",
+        "idioma": "Italian",
+        "precio": 15,
+        "año": 2006
+    },
+    {
+        "id": 28,
+        "titulo": "S. Darko (S. Darko: A Donnie Darko Tale)",
+        "director": "Adrea Covely",
+        "duración": 81,
+        "genero": "Crime|Mystery|Sci-Fi|Thriller",
+        "idioma": "English",
+        "precio": 9.95,
+        "año": 2004
+    },
+    {
+        "id": 29,
+        "titulo": "Magic in the Moonlight",
+        "director": "Zonnya Plampeyn",
+        "duración": 147,
+        "genero": "Comedy|Drama|Romance",
+        "idioma": "Italian",
+        "precio": 9.95,
+        "año": 2002
+    },
+    {
+        "id": 30,
+        "titulo": "Radio Rebel",
+        "director": "Erika Weyman",
+        "duración": 108,
+        "genero": "Drama",
+        "idioma": "French",
+        "precio": 20,
+        "año": 1987
+    },
+    {
+        "id": 31,
+        "titulo": "Rebels of the Neon God (Qing shao nian nuo zha)",
+        "director": "Demetrius Itshak",
+        "duración": 125,
+        "genero": "Drama",
+        "idioma": "French",
+        "precio": 20,
+        "año": 2010
+    },
+    {
+        "id": 32,
+        "titulo": "Grand Budapest Hotel, The",
+        "director": "Lionel Carthy",
+        "duración": 177,
+        "genero": "Comedy|Drama",
+        "idioma": "French",
+        "precio": 20,
+        "año": 1987
+    },
+    {
+        "id": 33,
+        "titulo": "Plot Against Harry, The",
+        "director": "Tabbitha Baynham",
+        "duración": 103,
+        "genero": "Comedy",
+        "idioma": "Spanish",
+        "precio": 15,
+        "año": 2007
+    },
+    {
+        "id": 34,
+        "titulo": "Another Day in Paradise",
+        "director": "Alanah Rannald",
+        "duración": 137,
+        "genero": "Drama",
+        "idioma": "French",
+        "precio": 9.95,
+        "año": 2009
+    },
+    {
+        "id": 35,
+        "titulo": "The Reverse",
+        "director": "Goldi Carr",
+        "duración": 152,
+        "genero": "Comedy|Drama|Romance|Thriller",
+        "idioma": "English",
+        "precio": 9.95,
+        "año": 2003
+    },
+    {
+        "id": 36,
+        "titulo": "Snows of Kilimanjaro, The (Neiges du Kilimandjaro, Les)",
+        "director": "Hayes Baniard",
+        "duración": 179,
+        "genero": "Drama",
+        "idioma": "Italian",
+        "precio": 9.95,
+        "año": 2009
+    },
+    {
+        "id": 37,
+        "titulo": "Full Monty, The",
+        "director": "Perceval Collinwood",
+        "duración": 124,
+        "genero": "Comedy|Drama",
+        "idioma": "English",
+        "precio": 18.5,
+        "año": 1991
+    },
+    {
+        "id": 38,
+        "titulo": "How to Die in Oregon",
+        "director": "Anthe Cuseick",
+        "duración": 177,
+        "genero": "Documentary|Drama",
+        "idioma": "English",
+        "precio": 20,
+        "año": 2003
+    },
+    {
+        "id": 39,
+        "titulo": "Family Weekend",
+        "director": "Arnie Binfield",
+        "duración": 145,
+        "genero": "Comedy|Drama",
+        "idioma": "Italian",
+        "precio": 20,
+        "año": 1998
+    },
+    {
+        "id": 40,
+        "titulo": "Hell's Highway: The True Story of Highway Safety Films",
+        "director": "Jodie Lathaye",
+        "duración": 107,
+        "genero": "Documentary",
+        "idioma": "English",
+        "precio": 20,
+        "año": 1995
+    },
+    {
+        "id": 41,
+        "titulo": "Werckmeister Harmonies (Werckmeister harmóniák)",
+        "director": "Jeanelle Nethercott",
+        "duración": 94,
+        "genero": "Drama",
+        "idioma": "English",
+        "precio": 20,
+        "año": 1984
+    },
+    {
+        "id": 42,
+        "titulo": "X from Outer Space, The (Uchû daikaijû Girara)",
+        "director": "Stillman Wegman",
+        "duración": 88,
+        "genero": "Horror|Sci-Fi",
+        "idioma": "Italian",
+        "precio": 15,
+        "año": 1999
+    },
+    {
+        "id": 43,
+        "titulo": "Elevator",
+        "director": "Netti Ipgrave",
+        "duración": 114,
+        "genero": "Comedy|Drama",
+        "idioma": "Italian",
+        "precio": 15,
+        "año": 1969
+    },
+    {
+        "id": 44,
+        "titulo": "Heartbreak Ridge",
+        "director": "Baxy Burger",
+        "duración": 146,
+        "genero": "Action|War",
+        "idioma": "Italian",
+        "precio": 18.5,
+        "año": 2010
+    },
+    {
+        "id": 45,
+        "titulo": "Speedy",
+        "director": "Ginni Brazear",
+        "duración": 103,
+        "genero": "Action|Comedy",
+        "idioma": "Italian",
+        "precio": 18.5,
+        "año": 2012
+    },
+    {
+        "id": 46,
+        "titulo": "Body of Evidence",
+        "director": "Maxim Sillett",
+        "duración": 176,
+        "genero": "Drama|Thriller",
+        "idioma": "French",
+        "precio": 15,
+        "año": 2011
+    },
+    {
+        "id": 47,
+        "titulo": "Whirlpool",
+        "director": "Dolli Masterson",
+        "duración": 137,
+        "genero": "Crime|Drama|Film-Noir|Mystery",
+        "idioma": "English",
+        "precio": 9.95,
+        "año": 1967
+    },
+    {
+        "id": 48,
+        "titulo": "He Ran All the Way",
+        "director": "Raul Gregoriou",
+        "duración": 102,
+        "genero": "Crime|Drama|Film-Noir",
+        "idioma": "Spanish",
+        "precio": 9.95,
+        "año": 2008
+    },
+    {
+        "id": 49,
+        "titulo": "Takedown",
+        "director": "Terza Carlone",
+        "duración": 93,
+        "genero": "Action|Thriller",
+        "idioma": "Italian",
+        "precio": 9.95,
+        "año": 1993
+    },
+    {
+        "id": 50,
+        "titulo": "Introducing Dorothy Dandridge",
+        "director": "Joceline Childs",
+        "duración": 146,
+        "genero": "Drama|Musical|Romance",
+        "idioma": "Spanish",
+        "precio": 20,
+        "año": 2011
+    },
+    {
+        "id": 51,
+        "titulo": "Love in Another Language (Baska Dilde Ask)",
+        "director": "Cirilo Lecordier",
+        "duración": 116,
+        "genero": "Drama|Romance",
+        "idioma": "French",
+        "precio": 9.95,
+        "año": 1991
+    },
+    {
+        "id": 52,
+        "titulo": "Billy Bathgate",
+        "director": "Phaidra Pressland",
+        "duración": 105,
+        "genero": "Crime|Drama",
+        "idioma": "Italian",
+        "precio": 18.5,
+        "año": 2008
+    },
+    {
+        "id": 53,
+        "titulo": "Invaders from Space",
+        "director": "Fredia Loxley",
+        "duración": 83,
+        "genero": "Action|Sci-Fi",
+        "idioma": "Italian",
+        "precio": 18.5,
+        "año": 1994
+    },
+    {
+        "id": 54,
+        "titulo": "Uninvited, The",
+        "director": "Vicky O'Cleary",
+        "duración": 99,
+        "genero": "Horror|Mystery|Romance",
+        "idioma": "English",
+        "precio": 18.5,
+        "año": 2005
+    },
+    {
+        "id": 55,
+        "titulo": "Darkest Night",
+        "director": "Ethelbert Ings",
+        "duración": 180,
+        "genero": "Drama|Horror",
+        "idioma": "French",
+        "precio": 15,
+        "año": 2006
+    },
+    {
+        "id": 56,
+        "titulo": "Defendor",
+        "director": "Enriqueta Nice",
+        "duración": 173,
+        "genero": "Comedy|Crime|Drama",
+        "idioma": "English",
+        "precio": 18.5,
+        "año": 1997
+    },
+    {
+        "id": 57,
+        "titulo": "Palmetto",
+        "director": "Chelsy McTerry",
+        "duración": 87,
+        "genero": "Crime|Drama|Mystery|Romance|Thriller",
+        "idioma": "English",
+        "precio": 18.5,
+        "año": 2003
+    },
+    {
+        "id": 58,
+        "titulo": "Caught",
+        "director": "Margalo Orbine",
+        "duración": 174,
+        "genero": "Drama|Thriller",
+        "idioma": "Spanish",
+        "precio": 20,
+        "año": 1983
+    },
+    {
+        "id": 59,
+        "titulo": "Endangered Species",
+        "director": "Lanie Fripps",
+        "duración": 137,
+        "genero": "Horror|Sci-Fi|Thriller",
+        "idioma": "Spanish",
+        "precio": 9.95,
+        "año": 1991
+    },
+    {
+        "id": 60,
+        "titulo": "Closet Land",
+        "director": "Laureen Ottery",
+        "duración": 178,
+        "genero": "Drama|Thriller",
+        "idioma": "French",
+        "precio": 15,
+        "año": 2003
+    },
+    {
+        "id": 61,
+        "titulo": "Maltese Falcon, The (a.k.a. Dangerous Female)",
+        "director": "Virgie Chastney",
+        "duración": 106,
+        "genero": "Mystery",
+        "idioma": "Italian",
+        "precio": 9.95,
+        "año": 2001
+    },
+    {
+        "id": 62,
+        "titulo": "Lathe of Heaven",
+        "director": "Kaspar Arnely",
+        "duración": 83,
+        "genero": "Sci-Fi",
+        "idioma": "Italian",
+        "precio": 9.95,
+        "año": 2012
+    },
+    {
+        "id": 63,
+        "titulo": "I Walked with a Zombie",
+        "director": "Teriann Berns",
+        "duración": 105,
+        "genero": "Drama|Horror",
+        "idioma": "Italian",
+        "precio": 15,
+        "año": 2003
+    },
+    {
+        "id": 64,
+        "titulo": "Absent (Ausente)",
+        "director": "Northrop Ceney",
+        "duración": 140,
+        "genero": "Drama|Thriller",
+        "idioma": "Italian",
+        "precio": 15,
+        "año": 2000
+    },
+    {
+        "id": 65,
+        "titulo": "Narco Cultura",
+        "director": "Budd Waterdrinker",
+        "duración": 90,
+        "genero": "Documentary",
+        "idioma": "French",
+        "precio": 18.5,
+        "año": 1995
+    },
+    {
+        "id": 66,
+        "titulo": "Quick and the Dead, The",
+        "director": "Freida Malster",
+        "duración": 171,
+        "genero": "Action|Thriller|Western",
+        "idioma": "French",
+        "precio": 9.95,
+        "año": 2010
+    },
+    {
+        "id": 67,
+        "titulo": "Sexual Dependency (Dependencia sexual)",
+        "director": "Sascha Dunstan",
+        "duración": 176,
+        "genero": "Drama",
+        "idioma": "Spanish",
+        "precio": 18.5,
+        "año": 1985
+    },
+    {
+        "id": 68,
+        "titulo": "Unbeatable (Ji zhan)",
+        "director": "Dru Tremmil",
+        "duración": 109,
+        "genero": "Action|Drama",
+        "idioma": "Spanish",
+        "precio": 15,
+        "año": 2011
+    },
+    {
+        "id": 69,
+        "titulo": "Into the Woods",
+        "director": "Cosmo Jeandillou",
+        "duración": 82,
+        "genero": "Children|Comedy|Fantasy|Musical",
+        "idioma": "French",
+        "precio": 20,
+        "año": 2009
+    },
+    {
+        "id": 70,
+        "titulo": "Cheaper by the Dozen",
+        "director": "Ad McNeice",
+        "duración": 145,
+        "genero": "Comedy|Drama",
+        "idioma": "English",
+        "precio": 15,
+        "año": 2010
+    },
+    {
+        "id": 71,
+        "titulo": "Lady in Red, The",
+        "director": "Kim Loges",
+        "duración": 139,
+        "genero": "Action",
+        "idioma": "Italian",
+        "precio": 9.95,
+        "año": 1992
+    },
+    {
+        "id": 72,
+        "titulo": "Punks",
+        "director": "Clemmy Ferneley",
+        "duración": 166,
+        "genero": "Comedy",
+        "idioma": "Spanish",
+        "precio": 18.5,
+        "año": 2001
+    },
+    {
+        "id": 73,
+        "titulo": "Cutting Edge: The Magic of Movie Editing, The",
+        "director": "Hashim Inwood",
+        "duración": 171,
+        "genero": "Documentary",
+        "idioma": "English",
+        "precio": 18.5,
+        "año": 2007
+    },
+    {
+        "id": 74,
+        "titulo": "Summer Rental",
+        "director": "Andeee Simmens",
+        "duración": 145,
+        "genero": "Comedy",
+        "idioma": "Spanish",
+        "precio": 15,
+        "año": 1998
+    },
+    {
+        "id": 75,
+        "titulo": "Accused (Anklaget)",
+        "director": "Dawn Ferro",
+        "duración": 131,
+        "genero": "Drama",
+        "idioma": "Spanish",
+        "precio": 18.5,
+        "año": 2000
+    },
+    {
+        "id": 76,
+        "titulo": "Mighty, The",
+        "director": "Tomi Kubiak",
+        "duración": 80,
+        "genero": "Drama",
+        "idioma": "English",
+        "precio": 15,
+        "año": 1995
+    },
+    {
+        "id": 77,
+        "titulo": "The Epic of Everest",
+        "director": "Kirby Marcus",
+        "duración": 162,
+        "genero": "Documentary",
+        "idioma": "French",
+        "precio": 15,
+        "año": 1989
+    },
+    {
+        "id": 78,
+        "titulo": "Saints and Soldiers",
+        "director": "Godard Cocks",
+        "duración": 158,
+        "genero": "Action|Adventure|Drama|War",
+        "idioma": "Spanish",
+        "precio": 20,
+        "año": 2008
+    },
+    {
+        "id": 79,
+        "titulo": "Lessons of Darkness (Lektionen in Finsternis)",
+        "director": "Rab Melody",
+        "duración": 89,
+        "genero": "Documentary|War",
+        "idioma": "Spanish",
+        "precio": 18.5,
+        "año": 2008
+    },
+    {
+        "id": 80,
+        "titulo": "Man from Planet X, The",
+        "director": "Nert Seson",
+        "duración": 88,
+        "genero": "Horror|Romance|Sci-Fi",
+        "idioma": "French",
+        "precio": 18.5,
+        "año": 1991
+    },
+    {
+        "id": 81,
+        "titulo": "Hack!",
+        "director": "Ceil Lawday",
+        "duración": 101,
+        "genero": "Comedy|Horror",
+        "idioma": "Italian",
+        "precio": 18.5,
+        "año": 2002
+    },
+    {
+        "id": 82,
+        "titulo": "In the Cut",
+        "director": "Claudetta Coundley",
+        "duración": 109,
+        "genero": "Crime|Drama|Mystery|Romance|Thriller",
+        "idioma": "Spanish",
+        "precio": 15,
+        "año": 1998
+    },
+    {
+        "id": 83,
+        "titulo": "Deadly Mantis, The",
+        "director": "Tallie Verillo",
+        "duración": 171,
+        "genero": "Horror|Sci-Fi",
+        "idioma": "English",
+        "precio": 15,
+        "año": 1998
+    },
+    {
+        "id": 84,
+        "titulo": "Limuzins Janu nakts krasa",
+        "director": "Lolita Jaffray",
+        "duración": 146,
+        "genero": "Comedy|Drama",
+        "idioma": "Italian",
+        "precio": 20,
+        "año": 1999
+    },
+    {
+        "id": 85,
+        "titulo": "Gauntlet, The",
+        "director": "Verile Fordyce",
+        "duración": 118,
+        "genero": "Action",
+        "idioma": "Italian",
+        "precio": 18.5,
+        "año": 2008
+    },
+    {
+        "id": 86,
+        "titulo": "Peter Pan",
+        "director": "Suzanne Meiklam",
+        "duración": 150,
+        "genero": "Children|Fantasy|Musical",
+        "idioma": "Italian",
+        "precio": 9.95,
+        "año": 2011
+    },
+    {
+        "id": 87,
+        "titulo": "Hey, Hey, It's Esther Blueburger",
+        "director": "Fionna Blodg",
+        "duración": 155,
+        "genero": "Comedy|Drama",
+        "idioma": "Spanish",
+        "precio": 18.5,
+        "año": 2001
+    },
+    {
+        "id": 88,
+        "titulo": "Julius Caesar",
+        "director": "Gillian Beatens",
+        "duración": 101,
+        "genero": "Drama",
+        "idioma": "French",
+        "precio": 15,
+        "año": 2006
+    },
+    {
+        "id": 89,
+        "titulo": "Rich and Strange",
+        "director": "Noell Muschette",
+        "duración": 117,
+        "genero": "Comedy|Romance",
+        "idioma": "French",
+        "precio": 20,
+        "año": 2005
+    },
+    {
+        "id": 90,
+        "titulo": "3 Godfathers",
+        "director": "Zach Beincken",
+        "duración": 127,
+        "genero": "Drama|Western",
+        "idioma": "Italian",
+        "precio": 15,
+        "año": 2003
+    },
+    {
+        "id": 91,
+        "titulo": "8 1/2 (8½)",
+        "director": "Mayne Velez",
+        "duración": 116,
+        "genero": "Drama|Fantasy",
+        "idioma": "English",
+        "precio": 18.5,
+        "año": 2002
+    },
+    {
+        "id": 92,
+        "titulo": "Marci X",
+        "director": "Tricia Hessel",
+        "duración": 168,
+        "genero": "Comedy|Musical",
+        "idioma": "Spanish",
+        "precio": 18.5,
+        "año": 2006
+    },
+    {
+        "id": 93,
+        "titulo": "Lovers on the Bridge, The (Amants du Pont-Neuf, Les)",
+        "director": "Sinclair Hiland",
+        "duración": 162,
+        "genero": "Drama|Romance",
+        "idioma": "Spanish",
+        "precio": 20,
+        "año": 2011
+    },
+    {
+        "id": 94,
+        "titulo": "Psyhi vathia (a.k.a. Deep Soul)",
+        "director": "Keelia Sumption",
+        "duración": 105,
+        "genero": "Drama|War",
+        "idioma": "Spanish",
+        "precio": 20,
+        "año": 1996
+    },
+    {
+        "id": 95,
+        "titulo": "Vampires Suck",
+        "director": "Dalston Inchcomb",
+        "duración": 96,
+        "genero": "Comedy",
+        "idioma": "Spanish",
+        "precio": 9.95,
+        "año": 1991
+    },
+    {
+        "id": 96,
+        "titulo": "Kiki's Delivery Service",
+        "director": "Gale Ragdale",
+        "duración": 119,
+        "genero": "Fantasy",
+        "idioma": "Italian",
+        "precio": 18.5,
+        "año": 2010
+    },
+    {
+        "id": 97,
+        "titulo": "Escape from Alcatraz",
+        "director": "Ryon Parris",
+        "duración": 132,
+        "genero": "Drama|Thriller",
+        "idioma": "Spanish",
+        "precio": 15,
+        "año": 2001
+    },
+    {
+        "id": 98,
+        "titulo": "Man of the House",
+        "director": "Giacinta Dunklee",
+        "duración": 161,
+        "genero": "Comedy",
+        "idioma": "English",
+        "precio": 20,
+        "año": 1985
+    },
+    {
+        "id": 99,
+        "titulo": "Innocent Affair, An (Don't Trust Your Husband) (Under Suspicion)",
+        "director": "Dorine Haverty",
+        "duración": 99,
+        "genero": "Comedy",
+        "idioma": "French",
+        "precio": 9.95,
+        "año": 2001
+    },
+    {
+        "id": 100,
+        "titulo": "Damn the Defiant! (H.M.S. Defiant)",
+        "director": "Hillary Baudi",
+        "duración": 151,
+        "genero": "Adventure|Drama",
+        "idioma": "Italian",
+        "precio": 20,
+        "año": 2006
+    }
+]

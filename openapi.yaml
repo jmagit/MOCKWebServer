@@ -1,11 +1,11 @@
 openapi: 3.0.0
 info:
   title: MOCK Web Server
-  version: 1.0.0
-  description: Versión NodeJS del **servidor de pruebas** para cursos de FrontEnd
+  version: 2.0.0
+  description: Versión NodeJS del **servidor de pruebas** para cursos de FrontEnd.
   contact:
     name: Javier Martín
-    url: https://www.example.com/support
+    url: https://github.com/jmagit
     email: support@example.com
   license:
     name: Apache 2.0
@@ -28,10 +28,10 @@ externalDocs:
   description: Repositorio del proyecto
   url: https://github.com/jmagit/MOCKWebServer
 tags:
-  - name: contactos
-    description: Gestión de contactos
-  - name: books
-    description: Mantenimiento de books
+  - name: autenticación
+    description: Login
+  - name: registro
+    description: Cuentas de usuarios
   - name: personas
     description: Mantenimiento de personas
   - name: tarjetas
@@ -44,10 +44,6 @@ tags:
     description: Mantenimiento de biblioteca
   - name: vehiculos
     description: Mantenimiento de vehiculos
-  - name: autenticación
-    description: Login
-  - name: registro
-    description: Cuentas de usuarios
 paths:
   /api/contactos:
     get:
@@ -210,11 +206,11 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
-  /api/books:
+  /api/peliculas:
     get:
       tags:
-        - books
-      summary: Listar books
+        - peliculas
+      summary: Listar peliculas
       parameters:
         - $ref: "#/components/parameters/pagina"
         - $ref: "#/components/parameters/filas"
@@ -228,21 +224,21 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Books"
-                  - $ref: "#/components/schemas/BooksPage"
+                  - $ref: "#/components/schemas/Peliculas"
+                  - $ref: "#/components/schemas/PeliculasPage"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
     post:
       tags:
-        - books
-      summary: Crear book
+        - peliculas
+      summary: Crear pelicula
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/BookModel"
+              $ref: "#/components/schemas/PeliculaModel"
         required: true
       responses:
         "201":
@@ -255,7 +251,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
     options:
       tags:
-        - books
+        - peliculas
       summary: Sondeo CORS
       responses:
         "200":
@@ -264,7 +260,7 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
-  "/api/books/{id}":
+  "/api/peliculas/{id}":
     parameters:
       - name: id
         in: path
@@ -274,8 +270,8 @@ paths:
           type: integer
     get:
       tags:
-        - books
-      summary: Recuperar book
+        - peliculas
+      summary: Recuperar pelicula
       parameters:
         - in: query
           name: _projection
@@ -290,7 +286,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/BookProjection"
+                $ref: "#/components/schemas/PeliculaProjection"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -299,13 +295,13 @@ paths:
           $ref: "#/components/responses/NotFound"
     put:
       tags:
-        - books
-      summary: Reemplazar book
+        - peliculas
+      summary: Reemplazar pelicula
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/BookModel"
+              $ref: "#/components/schemas/PeliculaModel"
         required: true
       responses:
         "200":
@@ -313,7 +309,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/BookProjection"
+                $ref: "#/components/schemas/PeliculaProjection"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -324,7 +320,7 @@ paths:
           $ref: "#/components/responses/NotFound"
     options:
       tags:
-        - books
+        - peliculas
       summary: Sondeo CORS
       responses:
         "200":
@@ -335,13 +331,13 @@ paths:
           $ref: "#/components/responses/Forbidden"
     patch:
       tags:
-        - books
-      summary: Actualizar parcialmente book
+        - peliculas
+      summary: Actualizar parcialmente pelicula
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/BookProjection"
+              $ref: "#/components/schemas/PeliculaProjection"
         required: true
       responses:
         "200":
@@ -349,7 +345,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/BookProjection"
+                $ref: "#/components/schemas/PeliculaProjection"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -360,8 +356,8 @@ paths:
           $ref: "#/components/responses/NotFound"
     delete:
       tags:
-        - books
-      summary: Borrar book
+        - peliculas
+      summary: Borrar pelicula
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
@@ -1383,7 +1379,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
-  /login:
+  /api/login:
     post:
       tags:
         - autenticación
@@ -1432,7 +1428,7 @@ paths:
       responses:
         "200":
           description: OK
-  /logout:
+  /api/logout:
     post:
       tags:
         - autenticación
@@ -1440,7 +1436,7 @@ paths:
       responses:
         "200":
           description: OK
-  /auth:
+  /api/auth:
     get:
       tags:
         - autenticación
@@ -1466,7 +1462,7 @@ paths:
                     type: array
                     items:
                       type: string
-  /register:
+  /api/register:
     post:
       tags:
         - registro
@@ -1542,7 +1538,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
-  /register/password:
+  /api/register/password:
     put:
       tags:
         - registro
@@ -1746,11 +1742,11 @@ components:
         last:
           type: boolean
           description: Si la página es la última
-    BookModel:
-      title: Book (Modelo)
+    PeliculaModel:
+      title: Pelicula (Modelo)
       allOf:
-        - $ref: "#/components/schemas/BookProjection"
-    BookProjection:
+        - $ref: "#/components/schemas/PeliculaProjection"
+    PeliculaProjection:
       type: object
       properties:
         id:
@@ -1759,19 +1755,18 @@ components:
           minimum: 0
           description: El 0 actúa como autonumérico en la creación
       minProperties: 1
-      title: Book (Proyección)
-      additionalProperties: false
-    Books:
+      title: Pelicula (Proyección)
+    Peliculas:
       type: array
-      title: Books (Listado)
+      title: Peliculas (Listado)
       items:
-        $ref: "#/components/schemas/BookProjection"
-    BooksPage:
+        $ref: "#/components/schemas/PeliculaProjection"
+    PeliculasPage:
       type: object
-      title: Books (Página)
+      title: Peliculas (Página)
       properties:
         content:
-          $ref: "#/components/schemas/Books"
+          $ref: "#/components/schemas/Peliculas"
         totalElements:
           type: integer
           description: Número total de elementos

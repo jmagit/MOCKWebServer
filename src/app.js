@@ -69,6 +69,21 @@ app.use(express.urlencoded({
 // parse header/cookies
 app.use(cookieParser())
 
+// Parse originalUrl para validar el contenido separado por , en lo QueryParams 
+app.use(function (req, _res, next) {
+  let partes = req.originalUrl.split('?')
+  if(partes.length === 1)
+    return next();
+  // let params = []
+  // for(let p of partes[1].split('&')) {
+  //   let param = p.split('=')
+  //   params.push(`${param[0]}=${encodeURIComponent(param[1])}`)
+  // }
+  // req.originalUrl = partes[0] + '?' + params.join('&')
+  req.originalUrl = partes[0] + '?' + partes[1].replace(/,/g,'%2C')
+  next()
+});
+
 // Ficheros públicos
 app.use(express.static(DIR_PUBLIC))
 app.use('/files', express.static('uploads'))
@@ -168,7 +183,7 @@ app.all('/api-docs/v1/openapi.json', async function (_req, res) {
   let result = await generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown)
   res.json(result)
 });
-app.all('/api-docs/v1/openapi.yml', async function (_req, res) {
+app.all('/api-docs/v1/openapi.yaml', async function (_req, res) {
   let result = await generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown)
   res.contentType('text/yaml').end(YAML.stringify(result))
 });
@@ -258,7 +273,7 @@ app.get('/', function (req, res) {
   rslt = `<h1>MOCK Server</h1>
   <h2>Servicios REST</h2>
   <div><a href="${srv}/api-docs">Documentación OpenApi</a> | <a
-          href="${srv}/api-docs/v1/openapi.yml">YAML</a> | <a
+          href="${srv}/api-docs/v1/openapi.yaml">YAML</a> | <a
           href="${srv}/api-docs/v1/openapi.json">JSON</a></div>
   <ul>
       ${apis}

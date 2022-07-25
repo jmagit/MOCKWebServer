@@ -2,11 +2,11 @@
   "openapi": "3.0.0",
   "info": {
     "title": "MOCK Web Server",
-    "version": "1.0.0",
-    "description": "Versión NodeJS del **servidor de pruebas** para cursos de FrontEnd",
+    "version": "2.0.0",
+    "description": "Versión NodeJS del **servidor de pruebas** para cursos de FrontEnd.",
     "contact": {
       "name": "Javier Martín",
-      "url": "https://www.example.com/support",
+      "url": "https://github.com/jmagit",
       "email": "support@example.com"
     },
     "license": {
@@ -42,12 +42,12 @@
   },
   "tags": [
     {
-      "name": "contactos",
-      "description": "Gestión de contactos"
+      "name": "autenticación",
+      "description": "Login"
     },
     {
-      "name": "books",
-      "description": "Mantenimiento de books"
+      "name": "registro",
+      "description": "Cuentas de usuarios"
     },
     {
       "name": "personas",
@@ -72,14 +72,6 @@
     {
       "name": "vehiculos",
       "description": "Mantenimiento de vehiculos"
-    },
-    {
-      "name": "autenticación",
-      "description": "Login"
-    },
-    {
-      "name": "registro",
-      "description": "Cuentas de usuarios"
     }
   ],
   "paths": {
@@ -348,12 +340,12 @@
         }
       }
     },
-    "/api/books": {
+    "/api/peliculas": {
       "get": {
         "tags": [
-          "books"
+          "peliculas"
         ],
-        "summary": "Listar books",
+        "summary": "Listar peliculas",
         "parameters": [
           {
             "$ref": "#/components/parameters/pagina"
@@ -379,10 +371,10 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/Books"
+                      "$ref": "#/components/schemas/Peliculas"
                     },
                     {
-                      "$ref": "#/components/schemas/BooksPage"
+                      "$ref": "#/components/schemas/PeliculasPage"
                     }
                   ]
                 }
@@ -399,14 +391,14 @@
       },
       "post": {
         "tags": [
-          "books"
+          "peliculas"
         ],
-        "summary": "Crear book",
+        "summary": "Crear pelicula",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/BookModel"
+                "$ref": "#/components/schemas/PeliculaModel"
               }
             }
           },
@@ -429,7 +421,7 @@
       },
       "options": {
         "tags": [
-          "books"
+          "peliculas"
         ],
         "summary": "Sondeo CORS",
         "responses": {
@@ -445,7 +437,7 @@
         }
       }
     },
-    "/api/books/{id}": {
+    "/api/peliculas/{id}": {
       "parameters": [
         {
           "name": "id",
@@ -459,9 +451,9 @@
       ],
       "get": {
         "tags": [
-          "books"
+          "peliculas"
         ],
-        "summary": "Recuperar book",
+        "summary": "Recuperar pelicula",
         "parameters": [
           {
             "in": "query",
@@ -479,7 +471,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookProjection"
+                  "$ref": "#/components/schemas/PeliculaProjection"
                 }
               }
             }
@@ -497,14 +489,14 @@
       },
       "put": {
         "tags": [
-          "books"
+          "peliculas"
         ],
-        "summary": "Reemplazar book",
+        "summary": "Reemplazar pelicula",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/BookModel"
+                "$ref": "#/components/schemas/PeliculaModel"
               }
             }
           },
@@ -516,7 +508,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookProjection"
+                  "$ref": "#/components/schemas/PeliculaProjection"
                 }
               }
             }
@@ -537,7 +529,7 @@
       },
       "options": {
         "tags": [
-          "books"
+          "peliculas"
         ],
         "summary": "Sondeo CORS",
         "responses": {
@@ -554,14 +546,14 @@
       },
       "patch": {
         "tags": [
-          "books"
+          "peliculas"
         ],
-        "summary": "Actualizar parcialmente book",
+        "summary": "Actualizar parcialmente pelicula",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/BookProjection"
+                "$ref": "#/components/schemas/PeliculaProjection"
               }
             }
           },
@@ -573,7 +565,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookProjection"
+                  "$ref": "#/components/schemas/PeliculaProjection"
                 }
               }
             }
@@ -594,9 +586,9 @@
       },
       "delete": {
         "tags": [
-          "books"
+          "peliculas"
         ],
-        "summary": "Borrar book",
+        "summary": "Borrar pelicula",
         "responses": {
           "204": {
             "$ref": "#/components/responses/NoContent"
@@ -2392,7 +2384,7 @@
         }
       }
     },
-    "/login": {
+    "/api/login": {
       "post": {
         "tags": [
           "autenticación"
@@ -2470,7 +2462,7 @@
         }
       }
     },
-    "/logout": {
+    "/api/logout": {
       "post": {
         "tags": [
           "autenticación"
@@ -2483,7 +2475,7 @@
         }
       }
     },
-    "/auth": {
+    "/api/auth": {
       "get": {
         "tags": [
           "autenticación"
@@ -2528,7 +2520,7 @@
         }
       }
     },
-    "/register": {
+    "/api/register": {
       "post": {
         "tags": [
           "registro"
@@ -2654,7 +2646,7 @@
         }
       }
     },
-    "/register/password": {
+    "/api/register/password": {
       "put": {
         "tags": [
           "registro"
@@ -2929,15 +2921,15 @@
           }
         }
       },
-      "BookModel": {
-        "title": "Book (Modelo)",
+      "PeliculaModel": {
+        "title": "Pelicula (Modelo)",
         "allOf": [
           {
-            "$ref": "#/components/schemas/BookProjection"
+            "$ref": "#/components/schemas/PeliculaProjection"
           }
         ]
       },
-      "BookProjection": {
+      "PeliculaProjection": {
         "type": "object",
         "properties": {
           "id": {
@@ -2948,22 +2940,21 @@
           }
         },
         "minProperties": 1,
-        "title": "Book (Proyección)",
-        "additionalProperties": false
+        "title": "Pelicula (Proyección)"
       },
-      "Books": {
+      "Peliculas": {
         "type": "array",
-        "title": "Books (Listado)",
+        "title": "Peliculas (Listado)",
         "items": {
-          "$ref": "#/components/schemas/BookProjection"
+          "$ref": "#/components/schemas/PeliculaProjection"
         }
       },
-      "BooksPage": {
+      "PeliculasPage": {
         "type": "object",
-        "title": "Books (Página)",
+        "title": "Peliculas (Página)",
         "properties": {
           "content": {
-            "$ref": "#/components/schemas/Books"
+            "$ref": "#/components/schemas/Peliculas"
           },
           "totalElements": {
             "type": "integer",

@@ -67,7 +67,7 @@
                 "nif": {
                     "title": "N.I.F.",
                     "type": "string",
-                    "format" : "nif",
+                    "format": "nif",
                     "example": "12345678Z"
                 },
                 "sexo": {
@@ -148,10 +148,10 @@
         }
     },
     {
-        "endpoint": "books",
-        "model": "Book",
+        "endpoint": "peliculas",
+        "model": "Pelicula",
         "pk": "id",
-        "file": "books.json"
+        "file": "peliculas.json"
     },
     {
         "endpoint": "personas",
@@ -421,7 +421,7 @@
                 "numPag": {
                     "title": "Número de páginas",
                     "type": "integer",
-                    "minimum" : 0,
+                    "minimum": 0,
                     "exclusiveMinimum": true,
                     "example": 22
                 }
@@ -493,7 +493,7 @@
                         "dni": {
                             "title": "Dni",
                             "type": "string",
-                            "format" : "nif",
+                            "format": "nif",
                             "example": "12345678Z"
                         },
                         "email": {

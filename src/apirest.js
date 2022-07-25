@@ -1,5 +1,5 @@
 const express = require('express');
-const DbJSON = require('../src/dbJSON')
+const DbJSON = require('./dbJSON')
 const { onlyAuthenticated, onlyInRole, readOnly } = require('./seguridad')
 const { generateError, generateErrorByStatus, generateErrorByError, getServiciosConfig } = require('./utils');
 

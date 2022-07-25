@@ -13,7 +13,7 @@ Versión NodeJS del servidor de pruebas para cursos de FrontEnd
   1. Descargar o clonar el repositorio
   2. Ejecutar `npm install` para descargar las dependencias.
   3. Ejecutar `npm start` o `node server` para levantar el servidor.
-  4. Navegar a http://localhost:4321/ para comprobar el correcto funcionamiento de los servicios.
+  4. Navegar a <http://localhost:4321/> para comprobar el correcto funcionamiento de los servicios.
 * Con Docker Desktop instalado:
   1. `docker run -d -p 4321:4321 --name mock-web-server jamarton/mock-web-server:latest`
 
@@ -54,7 +54,7 @@ Se han incorporado una serie de parámetros (querystring) para ampliar el contro
 
 ### Para añadir nuevos servicios
 
-1. En el subdirectorio `/data`, añadir un fichero .json con el array de objetos con los valores iniciales del resource. Para generar el fichero se pueden utilizar herramientas de generación automatizada de juegos de datos como http://www.generatedata.com/?lang=es o https://www.mockaroo.com/.
+1. En el subdirectorio `/data`, añadir un fichero .json con el array de objetos con los valores iniciales del resource. Para generar el fichero se pueden utilizar herramientas de generación automatizada de juegos de datos como <http://www.generatedata.com/?lang=es> o <https://www.mockaroo.com/>.
 2. Dar de alta el servicio añadiendo una entrada en el fichero de configuración de servicios `data/__servicios.json` indicando:
    | Propiedad             | Tipo                  | Descripción                               |
    | --------------------- | --------------------- | ----------------------------------------- |
@@ -71,7 +71,7 @@ Se han incorporado una serie de parámetros (querystring) para ampliar el contro
    | security | boolean o string | `true` para indicar que el usuario debe estar autenticado para acceder al servicio. Acepta una cadena con los roles, separados por comas, a los que se autoriza el acceso (requiere autenticación). |
    | schema | string | Esquema OpenApi para la validación y definición de la documentación |
 3. Rearrancar el servidor.
-4. Probar: http://localhost:4321/api/nuevoservicio
+4. Probar: <http://localhost:4321/api/nuevoservicio>
 
 ### OpenApi (Swagger)
 
@@ -79,9 +79,9 @@ Se genera automáticamente la documentación de los servicios disponibles y est�
 
 La documentación está disponible en formato HTML, YAML y JSOM:
 
-* http://localhost:4321/api-docs
-* http://localhost:4321/api-docs/v1/openapi.yml
-* http://localhost:4321/api-docs/v1/openapi.json
+* <http://localhost:4321/api-docs>
+* <http://localhost:4321/api-docs/v1/openapi.yaml>
+* <http://localhost:4321/api-docs/v1/openapi.json>
 
 ### Cross-Origin Resource Sharing
 
@@ -96,7 +96,7 @@ Para evitar conflictos con los navegadores se han habilitado las siguientes cabe
 
 El servicio ECO se puede usar para probar los clientes REST, hacer llamadas API de muestra y comprobar la información recibida por el servidor.
 
-Por ejemplo: http://localhost:4321/eco/personas/1?_page=1&_rows=10
+Por ejemplo: <http://localhost:4321/eco/personas/1?_page=1&_rows=10>
 
     {
         "url": "/eco/personas/1?_page=1&_rows=10",
@@ -178,7 +178,7 @@ Para simular la autenticación con token JWT de cabecera está disponible el ser
 
 En el fichero data/usuarios.json se mantiene la estructura básica de los usuarios registrados que se puede ampliar.
 
-Mediante peticiones AJAX a http://localhost:4321/register se pueden:
+Mediante peticiones AJAX a <http://localhost:4321/register> se pueden:
 
 * Registrar usuario (POST).
 * Modificar usuario autenticado (PUT)
@@ -186,7 +186,7 @@ Mediante peticiones AJAX a http://localhost:4321/register se pueden:
 
 Las modificaciones y consultas están restringidas al propio usuario autenticado. Los usuarios tienen asociados, a través de la propiedad roles, un array de cadenas con los diferentes grupos a los que pertenecen, permitiendo la autorización por membresía. El servicio de registro no permite a un usuario modificar sus roles.
 
-La contraseñas sigue el patrón /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/ (al menos 8 caracteres con minúsculas, mayúsculas, dígitos y símbolos). Para el encriptado de contraseñas en la persistencia se utiliza bcrypt (función de hashing de contraseñas basada en el cifrado Blowfish), utilizado al Registrar usuario y se ignora la contraseña en el resto de los casos. Para cambiar la contraseña se ha habilitado el método PUT http://localhost:4321/register/password que requiere el usuario autenticado y la contraseña anterior como medida de seguridad:
+La contraseñas sigue el patrón /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/ (al menos 8 caracteres con minúsculas, mayúsculas, dígitos y símbolos). Para el encriptado de contraseñas en la persistencia se utiliza bcrypt (función de hashing de contraseñas basada en el cifrado Blowfish), utilizado al Registrar usuario y se ignora la contraseña en el resto de los casos. Para cambiar la contraseña se ha habilitado el método PUT <http://localhost:4321/register/password> que requiere el usuario autenticado y la contraseña anterior como medida de seguridad:
 
     PUT http://localhost:4321/register/password
     Content-Type: application/json
@@ -199,9 +199,9 @@ La contraseñas sigue el patrón /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/
 
 ### Cookies
 
-* Para otros escenarios que requiera autenticación por cookies se puede añadir el parámetro `cookie=true` para que envíe la cookie `Authorization` con una validez de una hora: <http://localhost:8181/api/login?cookie=true>
-* Para borrar la cookie: <http://localhost:8181/api/logout>
-* Para obtener la información de la autenticación: <http://localhost:8181/api/auth>
+* Para otros escenarios que requiera autenticación por cookies se puede añadir el parámetro `cookie=true` para que envíe la cookie `Authorization` con una validez de una hora: <http://localhost:4321/login?cookie=true>
+* Para borrar la cookie: <http://localhost:4321/logout>
+* Para obtener la información de la autenticación: <http://localhost:4321/auth>
 
 ### Cross-Site Request Forgery (XSRF o CSRF)
 
@@ -226,7 +226,7 @@ El token está basado en la IP remota para ser único para cada usuario y es ver
 ## Autorespondedor
 
 Similar al PHPInfo, genera una página con la información enviada al servidor, generalmente con un formulario, separando la información recibida en cabecera, querystring (GET) y cuerpo (POST).  
-Está disponible en la página http://localhost:4321/form.
+Está disponible en la página <http://localhost:4321/form>.
 
 ## Servidor web y de ficheros
 
@@ -234,11 +234,11 @@ Se ha habilitado el subdirectorio `/public` para los ficheros que se deben servi
 
 ### Subir ficheros
 
-Se pueden subir ficheros al servidor, mediante peticiones POST AJAX a http://localhost:4321/fileupload, requieren la cabecera **'Content-Type':'multipart/form-data'** y se envían en el campo **filetoupload** del formulario (acepta múltiples ficheros).
+Se pueden subir ficheros al servidor, mediante peticiones POST AJAX a <http://localhost:4321/fileupload>, requieren la cabecera **'Content-Type':'multipart/form-data'** y se envían en el campo **filetoupload** del formulario (acepta múltiples ficheros).
 
-Los ficheros se almacenan en el subdirectorio `/uploads` y son accesibles mediante la ruta http://localhost:4321/files.
+Los ficheros se almacenan en el subdirectorio `/uploads` y son accesibles mediante la ruta <http://localhost:4321/files>.
 
-Las peticiones GET a http://localhost:4321/fileupload mostrarán un formulario para subir ficheros.
+Las peticiones GET a <http://localhost:4321/fileupload> mostrarán un formulario para subir ficheros.
 
 ### Redirección a index.html
 
