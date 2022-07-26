@@ -234,6 +234,7 @@ const swaggerDocument = {
                 "name": "_sort",
                 "description": "Indica la lista de propiedades (separadas por comas) por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.",
                 "required": false,
+                "allowReserved": true,
                 "schema": {
                     "type": "string"
                 }
@@ -243,6 +244,7 @@ const swaggerDocument = {
                 "name": "_search",
                 "description": "Selecciona todos aquellos que en alguna de sus propiedades contenga el valor proporcionado.",
                 "required": false,
+                "allowReserved": true,
                 "schema": {
                     "type": "string"
                 }
@@ -252,6 +254,7 @@ const swaggerDocument = {
                 "name": "_projection",
                 "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
                 "required": false,
+                "allowReserved": true,
                 "schema": {
                     "type": "string"
                 }
