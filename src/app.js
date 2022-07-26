@@ -69,21 +69,6 @@ app.use(express.urlencoded({
 // parse header/cookies
 app.use(cookieParser())
 
-// Parse originalUrl para validar el contenido separado por , en lo QueryParams 
-app.use(function (req, _res, next) {
-  let partes = req.originalUrl.split('?')
-  if(partes.length === 1)
-    return next();
-  // let params = []
-  // for(let p of partes[1].split('&')) {
-  //   let param = p.split('=')
-  //   params.push(`${param[0]}=${encodeURIComponent(param[1])}`)
-  // }
-  // req.originalUrl = partes[0] + '?' + params.join('&')
-  req.originalUrl = partes[0] + '?' + partes[1].replace(/,/g,'%2C')
-  next()
-});
-
 // Ficheros públicos
 app.use(express.static(DIR_PUBLIC))
 app.use('/files', express.static('uploads'))
