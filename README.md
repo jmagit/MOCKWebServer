@@ -166,7 +166,8 @@ Para simular la autenticación con token JWT de cabecera está disponible el ser
         "roles": [
             "Usuarios",
             "Administradores"
-        ]
+        ],
+        "expires_in": 3600
     }
 
 #### Envío del token en la cabecera:

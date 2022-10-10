@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createHash } = require('crypto')
+const { createHash, createPrivateKey, createPublicKey } = require('crypto')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const fs = require('fs/promises');
@@ -12,15 +12,61 @@ const PROP_PASSWORD = 'password'
 const PROP_NAME = 'idUsuario'
 const PASSWORD_PATTERN = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/
 const USR_FILENAME = './data/usuarios.json'
+const EXPIRACION_MIN = 60;
 
 module.exports = router
+
+// Criptografía
+async function encriptaPassword(password) {
+    const salt = await bcrypt.genSalt(10)
+    return bcrypt.hash(password, salt)
+}
+
+const TokenHMAC256 = {
+    generar: (usuario) => {
+        return jwt.sign({
+            usr: usuario[PROP_USERNAME],
+            name: usuario.nombre,
+            roles: usuario.roles
+        }, APP_SECRET, { issuer: 'MicroserviciosJWT', expiresIn: EXPIRACION_MIN + 'm' })
+    },
+    decode: (token) => {
+        return jwt.verify(token, APP_SECRET);
+    }
+}
+
+const TokenRS256 = {
+    generar: (usuario) => {
+        let privateKey = 'MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDHp+JR9/LfZAtXeJFLRANM/j3HvnoEqYeK3w294veF0cUZvya9sXoTYR4Pls/wy5IFIW8gxjD35mXUmo3cMsfm0KgxdQDQD0W8qx52bE8Gh5uww4LHSlIwzwnkHFHmgYtg1k56d9s+e8kYLRkq3DGxZ7SwKgzNhQXUVUoNLbsPr4hVZYd7BABC5KCOHhd6rBxZyK6HDLcoNyfmkospNJQHps/SYmbt+MlyTpvFXWrcj4ttVLKXwjefxkaxF4YNrZrO4aCXuOeJG8Q9IOXxdXkdsP5WJEUnWP63Jca8cyJMCS41GAowb9ratjm0eeTA130eHBMJuJyV2UtKcoB/0IoXAgMBAAECggEAGJ8Zh+Y961KZG3Zg5JlElvAbilBxF7YYYwXS2gHtaHFQDzbFfksutMkbPezpQ9a28S8IV1BZpZiiIi/VIryYblx5AXBeY0oe3X90yEHfFP0QNCJING9z51UA8UKUzwpWt+B12SCCxxfY2sRlACYbcrdJTxhAb+/hoifKdAmZsftJqSiGuMlYWbi6Q3Lk+tsHVPVCwqyf8puZEFTf76s2yY/ySTAhNL4drd64++sVlQbgieSGnOqFv6ai12XJbuYOZE0Dce9+r3PRvDVQhMDajG7AuAJd4fmwFjJR3aPwyxGVv0oZk5KmqM6hTV1mxBLuZvqBYLAZojYl45i/GnEzYQKBgQD2yXJsRJyh7l8H4wCHIeUGXrpF+IbSaz5vK6hGqs4Xw5rOiA+wcYKIMqYnG1cfX/rP3hPh5kzz96wsAyL0jzZhbCP2Miz35XYAm+LgQzhAN6VXtwUHWQDAehhmM00y3X/gu1I+3IffB9fVGh4xK1T49mDnq+pZ+HWsORu5Vr/n/wKBgQDPHADLOO+JT7yFmCMP0PQfSy0UPTNDuaDdWVtnQYwZ68a0SIk+ygZNCEbeYEhCO+Kq7/S3DcmQHYq54O7G8LP/+oxCmSXLkA5hwJFOJtC5hea+i0JHG5UvOmDvRBojaSO5xxC17PREL/QOMV0niEd1VYFBcCFt79C1P6DQDiGd6QKBgCiX4jZk4s7QAtmtQTz5Gk797e3sf2DFOzPWHovhNJ08E469WrdPNIVqr2HnYWFLzFm80dBqrWXD65IhwfIwTGWiABhTEIqGN+7JtXvmEq6deJkBBda7kSAX9UN6VMx1Gr/AkDq+06qgA6SN80FrO0LoY/A3mwjJkbGOgzztRAvJAoGBAJa85+sBVn4W9bw6HZK+X1+DZJztailpqqZQChGeCG05SJcgkBuOCIX6dzIU26KxWWlWWkL9Gu30QmrFRqSuviOZ5In4UyTUhVMqR9ecsp/E0Etwqd19Othz4edjJq8NL/5f30651pLmX/gQf59tNa01fWz2Qq50M/AnDlE/Z8I5AoGBALil+ccLACzw2W3qrU44HEpXYY91RLE9ANXUlM9OfbnHYfrI6wZylRA5TjcAcaLHwC88c/yLalVEJXnSgBpm9MNmQPE6tNGU7+IIn6cdIbX1eW6QUPWU5yLwiFlntkp/v+WwURN3sIQWegtOacAp5R78nJLpeWm1WmuFOYJ0glaF';
+        let buff = Buffer.from(privateKey, 'base64');
+
+        return jwt.sign({
+            usr: usuario[PROP_USERNAME],
+            name: usuario.nombre,
+            roles: usuario.roles
+        }, createPrivateKey({ key: buff, format: 'der', type: 'pkcs8' }), { issuer: 'MicroserviciosJWT', algorithm: 'RS256', expiresIn: EXPIRACION_MIN + 'm' })
+    },
+    decode: (token) => {
+        let publicKey = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAx6fiUffy32QLV3iRS0QDTP49x756BKmHit8NveL3hdHFGb8mvbF6E2EeD5bP8MuSBSFvIMYw9+Zl1JqN3DLH5tCoMXUA0A9FvKsedmxPBoebsMOCx0pSMM8J5BxR5oGLYNZOenfbPnvJGC0ZKtwxsWe0sCoMzYUF1FVKDS27D6+IVWWHewQAQuSgjh4XeqwcWciuhwy3KDcn5pKLKTSUB6bP0mJm7fjJck6bxV1q3I+LbVSyl8I3n8ZGsReGDa2azuGgl7jniRvEPSDl8XV5HbD+ViRFJ1j+tyXGvHMiTAkuNRgKMG/a2rY5tHnkwNd9HhwTCbicldlLSnKAf9CKFwIDAQAB';
+        let buff = Buffer.from(publicKey, 'base64');
+        return jwt.verify(token, createPublicKey({ key: buff, format: 'der', type: 'spki' }), { algorithms: ['RS256'] });
+    }
+}
+
+const jwtCrypto = TokenHMAC256;
+
+module.exports.generarTokenJWT = jwtCrypto.generar
+
+module.exports.generarTokenScheme = (usuario) => {
+    return AUTHENTICATION_SCHEME + module.exports.generarTokenJWT(usuario)
+}
 
 // Middleware: Cross-origin resource sharing (CORS)
 module.exports.useCORS = (req, res, next) => {
     let origen = req.header("Origin")
     if (!origen) origen = '*'
     res.header('Access-Control-Allow-Origin', origen)
-    res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization, X-Requested-With, X-XSRF-TOKEN')
+    res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, authorization, X-Requested-With, X-XSRF-TOKEN')
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
     res.header('Access-Control-Allow-Credentials', 'true')
     next()
@@ -39,7 +85,7 @@ module.exports.useAuthentication = (req, res, next) => {
     } else
         token = req.headers['authorization'].substring(AUTHENTICATION_SCHEME.length)
     try {
-        let decoded = jwt.verify(token, APP_SECRET);
+        let decoded = jwtCrypto.decode(token);
         res.locals.isAuthenticated = true;
         res.locals.usr = decoded.usr;
         res.locals.name = decoded.name;
@@ -47,8 +93,10 @@ module.exports.useAuthentication = (req, res, next) => {
         res.locals.isInRole = role => res.locals.roles.includes(role)
         next();
     } catch (err) {
-        if (err.name === 'TokenExpiredError')
+        if (err.name === 'TokenExpiredError') {
+            res.set('WWW-Authenticate', 'Bearer realm="MicroserviciosJWT", error="invalid_token", error_description="The access token expired"')
             return next(generateError('Invalid token', 401, 'Token expired', { expiredAt: err.expiredAt }))
+        }
         return next(generateError('Invalid token', 401))
     }
 }
@@ -122,22 +170,6 @@ module.exports.useXSRF = (req, res, next) => {
 }
 
 // Rutas: Control de acceso
-async function encriptaPassword(password) {
-    const salt = await bcrypt.genSalt(10)
-    return bcrypt.hash(password, salt)
-}
-
-module.exports.generarTokenJWT = (usuario) => {
-    return jwt.sign({
-        usr: usuario[PROP_USERNAME],
-        name: usuario.nombre,
-        roles: usuario.roles
-    }, APP_SECRET, { expiresIn: '1h' })
-
-}
-module.exports.generarTokenScheme = (usuario) => {
-    return AUTHENTICATION_SCHEME + module.exports.generarTokenJWT(usuario)
-}
 /**
 * @swagger
 * tags:
@@ -157,7 +189,7 @@ module.exports.generarTokenScheme = (usuario) => {
  *        - username
  *        - password
  *      properties:
- *        name:
+ *        username:
  *          type: string
  *        password:
  *          type: string
@@ -245,7 +277,8 @@ router.post('/login', async function (req, res, next) {
             success: true,
             token: token,
             name: element[PROP_NAME],
-            roles: element.roles
+            roles: element.roles,
+            expires_in: EXPIRACION_MIN * 60
         }
         if (req.query.cookie)
             res.cookie('Authorization', token.substring(AUTHENTICATION_SCHEME.length), { maxAge: 3600000 })
@@ -264,7 +297,7 @@ router.post('/login', async function (req, res, next) {
  *       "200":
  *         description: "OK"
  */
- router.options('/login', function (_req, res) {
+router.options('/login', function (_req, res) {
     res.sendStatus(200)
 })
 

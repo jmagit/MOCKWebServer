@@ -580,10 +580,10 @@ const addServiceDocumentation = (servicio, dirAPIs) => {
         // sinID = Object.assign(sinID, generaGetAll(servicio))
         conID = Object.assign(conID, generaPut(servicio))
     }
-    if (servicio.operations.includes('OPTIONS')) {
-        sinID = Object.assign(sinID, generaOptions(servicio))
-        conID = Object.assign(conID, generaOptions(servicio))
-    }
+    // if (servicio.operations.includes('OPTIONS')) {
+    //     sinID = Object.assign(sinID, generaOptions(servicio))
+    //     conID = Object.assign(conID, generaOptions(servicio))
+    // }
     if (servicio.operations.includes('PATCH'))
         conID = Object.assign(conID, generaPatch(servicio))
     if (servicio.operations.includes('DELETE'))
@@ -631,6 +631,7 @@ const generaSwaggerSpecification = (server, dirAPIs, shutdown, dirAPIsSeguridad)
         apis: [`${__dirname}/seguridad.js`]
     });
     dirAPIsSeguridad = dirAPIsSeguridad || dirAPIs
+    if(dirAPIsSeguridad === '/') dirAPIsSeguridad = '';
     Object.assign(swaggerDocument.tags, swaggerDocument.tags,  apisSeguridad.tags)
     for(let path in apisSeguridad.paths) {
         swaggerDocument.paths[dirAPIsSeguridad + path] = apisSeguridad.paths[path]
@@ -642,4 +643,4 @@ const generaSwaggerSpecification = (server, dirAPIs, shutdown, dirAPIsSeguridad)
     return swaggerDocument;
 }
 
-module.exports.generaSwaggerSpecification = (servidor, DIR_API_REST, shutdown) => generaSwaggerSpecification(servidor, DIR_API_REST, shutdown)
+module.exports.generaSwaggerSpecification = (servidor, DIR_API_REST, shutdown, dirAPIsSeguridad) => generaSwaggerSpecification(servidor, DIR_API_REST, shutdown, dirAPIsSeguridad)
