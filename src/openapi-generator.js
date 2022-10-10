@@ -215,7 +215,7 @@ const swaggerDocument = {
                 "schema": {
                     "oneOf": [
                         { "type": "integer", "minimum": 0 },
-                        { "type": "string", "enum": ["COUNT"] },
+                        { "type": "string", "enum": ["count", "COUNT"] },
                     ]
                 }
             },
@@ -580,10 +580,10 @@ const addServiceDocumentation = (servicio, dirAPIs) => {
         // sinID = Object.assign(sinID, generaGetAll(servicio))
         conID = Object.assign(conID, generaPut(servicio))
     }
-    // if (servicio.operations.includes('OPTIONS')) {
-    //     sinID = Object.assign(sinID, generaOptions(servicio))
-    //     conID = Object.assign(conID, generaOptions(servicio))
-    // }
+    if (servicio.operations.includes('OPTIONS')) {
+        sinID = Object.assign(sinID, generaOptions(servicio))
+        conID = Object.assign(conID, generaOptions(servicio))
+    }
     if (servicio.operations.includes('PATCH'))
         conID = Object.assign(conID, generaPatch(servicio))
     if (servicio.operations.includes('DELETE'))

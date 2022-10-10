@@ -151,7 +151,9 @@ app.use(DIR_API_AUTH, seguridad)
 app.use(
   OpenApiValidator.middleware({
     apiSpec: generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown, DIR_API_AUTH),
-    validateRequests: true, // (default)
+    validateRequests: {
+      allowUnknownQueryParameters: true,
+    },
     validateResponses: true, // false by default
     ignoreUndocumented: true,
     formats: [
