@@ -87,7 +87,7 @@ La documentación está disponible en formato HTML, YAML y JSOM:
 
 Para evitar conflictos con los navegadores se han habilitado las siguientes cabeceras CORS:
 
-* Access-Control-Allow-Origin: _dominio-origen-de-la-petición_
+* Access-Control-Allow-Origin: *dominio-origen-de-la-petición*
 * Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With, X-SRF-TOKEN
 * Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS
 * Access-Control-Allow-Credentials: true
