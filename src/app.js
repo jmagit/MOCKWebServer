@@ -150,7 +150,7 @@ app.use(DIR_API_AUTH, seguridad)
 // Validación OpenApi
 app.use(
   OpenApiValidator.middleware({
-    apiSpec: generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown),
+    apiSpec: generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown, DIR_API_AUTH),
     validateRequests: true, // (default)
     validateResponses: true, // false by default
     ignoreUndocumented: true,
@@ -165,11 +165,11 @@ app.use(DIR_API_REST, apiRouter.router);
 
 // Documentación OpenApi
 app.all('/api-docs/v1/openapi.json', async function (_req, res) {
-  let result = await generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown)
+  let result = await generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown, DIR_API_AUTH)
   res.json(result)
 });
 app.all('/api-docs/v1/openapi.yaml', async function (_req, res) {
-  let result = await generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown)
+  let result = await generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown, DIR_API_AUTH)
   res.contentType('text/yaml').end(YAML.stringify(result))
 });
 
@@ -177,7 +177,7 @@ app.all('/api-docs/v1/openapi.yaml', async function (_req, res) {
 const options = {
   explorer: true
 };
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown), options));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown, DIR_API_AUTH), options));
 
 
 // Páginas HTML
