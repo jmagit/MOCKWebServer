@@ -9,7 +9,7 @@
         ]
     },
     {
-        "idUsuario": "adm@kk.kk",
+        "idUsuario": "adm@example.com",
         "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
         "nombre": "Administrador",
         "roles": [
@@ -18,7 +18,7 @@
         ]
     },
     {
-        "idUsuario": "usr@kk.kk",
+        "idUsuario": "usr@example.com",
         "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
         "nombre": "Usuario registrado",
         "roles": [
@@ -26,7 +26,7 @@
         ]
     },
     {
-        "idUsuario": "emp@kk.kk",
+        "idUsuario": "emp@example.com",
         "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
         "nombre": "Empleado",
         "roles": [
@@ -35,7 +35,7 @@
         ]
     },
     {
-        "idUsuario": "test@kk.kk",
+        "idUsuario": "test@example.com",
         "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
         "nombre": "Tester",
         "roles": [

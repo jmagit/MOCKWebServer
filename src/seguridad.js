@@ -276,7 +276,7 @@ router.post('/login', async function (req, res, next) {
         payload = {
             success: true,
             token: token,
-            name: element[PROP_NAME],
+            name: element.nombre || element[PROP_NAME],
             roles: element.roles,
             expires_in: EXPIRACION_MIN * 60
         }
