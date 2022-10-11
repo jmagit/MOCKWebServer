@@ -155,6 +155,7 @@ app.use(
       allowUnknownQueryParameters: true,
     },
     validateResponses: true, // false by default
+    validateSecurity: false,
     ignoreUndocumented: true,
     formats: [
       { name: 'nif', type: 'string', validate: (v) => validator.isIdentityCard(v, 'ES') },

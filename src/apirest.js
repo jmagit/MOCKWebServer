@@ -37,7 +37,7 @@ const generaPagina = (req, list, rows) => {
     content: list.slice(page * rows, page * rows + rows),
     totalElements: list.length,
     totalPages: Math.ceil(list.length / rows),
-    number: list.length === 0 ? 0 : page + 1,
+    number: list.length === 0 ? 0 : page,
     size: rows,
   }
   list.empty = list.content.length === 0;
