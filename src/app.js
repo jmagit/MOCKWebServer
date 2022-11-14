@@ -20,7 +20,7 @@ const DIR_API_REST = '/api'
 const DIR_API_AUTH = '/' // DIR_API_REST
 const DIR_PUBLIC = './public'
 const DIR_UPLOADS = './uploads/'
-const USERNAME = 'adm@kk.kk'
+const USERNAME = 'adm@example.com'
 const PASSWORD = 'P@$$w0rd'
 
 
@@ -167,12 +167,12 @@ app.use(
 app.use(DIR_API_REST, apiRouter.router);
 
 // Documentación OpenApi
-app.all('/api-docs/v1/openapi.json', async function (_req, res) {
-  let result = await generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown, DIR_API_AUTH)
+app.all('/api-docs/v1/openapi.json', function (_req, res) {
+  let result = generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown, DIR_API_AUTH)
   res.json(result)
 });
-app.all('/api-docs/v1/openapi.yaml', async function (_req, res) {
-  let result = await generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown, DIR_API_AUTH)
+app.all('/api-docs/v1/openapi.yaml', function (_req, res) {
+  let result = generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown, DIR_API_AUTH)
   res.contentType('text/yaml').end(YAML.stringify(result))
 });
 
