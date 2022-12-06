@@ -4,15 +4,8 @@ const { createHash, createPrivateKey, createPublicKey } = require('crypto')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const fs = require('fs/promises');
+const config = require('../config')
 const { generateErrorByStatus, generateError, generateErrorByError } = require('./utils')
-const APP_SECRET = 'Es segura al 99%'
-const AUTHENTICATION_SCHEME = 'Bearer '
-const PROP_USERNAME = 'idUsuario'
-const PROP_PASSWORD = 'password'
-const PROP_NAME = 'idUsuario'
-const PASSWORD_PATTERN = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/
-const USR_FILENAME = './data/usuarios.json'
-const EXPIRACION_MIN = 60;
 
 module.exports = router
 
@@ -22,43 +15,37 @@ async function encriptaPassword(password) {
     return bcrypt.hash(password, salt)
 }
 
-const TokenHMAC256 = {
+const RefreshTokenHMAC256 = {
     generar: (usuario) => {
         return jwt.sign({
-            usr: usuario[PROP_USERNAME],
-            name: usuario.nombre,
-            roles: usuario.roles
-        }, APP_SECRET, { issuer: 'MicroserviciosJWT', audience: 'authorization', expiresIn: EXPIRACION_MIN + 'm' })
+            usr: usuario[config.security.PROP_USERNAME],
+        }, config.security.APP_SECRET, { issuer: 'MicroserviciosJWT', audience: 'authorization', expiresIn: config.security.EXPIRACION_MIN * config.security.REFRESH_FACTOR + 'm', notBefore: config.security.EXPIRACION_MIN + 'm' })
     },
     decode: (token) => {
-        return jwt.verify(token, APP_SECRET);
+        return jwt.verify(token, config.security.APP_SECRET);
     }
 }
 
 const TokenRS256 = {
-    generarToken: (usuario) => {
-        let privateKey = 'MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDHp+JR9/LfZAtXeJFLRANM/j3HvnoEqYeK3w294veF0cUZvya9sXoTYR4Pls/wy5IFIW8gxjD35mXUmo3cMsfm0KgxdQDQD0W8qx52bE8Gh5uww4LHSlIwzwnkHFHmgYtg1k56d9s+e8kYLRkq3DGxZ7SwKgzNhQXUVUoNLbsPr4hVZYd7BABC5KCOHhd6rBxZyK6HDLcoNyfmkospNJQHps/SYmbt+MlyTpvFXWrcj4ttVLKXwjefxkaxF4YNrZrO4aCXuOeJG8Q9IOXxdXkdsP5WJEUnWP63Jca8cyJMCS41GAowb9ratjm0eeTA130eHBMJuJyV2UtKcoB/0IoXAgMBAAECggEAGJ8Zh+Y961KZG3Zg5JlElvAbilBxF7YYYwXS2gHtaHFQDzbFfksutMkbPezpQ9a28S8IV1BZpZiiIi/VIryYblx5AXBeY0oe3X90yEHfFP0QNCJING9z51UA8UKUzwpWt+B12SCCxxfY2sRlACYbcrdJTxhAb+/hoifKdAmZsftJqSiGuMlYWbi6Q3Lk+tsHVPVCwqyf8puZEFTf76s2yY/ySTAhNL4drd64++sVlQbgieSGnOqFv6ai12XJbuYOZE0Dce9+r3PRvDVQhMDajG7AuAJd4fmwFjJR3aPwyxGVv0oZk5KmqM6hTV1mxBLuZvqBYLAZojYl45i/GnEzYQKBgQD2yXJsRJyh7l8H4wCHIeUGXrpF+IbSaz5vK6hGqs4Xw5rOiA+wcYKIMqYnG1cfX/rP3hPh5kzz96wsAyL0jzZhbCP2Miz35XYAm+LgQzhAN6VXtwUHWQDAehhmM00y3X/gu1I+3IffB9fVGh4xK1T49mDnq+pZ+HWsORu5Vr/n/wKBgQDPHADLOO+JT7yFmCMP0PQfSy0UPTNDuaDdWVtnQYwZ68a0SIk+ygZNCEbeYEhCO+Kq7/S3DcmQHYq54O7G8LP/+oxCmSXLkA5hwJFOJtC5hea+i0JHG5UvOmDvRBojaSO5xxC17PREL/QOMV0niEd1VYFBcCFt79C1P6DQDiGd6QKBgCiX4jZk4s7QAtmtQTz5Gk797e3sf2DFOzPWHovhNJ08E469WrdPNIVqr2HnYWFLzFm80dBqrWXD65IhwfIwTGWiABhTEIqGN+7JtXvmEq6deJkBBda7kSAX9UN6VMx1Gr/AkDq+06qgA6SN80FrO0LoY/A3mwjJkbGOgzztRAvJAoGBAJa85+sBVn4W9bw6HZK+X1+DZJztailpqqZQChGeCG05SJcgkBuOCIX6dzIU26KxWWlWWkL9Gu30QmrFRqSuviOZ5In4UyTUhVMqR9ecsp/E0Etwqd19Othz4edjJq8NL/5f30651pLmX/gQf59tNa01fWz2Qq50M/AnDlE/Z8I5AoGBALil+ccLACzw2W3qrU44HEpXYY91RLE9ANXUlM9OfbnHYfrI6wZylRA5TjcAcaLHwC88c/yLalVEJXnSgBpm9MNmQPE6tNGU7+IIn6cdIbX1eW6QUPWU5yLwiFlntkp/v+WwURN3sIQWegtOacAp5R78nJLpeWm1WmuFOYJ0glaF';
-        let buff = Buffer.from(privateKey, 'base64');
+    generar: (usuario) => {
+        let buff = Buffer.from(config.security.PRIVATE_KEY, 'base64');
 
         return jwt.sign({
-            usr: usuario[PROP_USERNAME],
+            usr: usuario[config.security.PROP_USERNAME],
             name: usuario.nombre,
             roles: usuario.roles
-        }, createPrivateKey({ key: buff, format: 'der', type: 'pkcs8' }), { issuer: 'MicroserviciosJWT', audience: 'authorization', algorithm: 'RS256', expiresIn: EXPIRACION_MIN + 'm' })
+        }, createPrivateKey({ key: buff, format: 'der', type: 'pkcs8' }), { issuer: 'MicroserviciosJWT', audience: 'authorization', algorithm: 'RS256', expiresIn: config.security.EXPIRACION_MIN + 'm' })
     },
     decode: (token) => {
-        let publicKey = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAx6fiUffy32QLV3iRS0QDTP49x756BKmHit8NveL3hdHFGb8mvbF6E2EeD5bP8MuSBSFvIMYw9+Zl1JqN3DLH5tCoMXUA0A9FvKsedmxPBoebsMOCx0pSMM8J5BxR5oGLYNZOenfbPnvJGC0ZKtwxsWe0sCoMzYUF1FVKDS27D6+IVWWHewQAQuSgjh4XeqwcWciuhwy3KDcn5pKLKTSUB6bP0mJm7fjJck6bxV1q3I+LbVSyl8I3n8ZGsReGDa2azuGgl7jniRvEPSDl8XV5HbD+ViRFJ1j+tyXGvHMiTAkuNRgKMG/a2rY5tHnkwNd9HhwTCbicldlLSnKAf9CKFwIDAQAB';
-        let buff = Buffer.from(publicKey, 'base64');
+        let buff = Buffer.from(config.security.PUBLIC_KEY, 'base64');
         return jwt.verify(token, createPublicKey({ key: buff, format: 'der', type: 'spki' }), { algorithms: ['RS256'] });
     }
 }
 
-const jwtCrypto = TokenHMAC256;
-
-module.exports.generarTokenJWT = jwtCrypto.generar
+module.exports.generarTokenJWT = TokenRS256.generar
 
 module.exports.generarTokenScheme = (usuario) => {
-    return AUTHENTICATION_SCHEME + module.exports.generarTokenJWT(usuario)
+    return config.security.AUTHENTICATION_SCHEME + module.exports.generarTokenJWT(usuario)
 }
 
 // Middleware: Cross-origin resource sharing (CORS)
@@ -83,9 +70,9 @@ module.exports.useAuthentication = (req, res, next) => {
         }
         token = req.cookies['Authorization'];
     } else
-        token = req.headers['authorization'].substring(AUTHENTICATION_SCHEME.length)
+        token = req.headers['authorization'].substring(config.security.AUTHENTICATION_SCHEME.length)
     try {
-        let decoded = jwtCrypto.decode(token);
+        let decoded = TokenRS256.decode(token);
         res.locals.isAuthenticated = true;
         res.locals.usr = decoded.usr;
         res.locals.name = decoded.name;
@@ -95,7 +82,7 @@ module.exports.useAuthentication = (req, res, next) => {
     } catch (err) {
         if (err.name === 'TokenExpiredError') {
             res.set('WWW-Authenticate', 'Bearer realm="MicroserviciosJWT", error="invalid_token", error_description="The access token expired"')
-            return next(generateError('Invalid token', 401, 'Token expired', { expiredAt: err.expiredAt }))
+            return next(generateError('Invalid token', 401, 'Token expired', `expiredAt: ${err.expiredAt}`))
         }
         return next(generateError('Invalid token', 401))
     }
@@ -202,13 +189,38 @@ module.exports.useXSRF = (req, res, next) => {
  *          type: boolean
  *        token:
  *          type: string
+ *        refresh:
+ *          type: string
  *        name:
  *          type: string
  *        roles:
  *          type: array
  *          items:
  *            type: string
+ *        expires_in:
+ *          type: integer
+ *          format: int32
+ *    RefreshToken:
+ *      type: object
+ *      title: Token de petición de refresco
+ *      properties:
+ *        token:
+ *          type: string
+*/
+/**
+ * @swagger
+ *
+ * /login:
+ *   options:
+ *     tags: [ autenticación ]
+ *     summary: Sondeo CORS
+ *     responses:
+ *       "200":
+ *         description: "OK"
  */
+router.options('/login', function (_req, res) {
+    res.sendStatus(200)
+})
 /**
  * @swagger
  *
@@ -255,51 +267,126 @@ module.exports.useXSRF = (req, res, next) => {
  *         $ref: "#/components/responses/BadRequest"
  */
 router.post('/login', async function (req, res, next) {
-    let payload = {
-        success: false
-    }
     if (!req.body || !req.body.username || !req.body.password) {
         // setTimeout(() => next(generateErrorByStatus(400)), 1000)
         return next(generateErrorByStatus(400))
     }
     let usr = req.body.username
     let pwd = req.body.password
-    if (!PASSWORD_PATTERN.test(pwd)) {
+    if (!config.security.PASSWORD_PATTERN.test(pwd)) {
         // setTimeout(() => next(generateErrorByStatus(400)), 1000)
         return next(generateErrorByStatus(400))
     }
-    let data = await fs.readFile(USR_FILENAME, 'utf8')
+    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
     let list = JSON.parse(data)
-    let element = list.find(item => item[PROP_USERNAME] == usr)
-    if (element && await bcrypt.compare(pwd, element[PROP_PASSWORD])) {
-        let token = module.exports.generarTokenScheme(element)
-        payload = {
-            success: true,
-            token: token,
-            name: element.nombre || element[PROP_NAME],
-            roles: element.roles,
-            expires_in: EXPIRACION_MIN * 60
-        }
-        if (req.query.cookie)
-            res.cookie('Authorization', token.substring(AUTHENTICATION_SCHEME.length), { maxAge: 3600000 })
+    let element = list.find(item => item[config.security.PROP_USERNAME] == usr)
+    if (element && await bcrypt.compare(pwd, element[config.security.PROP_PASSWORD])) {
+        sendLogin(req, res, element)
+    } else {
+        res.status(200).json({ success: false })
     }
-    res.status(200).json(payload)
 })
 
 /**
  * @swagger
  *
- * /login:
- *   options:
+ * /login/refresh:
+ *   post:
  *     tags: [ autenticación ]
- *     summary: Sondeo CORS
+ *     summary: Volver a iniciar sesión con el token de refresco
+ *     parameters:
+ *       - name: cookie
+ *         in: query
+ *         required: false
+ *         description: 'true para que genere y envíe la cookie'
+ *         schema:
+ *           type: boolean
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: "#/components/schemas/RefreshToken"
+ *       required: true
+ *     responses:
+ *       "200":
+ *         headers: 
+ *           Set-Cookie:
+ *             schema: 
+ *               type: string
+ *         description: "Resultado de la autenticación"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/RespuestaLogin"
+ *       "400":
+ *         $ref: "#/components/responses/BadRequest"
+ */
+router.post('/login/refresh', async function (req, res, next) {
+    if (!req.body || !req.body.token) {
+        return next(generateErrorByStatus(400))
+    }
+    try {
+        let decoded = RefreshTokenHMAC256.decode(req.body.token);
+        let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
+        let list = JSON.parse(data)
+        let element = list.find(item => item[config.security.PROP_USERNAME] == decoded.usr)
+        if (element) {
+            sendLogin(req, res, element)
+        } else {
+            res.status(200).json({ success: false })
+        }
+    } catch (err) {
+        let rslt;
+        switch (err.name) {
+            case 'TokenExpiredError':
+                res.set('WWW-Authenticate', 'Bearer realm="MicroserviciosJWT", error="invalid_token", error_description="The access token expired"')
+                rslt = generateError('Invalid token', 403, 'Token expired', { expiredAt: err.expiredAt })
+                break;
+            case 'NotBeforeError':
+                rslt = generateError('Invalid token', 403, 'Token not active', { date: err.date })
+                break;
+            default:
+                rslt = generateError('Invalid token', 403)
+                break;
+
+        }
+        res.status(403).json(rslt.payload)
+    }
+})
+/**
+ * @swagger
+ *
+ * /login/signature:
+ *   get:
+ *     tags: [ autenticación ]
+ *     summary: Clave publica para validar el token JWT
  *     responses:
  *       "200":
  *         description: "OK"
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
  */
-router.options('/login', function (_req, res) {
-    res.sendStatus(200)
+router.get('/login/signature', function (_req, res) {
+    res.contentType('text/plain').send(config.security.PUBLIC_KEY)
 })
+
+function sendLogin(req, res, element) {
+    let token = module.exports.generarTokenScheme(element)
+    let payload = {
+        success: true,
+        token: module.exports.generarTokenScheme(element),
+        refresh: RefreshTokenHMAC256.generar(element),
+        name: element.nombre || element[config.security.PROP_NAME],
+        roles: element.roles,
+        expires_in: config.security.EXPIRACION_MIN * 60
+    }
+    if (req.query.cookie)
+        res.cookie('Authorization', token.substring(config.security.AUTHENTICATION_SCHEME.length), { maxAge: 3600000 })
+    res.status(200).json(payload)
+
+}
 
 /**
  * @swagger
@@ -315,38 +402,6 @@ router.options('/login', function (_req, res) {
 router.all('/logout', function (_req, res) {
     res.clearCookie('Authorization');
     res.sendStatus(200)
-})
-/**
- * @swagger
- *
- * /auth:
- *   get:
- *     tags: [ autenticación ]
- *     summary: Obtener estado de sesión
- *     security:
- *       - bearerAuth: []
- *       - cookieAuth: []
- *     responses:
- *       "200":
- *         description: "OK"
- *         content:
- *          application/json:
- *            schema:
- *              type: object
- *              properties:
- *                isAuthenticated:
- *                  type: boolean
- *                usr:
- *                  type: string
- *                name:
- *                  type: string
- *                roles:
- *                  type: array
- *                  items:
- *                    type: string
- */
-router.get('/auth', function (_req, res) {
-    res.status(200).json({ isAuthenticated: res.locals.isAuthenticated, usr: res.locals.usr, name: res.locals.name, roles: res.locals.roles })
 })
 /**
  * @swagger
@@ -377,18 +432,18 @@ router.get('/auth', function (_req, res) {
  *         $ref: "#/components/responses/BadRequest"
  */
 router.post('/register', async function (req, res, next) {
-    let data = await fs.readFile(USR_FILENAME, 'utf8')
+    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
     let list = JSON.parse(data)
     let element = req.body
-    if (element[PROP_USERNAME] == undefined) {
+    if (element[config.security.PROP_USERNAME] == undefined) {
         return next(generateError('Falta el nombre de usuario.', 400))
-    } else if (list.find(item => item[PROP_USERNAME] == element[PROP_USERNAME])) {
+    } else if (list.find(item => item[config.security.PROP_USERNAME] == element[config.security.PROP_USERNAME])) {
         return next(generateError('El usuario ya existe.', 400))
-    } else if (PASSWORD_PATTERN.test(element[PROP_PASSWORD])) {
-        element[PROP_PASSWORD] = await encriptaPassword(element[PROP_PASSWORD])
+    } else if (config.security.PASSWORD_PATTERN.test(element[config.security.PROP_PASSWORD])) {
+        element[config.security.PROP_PASSWORD] = await encriptaPassword(element[config.security.PROP_PASSWORD])
         element.roles = ["Usuarios"]
         list.push(element)
-        fs.writeFile(USR_FILENAME, JSON.stringify(list))
+        fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
             .then(() => { res.sendStatus(201) })
             .catch(err => { return next(generateErrorByError(err, 500)) })
     } else {
@@ -396,10 +451,47 @@ router.post('/register', async function (req, res, next) {
     }
 })
 
-const autenticados = express.Router();
+let autenticados = express.Router();
+autenticados.use(module.exports.useAuthentication)
+/**
+ * @swagger
+ *
+ * /auth:
+ *   get:
+ *     tags: [ autenticación ]
+ *     summary: Obtener estado de sesión
+ *     security:
+ *       - bearerAuth: []
+ *       - cookieAuth: []
+ *     responses:
+ *       "200":
+ *         description: "OK"
+ *         content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                isAuthenticated:
+ *                  type: boolean
+ *                usr:
+ *                  type: string
+ *                name:
+ *                  type: string
+ *                roles:
+ *                  type: array
+ *                  items:
+ *                    type: string
+ */
+autenticados.get('/', function (_req, res) {
+    res.status(200).json({ isAuthenticated: res.locals.isAuthenticated, usr: res.locals.usr, name: res.locals.name, roles: res.locals.roles })
+})
+router.use('/auth', autenticados)
 
+autenticados = express.Router();
+autenticados.use(module.exports.useAuthentication)
 autenticados.use(module.exports.onlyAuthenticated)
 autenticados.use(module.exports.onlySelf)
+
 /**
  * @swagger
  *
@@ -432,11 +524,11 @@ autenticados.use(module.exports.onlySelf)
  */
 autenticados.get('/', async function (_req, res, next) {
     let usr = res.locals.usr;
-    let data = await fs.readFile(USR_FILENAME, 'utf8')
+    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
     let list = JSON.parse(data)
-    let element = list.find(item => item[PROP_USERNAME] == usr)
+    let element = list.find(item => item[config.security.PROP_USERNAME] == usr)
     if (element) {
-        delete element[PROP_PASSWORD]
+        delete element[config.security.PROP_PASSWORD]
         res.status(200).json(element)
     } else {
         return next(generateErrorByStatus(401))
@@ -475,15 +567,15 @@ autenticados.put('/', async function (req, res, next) {
     if (!isSelf(res, req.body.idUsuario))
         return next(generateErrorByStatus(403))
     let element = req.body
-    let data = await fs.readFile(USR_FILENAME, 'utf8')
+    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
     let list = JSON.parse(data)
-    let index = list.findIndex(row => row[PROP_USERNAME] == res.locals.usr)
+    let index = list.findIndex(row => row[config.security.PROP_USERNAME] == res.locals.usr)
     if (index == -1) {
         return next(generateErrorByStatus(404))
     } else {
         if (element.nombre)
             list[index].nombre = element.nombre;
-        fs.writeFile(USR_FILENAME, JSON.stringify(list))
+        fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
             .then(() => { res.sendStatus(204) })
             .catch(err => { return next(generateErrorByError(err, 500)) })
     }
@@ -524,14 +616,14 @@ autenticados.put('/', async function (req, res, next) {
  */
 autenticados.put('/password', async function (req, res, next) {
     let element = req.body
-    let data = await fs.readFile(USR_FILENAME, 'utf8')
+    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
     let list = JSON.parse(data)
-    let index = list.findIndex(row => row[PROP_USERNAME] == res.locals.usr)
+    let index = list.findIndex(row => row[config.security.PROP_USERNAME] == res.locals.usr)
     if (index == -1) {
         return next(generateErrorByStatus(404))
-    } else if (PASSWORD_PATTERN.test(element.newPassword) && await bcrypt.compare(element.oldPassword, list[index][PROP_PASSWORD])) {
-        list[index][PROP_PASSWORD] = await encriptaPassword(element.newPassword)
-        fs.writeFile(USR_FILENAME, JSON.stringify(list))
+    } else if (config.security.PASSWORD_PATTERN.test(element.newPassword) && await bcrypt.compare(element.oldPassword, list[index][config.security.PROP_PASSWORD])) {
+        list[index][config.security.PROP_PASSWORD] = await encriptaPassword(element.newPassword)
+        fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
             .then(() => { res.sendStatus(204) })
             .catch(err => { return next(generateErrorByError(err, 500)) })
     } else {

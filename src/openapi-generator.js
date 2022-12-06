@@ -1,11 +1,8 @@
 const Ajv = require("ajv")
 const addFormats = require("ajv-formats")
 const swaggerJsdoc = require('swagger-jsdoc')
+const config = require('../config')
 const serviciosConfig = require('../data/__servicios.json');
-
-const TITLE = "MOCK Web Server"
-const DESCRIPTION = "Versión NodeJS del **servidor de pruebas** para cursos de FrontEnd."
-const REPOSITORIO = "https://github.com/jmagit/MOCKWebServer"
 
 const ajv = new Ajv()
 addFormats(ajv)
@@ -81,9 +78,9 @@ const Capitalize = cad => cad.charAt(0).toUpperCase() + cad.substring(1).toLower
 const swaggerDocument = {
     "openapi": "3.0.0",
     "info": {
-        "title": TITLE,
+        "title": config.openapi.TITLE,
         "version": "2.0.0",
-        "description": DESCRIPTION,
+        "description": config.openapi.DESCRIPTION,
         "contact": {
             "name": "Javier Martín",
             "url": "https://github.com/jmagit",
@@ -118,7 +115,7 @@ const swaggerDocument = {
     ],
     "externalDocs": {
         "description": "Repositorio del proyecto",
-        "url": REPOSITORIO
+        "url": config.openapi.REPOSITORIO
     },
     "tags": [],
     "paths": {},

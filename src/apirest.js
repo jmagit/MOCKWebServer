@@ -1,11 +1,11 @@
 const express = require('express');
+const config = require('../config')
 const DbJSON = require('./dbJSON')
-const { onlyAuthenticated, onlyInRole, readOnly } = require('./seguridad')
+const { useAuthentication, onlyAuthenticated, onlyInRole, readOnly } = require('./seguridad')
 const { generateError, generateErrorByStatus, generateErrorByError, getServiciosConfig } = require('./utils');
 
 const router = express.Router();
 const serviciosConfig = getServiciosConfig();
-const DIR_DATA = './data/'
 
 const apis = {
   router, serviciosConfig
@@ -170,19 +170,22 @@ serviciosConfig.forEach(servicio => {
   // servicio.file = DIR_DATA + servicio.file
   if (!servicio.operations || servicio.operations.length === 0) servicio.operations = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
   if (servicio.security) {
+    apiRouter.use(useAuthentication)
     if (typeof (servicio.security) === 'string') {
       apiRouter.use(onlyInRole(servicio.security))
     } else {
       apiRouter.use(onlyAuthenticated)
     }
   } else if (servicio.readonly) {
+    apiRouter.use(useAuthentication)
     apiRouter.use(readOnly)
   }
 
   if (servicio.endpoint === 'usuarios') {
+    apiRouter.use(useAuthentication)
     apiRouter.use(onlyInRole('Administradores'))
   }
-  servicio.db = new DbJSON(DIR_DATA + servicio.file, servicio.pk);
+  servicio.db = new DbJSON(config.paths.DATA + servicio.file, servicio.pk);
   let sinID = apiRouter.route('/')
   let conID = apiRouter.route('/:id')
   if (servicio.operations.includes('GET')) {

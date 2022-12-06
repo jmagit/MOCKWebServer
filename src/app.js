@@ -9,6 +9,7 @@ const swaggerUi = require('swagger-ui-express');
 const YAML = require('yaml')
 const OpenApiValidator = require('express-openapi-validator');
 const validator = require('validator');
+const config = require('../config')
 const { generaSwaggerSpecification } = require('./openapi-generator');
 const { generateErrorByError } = require('./utils')
 
@@ -16,21 +17,13 @@ const serviciosConfig = require('../data/__servicios.json')
 const seguridad = require('./seguridad')
 const apiRouter = require('./apirest');
 
-const DIR_API_REST = '/api'
-const DIR_API_AUTH = '/' // DIR_API_REST
-const DIR_PUBLIC = './public'
-const DIR_UPLOADS = './uploads/'
-const USERNAME = 'adm@example.com'
-const PASSWORD = 'P@$$w0rd'
-
-
 let VALIDATE_XSRF_TOKEN = false;
 
 const app = express()
 app.disable('x-powered-by');
 app.PUERTO = process.env.PORT || '4321';
 app.URL_SERVER = ''
-app.DIR_API_REST = DIR_API_REST
+app.DIR_API_REST = config.paths.API_REST
 
 const shutdown = () => {
   if (app.server) {
@@ -70,7 +63,7 @@ app.use(express.urlencoded({
 app.use(cookieParser())
 
 // Ficheros públicos
-app.use(express.static(DIR_PUBLIC))
+app.use(express.static(config.paths.PUBLIC))
 app.use('/files', express.static('uploads'))
 app.get('/fileupload', function (_req, res) {
   res.status(200).end(plantillaHTML('fileupload', `
@@ -87,7 +80,7 @@ app.get('/fileupload', function (_req, res) {
 app.post('/fileupload', function (req, res) {
   const form = new Formidable();
   form.maxFileSize = 2000000; // 2mb
-  form.uploadDir = DIR_UPLOADS;
+  form.uploadDir = config.paths.UPLOADS;
   form.keepExtensions = false;
   form.multiples = true;
   form.minFileSize = 1;
@@ -104,7 +97,7 @@ app.post('/fileupload', function (req, res) {
       for (let file of ficheros) {
         let oldpath = file.path;
         if (file.name) {
-          let newpath = DIR_UPLOADS + file.name;
+          let newpath = config.paths.UPLOADS + file.name;
           try {
             await fs.unlink(newpath)
             // eslint-disable-next-line no-empty
@@ -141,16 +134,16 @@ if (VALIDATE_XSRF_TOKEN) {
 }
 
 // Autenticación
-app.use(seguridad.useAuthentication)
+// app.use(seguridad.useAuthentication)
 
 // Control de acceso
 // app.use(DIR_API_REST, seguridad)
-app.use(DIR_API_AUTH, seguridad)
+app.use(config.paths.API_AUTH, seguridad)
 
 // Validación OpenApi
 app.use(
   OpenApiValidator.middleware({
-    apiSpec: generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown, DIR_API_AUTH),
+    apiSpec: generaSwaggerSpecification(app.PUERTO, config.paths.API_REST, shutdown, config.paths.API_AUTH),
     validateRequests: {
       allowUnknownQueryParameters: true,
     },
@@ -164,15 +157,15 @@ app.use(
 )
 
 // Servicios web
-app.use(DIR_API_REST, apiRouter.router);
+app.use(config.paths.API_REST, apiRouter.router);
 
 // Documentación OpenApi
 app.all('/api-docs/v1/openapi.json', function (_req, res) {
-  let result = generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown, DIR_API_AUTH)
+  let result = generaSwaggerSpecification(app.PUERTO, config.paths.API_REST, shutdown, config.paths.API_AUTH)
   res.json(result)
 });
 app.all('/api-docs/v1/openapi.yaml', function (_req, res) {
-  let result = generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown, DIR_API_AUTH)
+  let result = generaSwaggerSpecification(app.PUERTO, config.paths.API_REST, shutdown, config.paths.API_AUTH)
   res.contentType('text/yaml').end(YAML.stringify(result))
 });
 
@@ -180,7 +173,7 @@ app.all('/api-docs/v1/openapi.yaml', function (_req, res) {
 const options = {
   explorer: true
 };
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(generaSwaggerSpecification(app.PUERTO, DIR_API_REST, shutdown, DIR_API_AUTH), options));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(generaSwaggerSpecification(app.PUERTO, config.paths.API_REST, shutdown, config.paths.API_AUTH), options));
 
 
 // Páginas HTML
@@ -251,7 +244,7 @@ app.get('/', function (req, res) {
   let srv = app.URL_SERVER
   let apis = `<li><a href='${srv}/eco'>${srv}/eco</a>`
   serviciosConfig.forEach(servicio => {
-    apis += `<li><a href='${srv}${DIR_API_REST}/${servicio.endpoint}'>${srv}${DIR_API_REST}/${servicio.endpoint}</a></li>`
+    apis += `<li><a href='${srv}${config.paths.API_REST}/${servicio.endpoint}'>${srv}${config.paths.API_REST}/${servicio.endpoint}</a></li>`
   })
   let token = ''
   if (VALIDATE_XSRF_TOKEN) {
@@ -274,9 +267,9 @@ app.get('/', function (req, res) {
                   ${token}
                   <div class="container">
                       <label for="username"><b>Username</b></label>
-                      <input type="text" placeholder="Enter Username" name="username" required value="${USERNAME}">
+                      <input type="text" placeholder="Enter Username" name="username" required value="${config.security.USERNAME}">
                       <label for="password"><b>Password</b></label>
-                      <input type="password" placeholder="Enter Password" name="password" required pattern= "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).{8,}$" value="${PASSWORD}">
+                      <input type="password" placeholder="Enter Password" name="password" required pattern= "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).{8,}$" value="${config.security.PASSWORD}">
                       <button type="submit">Login</button>
                   </div>
               </form>
@@ -286,7 +279,7 @@ app.get('/', function (req, res) {
                   <li>action="${srv}/login"</li>
                   <li>method="post"</li>
                   <li>enctype="application/x-www-form-urlencoded"</li>
-                  <li>body: username=${USERNAME}&password=${PASSWORD}</li>
+                  <li>body: username=${config.security.USERNAME}&password=${config.security.PASSWORD}</li>
                   <li>password: al menos 8 caracteres con minúsculas, mayúsculas, dígitos y símbolos</li>
               </ul>
           </td>
@@ -317,8 +310,8 @@ app.all('/favicon.ico', async function (_req, res) {
 app.get('/*', async function (req, res, next) {
   console.info('NOT FOUND: %s', req.originalUrl)
   try {
-    await fs.access(DIR_PUBLIC + '/index.html', fs.constants.R_OK | fs.constants.W_OK);
-    res.sendFile('index.html', { root: DIR_PUBLIC });
+    await fs.access(config.paths.PUBLIC + '/index.html', fs.constants.R_OK | fs.constants.W_OK);
+    res.sendFile('index.html', { root: config.paths.PUBLIC });
   } catch {
     next();
   }
