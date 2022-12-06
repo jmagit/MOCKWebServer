@@ -45,6 +45,12 @@ describe("Test the root path", () => {
       .expect(200)
       .end(done)
   });
+  it("POST /fileupload", done => {
+    request(app)
+      .post("/fileupload")
+      .expect(500)
+      .end(done)
+  });
   it("/eco", done => {
     request(app)
       .get("/eco/personas/1?_page=1&_rows=10")
@@ -53,6 +59,30 @@ describe("Test the root path", () => {
         expect(response.statusCode).toBe(200);
         done();
       });
+  });
+  it("/api-docs", async () => {
+    await request(app)
+      .get("/api-docs")
+      .expect(301)
+      .expect('Content-Type', /html/);
+  });
+  it("/api-docs/", async () => {
+    await request(app)
+      .get("/api-docs/")
+      .expect(200)
+      .expect('Content-Type', /html/);
+  });
+  it("/api-docs/v1/openapi.json", async () => {
+    await request(app)
+      .get("/api-docs/v1/openapi.json")
+      .expect(200)
+      .expect('Content-Type', /json/);
+  });
+  it("/api-docs/v1/openapi.yaml", async () => {
+    await request(app)
+      .get("/api-docs/v1/openapi.yaml")
+      .expect(200)
+      .expect('Content-Type', /yaml/);
   });
   it("/favicon.ico", done => {
     request(app)
