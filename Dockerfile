@@ -8,6 +8,6 @@ EXPOSE 4321
 VOLUME [ "/app/uploads", "/app/public", "/app/data", "app/log" ]
 CMD [ "node", "server.js" ]
 
-# docker build --rm -t mock-web-server .
-# docker run -d --name mock-web-server -p 4321:4321 mock-web-server
-# docker run -d --name mock-web-server -p 4321:4321 -v D:\Cursos\Docker\volumes\mock\uploads:/app/uploads mock-web-server
+# docker build --rm -t jamarton/mock-web-server .
+# docker run -d --name mock-web-server -p 4321:4321 jamarton/mock-web-server
+# docker run -d --name mock-web-server -p 4321:4321 -v D:\Cursos\Docker\volumes\mock\uploads:/app/uploads jamarton/mock-web-server
