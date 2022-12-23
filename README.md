@@ -4,6 +4,7 @@ Versión NodeJS del servidor de pruebas para cursos de FrontEnd
 
 * Servicios RestFul para probar las conexiones AJAX
 * Servicio de Autenticación JWT y protección XSRF
+* Servidor de WebSocket
 * Autorespondedor de formularios.
 * Servidor web y de ficheros
 
@@ -238,6 +239,84 @@ Para habilitar la protección:
     node server --xsrf
 
 El token está basado en la IP remota para ser único para cada usuario y es verificado por el servidor. Las verificaciones solo se aplican a las peticiones  POST, PUT, DELETE y PATCH. El mecanismo *“Cookie-to-Header Token”* solo puede utilizase cuando el front-end se aloje en el propio servidor (ver sección *Servidor de web*).
+
+## Servidor de WebSocket
+
+El protocolo WebSocket, descrito en la especificación [RFC 6455](https://datatracker.ietf.org/doc/html/rfc6455), brinda una forma de intercambiar datos entre el navegador y el servidor por medio de una conexión persistente. Los datos pueden ser pasados en ambas direcciones como paquetes “packets”, sin cortar la conexión y sin pedidos adicionales de HTTP “HTTP-requests”.
+
+En el momento de abrir la conexión, se pueden crear canales (temas, salas, ...) para limitar el flujo de multi difusión. Así mismo se le puede asignar un identificador de usuario.
+
+Para abrir una conexión websocket:
+
+    ws://localhost:4321/channel/userId
+
+### Canales de ejemplo
+
+Están disponibles una serie de canales con sus correspondientes IU.
+
+#### Chat
+
+Típico chat bidireccional, se debe seleccionar a un contacto para realizar la conexión. El broadcast excluye al emisor. Como entrada acepta cadenas con el texto del mensaje, genera la siguiente salida:
+
+    {
+    "clientId": "1",
+    "message": "Quod, placeat, asperiores, facere quae sit elit."
+    }
+
+*Conexiones:*
+
+* **UI:** <http://localhost:4321/ws/chat>
+* **WS:** <ws://localhost:4321/ws/chat/123>
+
+#### Listener
+
+Unidireccional, para temas de depuración, permite escuchar un canal o todos.
+
+*Conexiones:*
+
+* **UI:** <http://localhost:4321/ws/listener>
+* **WS (todos):** <ws://localhost:4321/ws/listener>
+* **WS (canal):** <ws://localhost:4321/ws/listener/channel-name>
+
+#### Dashboard
+
+Unidireccional, para crear cuadros de mandos, genera un flujo continuo (200ms) con información de la memoria y CPUs del servidor. La salida es:
+
+    {
+        "memory": {
+            "rss": 78884864,
+            "heapTotal": 45195264,
+            "heapUsed": 32229640,
+            "external": 2018402,
+            "arrayBuffers": 64841
+        },
+        "cpu": [{
+            "model": "Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz",
+            "speed": 1992,
+            "times": {
+                "user": 8728562,
+                "nice": 0,
+                "sys": 8259890,
+                "idle": 222044281,
+                "irq": 694828
+            }
+        }, {
+            "model": "Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz",
+            "speed": 1992,
+            "times": {
+                "user": 7476921,
+                "nice": 0,
+                "sys": 4881953,
+                "idle": 226673218,
+                "irq": 49578
+            }
+        }]
+    }
+
+*Conexiones:*
+
+* **UI:** <http://localhost:4321/ws/dashboard>
+* **WS:** <ws://localhost:4321/ws/dashboard>
 
 ## Autorespondedor
 

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <title>Socket.IO chat</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    form {
+      padding: 0.25rem;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3rem;
+      display: flex;
+      box-sizing: border-box;
+      /* backdrop-filter: blur(10px); */
+    }
+
+    input {
+      border: none;
+      padding: 0 1rem;
+      flex-grow: 1;
+      border-radius: 2rem;
+      margin: 0.25rem;
+    }
+
+    input:focus {
+      outline: none;
+    }
+
+    form>button {
+      background: #333;
+      border: none;
+      padding: 0 1rem;
+      margin: 0.25rem;
+      border-radius: 3px;
+      outline: none;
+      color: #fff;
+    }
+
+    .oculto {
+      display: none;
+    }
+
+    #messages {
+      list-style-type: none;
+      margin: 0.25rem;
+      padding: 1rem;
+      background-color: #fff;
+      border-radius: 2rem;
+    }
+
+    #messages>li {
+      padding: 0.5rem 1rem;
+    }
+
+    #messages>li:nth-child(odd) {
+      background: #efefef;
+    }
+  </style>
+</head>
+
+<body>
+  <form id="connect" action="">
+    <input autocomplete="off" placeholder="Nombre del canal por el que filtrar" title="connect" /><button
+      type="submit">connect</button>
+  </form>
+  <ol id="messages">
+    </ul>
+    <script>
+      let socket
+      let messages = document.querySelector('#messages');
+      let input = document.querySelector('#publish input');
+
+      const show = msg => {
+        var item = document.createElement('li');
+        item.textContent = msg;
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+      }
+      const toggle = () => {
+        messages.className = messages.className === '' ? 'oculto' : ''
+        document.forms.connect.className = messages.className === '' ? 'oculto' : ''
+      }
+      messages.className = 'oculto'
+      document.forms.connect.addEventListener('submit', e => {
+        e.preventDefault();
+        let input = document.querySelector('#connect>input');
+        socket = new WebSocket(`ws://${location.host}${location.pathname}/${input.value}`);
+        socket.onopen = () => show("[open] Conexión establecida");
+        socket.onmessage = event => show(`[message] ${input.value}: ${JSON.stringify(event.data)}`)
+        socket.onclose = event => {
+          show(`[close] Conexión cerrada ${event.wasClean ? 'limpiamente' : 'con problemas'}, código: ${event.code}${event.reason ? ` motivo=${event.reason}` : ''}.`);
+          toggle()
+        }
+        socket.onerror = event => show(`[error]: ${JSON.stringify(error)}`);
+        toggle()
+      });
+    </script>
+</body>
+
+</html>
