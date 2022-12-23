@@ -1,9 +1,3 @@
-h1 {
-  background-color: royalblue;
-  color: #ffffff;
-  margin: 0;
-  padding: 1em;  
-}
 body {
     font-family: Arial, Helvetica, sans-serif;
     margin-bottom: 60px;
@@ -18,9 +12,11 @@ footer {
     color: #ffffff;
     padding: 16px;
 }
+
 footer a {
     color: #ffffff;
 }
+
 h1,
 h2,
 h3,
@@ -31,6 +27,13 @@ h6 {
     font-weight: 400;
     margin: 10px 0
 }
+h1 {
+    background-color: royalblue;
+    color: #ffffff;
+    margin: -8px -8px 8px -8px;
+    padding: 1em;
+}
+
 
 .container {
     padding: 16px;
@@ -69,14 +72,18 @@ table {
     border-collapse: collapse;
     max-width: 100vw;
 }
-td, th {
+
+td,
+th {
     border: 1px solid #e6e6ff;
     text-align: left;
     padding: 8px;
 }
+
 th {
     max-width: 20vw;
 }
+
 td {
     max-width: 80vw;
     word-wrap: break-word;
@@ -85,8 +92,35 @@ td {
 tr:nth-child(even) {
     background-color: #e6e6ff;
 }
+
 th[colspan] {
     text-align: center;
     background-color: #0033cc;
     color: #ffffff;
+}
+* {
+  box-sizing: border-box;
+}
+
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.flex-item-left {
+    padding: 10px;
+    flex: 50%;
+}
+
+.flex-item-right {
+    padding: 10px;
+    flex: 50%;
+}
+
+@media (max-width: 768px) {
+
+    .flex-item-right,
+    .flex-item-left {
+        flex: 100%;
+    }
 }

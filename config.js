@@ -11,6 +11,7 @@ module.exports = {
         PUBLIC: './public',
         UPLOADS: './uploads/',
         DATA: './data/',
+        APP_ROOT: __dirname,
     },
     security: {
         APP_SECRET: 'Es segura al 99%',

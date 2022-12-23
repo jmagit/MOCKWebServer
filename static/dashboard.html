@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <title>Dashboard</title>
+  <style>
+    dl {
+      margin-left: 1em;
+    }
+
+    .inline dt {
+      display: inline;
+      font-weight: bold;
+    }
+
+    .inline dd {
+      display: inline;
+      margin-left: 2em;
+      margin-right: 2em;
+    }
+
+    table {
+      font-family: Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    td,
+    th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    tr:hover {
+      background-color: #ddd;
+    }
+
+    th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #0482c6;
+      color: white;
+    }
+    td {
+      text-align: right;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Dashboard</h1>
+  <p><b>Status:</b> <output id="status"></output></p>
+  <h2>memory</h2>
+  <dl class="inline" id="memory"></dl>
+  <h2>cpu</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>model</th>
+        <th>speed</th>
+        <th>user</th>
+        <th>nice</th>
+        <th>sys</th>
+        <th>idle</th>
+        <th>irq</th>
+      </tr>
+    </thead>
+    <tbody id="cpu"></tbody>
+  </table>
+  <h2>resources</h2>
+  <dl id="resources"></dl>
+  <div>
+    <output id="message"></output>
+  </div>
+  <script>
+
+    let status = document.querySelector('#status');
+    let message = document.querySelector('#message');
+    let cpu = document.querySelector('#cpu');
+    let memory = document.querySelector('#memory');
+    let resources = document.querySelector('#resources');
+    let socket = new WebSocket(`ws://${location.host}${location.pathname}`);
+    socket.onopen = function (e) {
+      status.textContent = "[open] Conexión establecida"
+    };
+    socket.onmessage = event => {
+      let content = ''
+      const data = JSON.parse(event.data)
+      message.textContent = `[message] ${JSON.stringify(data)}`
+      for (let key in data.memory)
+        content += `<dt>${key}</dt><dd>${data.memory[key]}</dd>`
+      memory.innerHTML = content
+      content = ''
+      for (let item of data.cpu)
+        content += `<tr><th>${item.model}</th><td>${item.speed}</td><td>${item.times.user}</td><td>${item.times.nice}</td><td>${item.times.sys}</td><td>${item.times.idle}</td><td>${item.times.irq}</td></tr>`
+      cpu.innerHTML = content
+      // content = ''
+      // for (let key in data.resources)
+      //   content += `<dt>${key}</dt><dd>${data.resources[key]}</dd>`
+      // resources.innerHTML = content
+    }
+    socket.onclose = event => {
+      if (event.wasClean) {
+        status.textContent = `[close] Conexión cerrada limpiamente, código=${event.code} motivo=${event.reason}`
+      } else {
+        // ej. El proceso del servidor se detuvo o la red está caída event.code es usualmente 1006 en este caso
+        status.textContent = `[close] La conexión se cayó, código=${event.code} motivo=${event.reason}`
+      }
+    };
+    socket.onerror = event => status.textContent = `[error]: ${JSON.stringify(error)}`
+
+    function show(msg) {
+      var item = document.createElement('li');
+      item.textContent = msg;
+      messages.appendChild(item);
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+
+  </script>
+</body>
+
+</html>

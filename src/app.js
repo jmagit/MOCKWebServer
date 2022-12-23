@@ -1,5 +1,6 @@
 const fs = require('fs/promises')
 const path = require('path');
+const { createServer } = require('http');
 const express = require('express')
 const Formidable = require('formidable');
 const morgan = require('morgan')
@@ -12,6 +13,7 @@ const validator = require('validator');
 const config = require('../config')
 const { generaSwaggerSpecification } = require('./openapi-generator');
 const { generateErrorByError } = require('./utils')
+const { createWSServer } = require('./web-sockets')
 
 const serviciosConfig = require('../data/__servicios.json')
 const seguridad = require('./seguridad')
@@ -24,6 +26,8 @@ app.disable('x-powered-by');
 app.PUERTO = process.env.PORT || '4321';
 app.URL_SERVER = ''
 app.DIR_API_REST = config.paths.API_REST
+app.server = createServer(app)
+app.wss = createWSServer(app)
 
 const shutdown = () => {
   if (app.server) {
@@ -252,14 +256,34 @@ app.get('/', function (req, res) {
     token = `<input type="hidden" name="xsrftoken" value="${seguridad.generateXsrfToken(req)}">`
   }
   rslt = `<h1>MOCK Server</h1>
-  <h2>Servicios REST</h2>
-  <div><a href="${srv}/api-docs">Documentación OpenApi</a> | <a
-          href="${srv}/api-docs/v1/openapi.yaml">YAML</a> | <a
-          href="${srv}/api-docs/v1/openapi.json">JSON</a></div>
-  <ul>
-      ${apis}
-  </ul>
-  <h2>Formulario AUTH</h2>
+  <div class="flex-container">
+  <div class="flex-item-left">
+    <h2>Servicios REST</h2>
+    <div><a href="${srv}/api-docs">Documentación OpenApi</a> | <a
+            href="${srv}/api-docs/v1/openapi.yaml">YAML</a> | <a
+            href="${srv}/api-docs/v1/openapi.json">JSON</a></div>
+    <ul>
+        ${apis}
+    </ul>
+  </div>
+  <div class="flex-item-right">
+    <h2>Subir ficheros</h2>
+    <ul>
+        <li><a href='${srv}/fileupload'>${srv}/fileupload</a></li>
+    </ul>
+    <h2>Espía de la Petición</h2>
+    <ul>
+        <li><a href='${srv}/form'>${srv}/form</a></li>
+    </ul>
+    <h2>Web Socket</h2>
+    <ul>
+        <li><a href="${srv}/ws/listener">listener</a></li>
+        <li><a href="${srv}/ws/chat">chat</a></li>
+        <li><a href="${srv}/ws/dashboard">dashboard</a></li>
+    </ul>
+  </div>
+</div>
+<h2>Formulario AUTH</h2>
   <table>
       <tr>
           <td>
@@ -285,14 +309,6 @@ app.get('/', function (req, res) {
           </td>
       </tr>
   </table>
-  <h2>Subir ficheros</h2>
-  <ul>
-      <li><a href='${srv}/fileupload'>${srv}/fileupload</a></li>
-  </ul>
-  <h2>Espía de la Petición</h2>
-  <ul>
-      <li><a href='${srv}/form'>${srv}/form</a></li>
-  </ul>
   <footer><span style="margin-right: 15px;">&copy; ${(new Date()).getFullYear()} JMA</span> <a
           href="https://github.com/jmagit/MOCKWebServer/blob/master/README.md" target="_blank"
           rel="noopener">Documentación</a>
