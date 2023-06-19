@@ -34,6 +34,7 @@
     "yaml": "^2.2.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.0.2",
     "@types/jest": "^29.2.4",
     "@types/supertest": "^2.0.12",
     "eslint": "^8.30.0",
