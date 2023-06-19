@@ -1,5 +1,6 @@
 const os = require('os');
 const { WebSocketServer, WebSocket } = require('ws');
+const { faker } = require('@faker-js/faker');
 const config = require('../config')
 
 module.exports.createWSServer = app => {
@@ -31,6 +32,8 @@ module.exports.createWSServer = app => {
     }
     let dashboardCount = 0;
     let dashboardInterval = null;
+    let autoChatCount = 0;
+    let autoChatInterval = null;
     wss.on('connection', function (ws, req) {
         let path = req.url.toLocaleLowerCase().split('/')
         let index = path[1] === 'ws' ? 2 : 1
@@ -78,6 +81,23 @@ module.exports.createWSServer = app => {
                         console.log('stopping client interval');
                         clearInterval(dashboardInterval);
                         dashboardInterval = null;
+                    }
+                });
+                break;
+            case 'autochat':
+                if (autoChatCount) break;
+                console.log('stating chat interval');
+                autoChatCount++
+                autoChatInterval = setInterval(function () {
+                    const clientId = parseInt(Math.random() * 100)
+                    broadcastInclude(ws, JSON.stringify({ clientId, message: `${clientId % 2 ? faker.company.buzzPhrase() : faker.hacker.phrase()}` }), false)
+                }, 1000);
+                ws.on('close', function () {
+                    autoChatCount--
+                    if (!autoChatCount && autoChatInterval) {
+                        console.log('stopping char interval');
+                        clearInterval(autoChatInterval);
+                        autoChatInterval = null;
                     }
                 });
                 break;
