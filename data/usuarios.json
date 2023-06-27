@@ -6,7 +6,8 @@
         "roles": [
             "Usuarios",
             "Administradores"
-        ]
+        ],
+        "activo": true
     },
     {
         "idUsuario": "adm@example.com",
@@ -15,7 +16,8 @@
         "roles": [
             "Usuarios",
             "Administradores"
-        ]
+        ],
+        "activo": true
     },
     {
         "idUsuario": "usr@example.com",
@@ -23,7 +25,8 @@
         "nombre": "Usuario registrado",
         "roles": [
             "Usuarios"
-        ]
+        ],
+        "activo": true
     },
     {
         "idUsuario": "emp@example.com",
@@ -32,7 +35,8 @@
         "roles": [
             "Usuarios",
             "Empleados"
-        ]
+        ],
+        "activo": true
     },
     {
         "idUsuario": "test@example.com",
@@ -42,6 +46,7 @@
             "Usuarios",
             "Empleados",
             "Administradores"
-        ]
+        ],
+        "activo": true
     }
 ]

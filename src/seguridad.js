@@ -41,6 +41,17 @@ const TokenRS256 = {
         return jwt.verify(token, createPublicKey({ key: buff, format: 'der', type: 'spki' }), { algorithms: ['RS256'] });
     }
 }
+const CreatedTokenHMAC256 = {
+    generar: (usuario) => {
+        return jwt.sign({
+            usr: usuario[config.security.PROP_USERNAME],
+        }, config.security.APP_SECRET, { expiresIn: '24h' })
+    },
+    decode: (token) => {
+        return jwt.verify(token, config.security.APP_SECRET);
+    }
+}
+
 
 module.exports.generarTokenJWT = TokenRS256.generar
 
@@ -279,7 +290,7 @@ router.post('/login', async function (req, res, next) {
     }
     let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
     let list = JSON.parse(data)
-    let element = list.find(item => item[config.security.PROP_USERNAME] == usr)
+    let element = list.find(item => item[config.security.PROP_USERNAME] == usr && item.activo)
     if (element && await bcrypt.compare(pwd, element[config.security.PROP_PASSWORD])) {
         sendLogin(req, res, element)
     } else {
@@ -329,7 +340,7 @@ router.post('/login/refresh', async function (req, res, next) {
         let decoded = RefreshTokenHMAC256.decode(req.body.token);
         let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
         let list = JSON.parse(data)
-        let element = list.find(item => item[config.security.PROP_USERNAME] == decoded.usr)
+        let element = list.find(item => item[config.security.PROP_USERNAME] == decoded.usr && item.activo)
         if (element) {
             sendLogin(req, res, element)
         } else {
@@ -442,6 +453,7 @@ router.post('/register', async function (req, res, next) {
     } else if (config.security.PASSWORD_PATTERN.test(element[config.security.PROP_PASSWORD])) {
         element[config.security.PROP_PASSWORD] = await encriptaPassword(element[config.security.PROP_PASSWORD])
         element.roles = ["Usuarios"]
+        element.activo = false
         list.push(element)
         fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
             .then(() => { res.sendStatus(201) })

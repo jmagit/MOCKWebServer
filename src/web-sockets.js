@@ -1,10 +1,13 @@
 const os = require('os');
 const { WebSocketServer, WebSocket } = require('ws');
-const { faker } = require('@faker-js/faker');
+const { faker } = require('@faker-js/faker/locale/es');
 const config = require('../config')
 
 module.exports.createWSServer = app => {
     app.get('/ws/chat', (_req, res) => {
+        res.sendFile(config.paths.APP_ROOT + '/static/chat.html');
+    });
+    app.get('/ws/auto-chat', (_req, res) => {
         res.sendFile(config.paths.APP_ROOT + '/static/chat.html');
     });
     app.get('/ws/dashboard', (_req, res) => {
@@ -30,6 +33,14 @@ module.exports.createWSServer = app => {
             }
         });
     }
+    function broadcastExcludeById(data) {
+        wss.clients.forEach(client => {
+            if (client.clientId != data.clientId) {
+                client.send(JSON.stringify(data), { binary: false });
+            }
+        });
+    }
+
     let dashboardCount = 0;
     let dashboardInterval = null;
     let autoChatCount = 0;
@@ -84,22 +95,29 @@ module.exports.createWSServer = app => {
                     }
                 });
                 break;
-            case 'autochat':
-                if (autoChatCount) break;
-                console.log('stating chat interval');
+            case 'auto-chat':
+                ws.clientId = clientId
                 autoChatCount++
-                autoChatInterval = setInterval(function () {
-                    const clientId = parseInt(Math.random() * 100)
-                    broadcastInclude(ws, JSON.stringify({ clientId, message: `${clientId % 2 ? faker.company.buzzPhrase() : faker.hacker.phrase()}` }), false)
-                }, 1000);
+                ws.send(JSON.stringify({ clientId: 0, message: `Te has conectado al canal ${channel} como ${clientId}` }));
+                ws.on('message', function (message, isBinary) {
+                    console.log(`Received message of ${ws.clientId} to ${ws.channel}: ${message}`);
+                    broadcastExclude(ws, JSON.stringify({ clientId: ws.clientId, message: `${message}` }), isBinary)
+                });
                 ws.on('close', function () {
-                    autoChatCount--
+                    if (autoChatCount) autoChatCount--
+                    console.log('stopping client chat')
                     if (!autoChatCount && autoChatInterval) {
                         console.log('stopping char interval');
                         clearInterval(autoChatInterval);
                         autoChatInterval = null;
                     }
                 });
+                if (!autoChatInterval)
+                    autoChatInterval = setInterval(function () {
+                        const clientRnd = parseInt(Math.random() * 100)
+                        // console.log('chat interval: ' + faker.company.buzzPhrase());
+                        broadcastExcludeById({ clientId: clientRnd, message: `${clientRnd % 2 ? faker.company.catchPhrase() : faker.hacker.phrase()}` })
+                    }, 2000);
                 break;
             case 'chat':
                 ws.clientId = clientId
