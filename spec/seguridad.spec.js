@@ -15,13 +15,15 @@ const usuarios = [
         "idUsuario": "admin@kk.kk",
         "password": "$2b$10$7EHNhM3dTSyGenDgmxzub.IfYloVNJrbvdjAF5LsrNBpu57JuNV1W",
         "nombre": "Administrador",
-        "roles": ["Usuarios", "Administradores"]
+        "roles": ["Usuarios", "Administradores"],
+        "activo": true
     },
     {
         "idUsuario": "fake@kk.kk",
         "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
         "nombre": "Usuario registrado",
-        "roles": ["Usuarios", "Empleados"]
+        "roles": ["Usuarios", "Empleados"],
+        "activo": true
     },
 ]
 const usuarioBorrado = {
@@ -423,7 +425,7 @@ describe('Seguridad', () => {
         })
         describe('/login/refresh', () => {
             describe('KO', () => {
-                it('POST: Tocken expirado', async () => {
+                it('POST: Token expirado', async () => {
                     await request(app)
                         .post('/login/refresh')
                         .set('Content-Type', 'application/json')

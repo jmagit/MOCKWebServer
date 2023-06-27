@@ -256,7 +256,7 @@ Están disponibles una serie de canales con sus correspondientes IU.
 
 #### Chat
 
-Típico chat bidireccional, se debe seleccionar a un contacto para realizar la conexión. El broadcast excluye al emisor. Como entrada acepta cadenas con el texto del mensaje, genera la siguiente salida:
+Típico chat bidireccional, se debe seleccionar a un contacto para realizar la conexión. La versión auto-chat genera aleatoriamente mensajes de los otros usuarios. El broadcast excluye al emisor. Como entrada acepta cadenas con el texto del mensaje, genera la siguiente salida:
 
     {
     "clientId": "1",
@@ -265,8 +265,12 @@ Típico chat bidireccional, se debe seleccionar a un contacto para realizar la c
 
 *Conexiones:*
 
-* **UI:** <http://localhost:4321/ws/chat>
-* **WS:** <ws://localhost:4321/ws/chat/123>
+* **UI:** 
+  * <http://localhost:4321/ws/chat>
+  * <http://localhost:4321/ws/auto-chat>
+* **WS:** 
+  * <ws://localhost:4321/ws/chat/123>
+  * <ws://localhost:4321/ws/auto-chat/123>
 
 #### Listener
 

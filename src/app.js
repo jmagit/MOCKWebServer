@@ -279,6 +279,7 @@ app.get('/', function (req, res) {
     <ul>
         <li><a href="${srv}/ws/listener">listener</a></li>
         <li><a href="${srv}/ws/chat">chat</a></li>
+        <li><a href="${srv}/ws/auto-chat">auto-chat</a></li>
         <li><a href="${srv}/ws/dashboard">dashboard</a></li>
     </ul>
   </div>
