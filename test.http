@@ -51,3 +51,22 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsI
   "newPassword": "P@$$w0rd"
 }
 
+###
+
+POST http://localhost:4321/register
+Content-Type: application/json
+
+{
+  "idUsuario": "user@example.com",
+  "nombre": "usuario",
+  "password": "P@$$w0rd"
+}
+
+###
+
+GET http://localhost:4321/register/status?instance=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjg3OTAzNjAxLCJleHAiOjE2ODc5OTAwMDF9.EH7pV4dMaVOSJisNGTwA7uiefuoUXacq-oWkXeY-Mtg
+
+###
+
+GET http://localhost:4321/register/reject?instance=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjg3OTAzNjAxLCJleHAiOjE2ODc5OTAwMDF9.EH7pV4dMaVOSJisNGTwA7uiefuoUXacq-oWkXeY-Mtg
+
