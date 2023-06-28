@@ -203,6 +203,38 @@ Mediante peticiones AJAX a <http://localhost:4321/register> se pueden:
 
 Las modificaciones y consultas están restringidas al propio usuario autenticado. Los usuarios tienen asociados, a través de la propiedad roles, un array de cadenas con los diferentes grupos a los que pertenecen, permitiendo la autorización por membresía. El servicio de registro no permite a un usuario modificar sus roles.
 
+#### Webhooks
+
+Al registrar un usuario, el usuario queda pendiente de que confirme el correo electrónico a través de webhooks antes de activarse y poder acceder.
+
+    HTTP/1.1 202 Accepted
+
+    {
+        "statusGetUri": "http://localhost:4321/register/status?instance=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+        "confirmGetUri": "http://localhost:4321/register/confirm?instance=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+        "rejectGetUri": "http://localhost:4321/register/reject?instance=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    }
+
+Con peticiones get a la url statusGetUri se obtiene el estado actual. Devuelve un 202 mientras esté pendiente de confirmación:
+
+    HTTP/1.1 202 Accepted
+
+    {
+        "status": "pending"
+    }
+
+Se obtiene un 200 cuando el estado pase complete o canceled (dispone de un día antes de que se cancele), el resultado puede ser confirm, reject, canceled o timeout:
+
+    HTTP/1.1 200 OK
+
+    {
+        "status": "complete",
+        "result": "reject"
+    }
+
+Los webhooks confirmGetUri y rejectGetUri se invocan con peticiones get para poder ser invocados desde correos electrónicos. Ambos devuelven un 204 cuando se completan.
+
+#### Contraseñas
 La contraseñas sigue el patrón /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/ (al menos 8 caracteres con minúsculas, mayúsculas, dígitos y símbolos). Para el encriptado de contraseñas en la persistencia se utiliza bcrypt (función de hashing de contraseñas basada en el cifrado Blowfish), utilizado al Registrar usuario y se ignora la contraseña en el resto de los casos. Para cambiar la contraseña se ha habilitado el método PUT <http://localhost:4321/register/password> que requiere el usuario autenticado y la contraseña anterior como medida de seguridad:
 
     PUT http://localhost:4321/register/password

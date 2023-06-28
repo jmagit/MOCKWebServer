@@ -51,7 +51,7 @@ const CreatedTokenHMAC256 = {
         return jwt.verify(token, config.security.APP_SECRET);
     }
 }
-
+module.exports.CreatedTokenHMAC256 = CreatedTokenHMAC256;
 
 module.exports.generarTokenJWT = TokenRS256.generar
 
@@ -179,44 +179,44 @@ module.exports.useXSRF = (req, res, next) => {
 /**
  * @swagger
  * components:
- *  schemas:
- *    Login:
- *      description: Credenciales de autenticación
- *      type: object
- *      required:
- *        - username
- *        - password
- *      properties:
- *        username:
- *          type: string
- *        password:
- *          type: string
- *          format: password
- *    RespuestaLogin:
- *      type: object
- *      title: Respuesta Login
- *      properties:
- *        success:
- *          type: boolean
- *        token:
- *          type: string
- *        refresh:
- *          type: string
- *        name:
- *          type: string
- *        roles:
- *          type: array
- *          items:
- *            type: string
- *        expires_in:
- *          type: integer
- *          format: int32
- *    RefreshToken:
- *      type: object
- *      title: Token de petición de refresco
- *      properties:
- *        token:
- *          type: string
+ *   schemas:
+ *     Login:
+ *       description: Credenciales de autenticación
+ *       type: object
+ *       required:
+ *         - username
+ *         - password
+ *       properties:
+ *         username:
+ *           type: string
+ *         password:
+ *           type: string
+ *           format: password
+ *     RespuestaLogin:
+ *       type: object
+ *       title: Respuesta Login
+ *       properties:
+ *         success:
+ *           type: boolean
+ *         token:
+ *           type: string
+ *         refresh:
+ *           type: string
+ *         name:
+ *           type: string
+ *         roles:
+ *           type: array
+ *           items:
+ *             type: string
+ *         expires_in:
+ *           type: integer
+ *           format: int32
+ *     RefreshToken:
+ *       type: object
+ *       title: Token de petición de refresco
+ *       properties:
+ *         token:
+ *           type: string
 */
 /**
  * @swagger
@@ -437,8 +437,26 @@ router.all('/logout', function (_req, res) {
  *                 format: password
  *       required: true
  *     responses:
- *       "201":
- *         description: "Created"
+ *       "202":
+ *         description: "Accepted"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               description: webhook para controlar el registro del usuario
+ *               properties:
+ *                 statusGetUri:
+ *                   description: webhook vía GET para consultar el estado del registro
+ *                   type: string
+ *                   format: uri
+ *                 confirmGetUri:
+ *                   description: webhook vía GET para confirmar el email y activar al usuario
+ *                   type: string
+ *                   format: uri
+ *                 rejectGetUri:
+ *                   description: webhook vía GET para rechazar el email y borrar al usuario
+ *                   type: string
+ *                   format: uri
  *       "400":
  *         $ref: "#/components/responses/BadRequest"
  */
@@ -453,14 +471,184 @@ router.post('/register', async function (req, res, next) {
     } else if (config.security.PASSWORD_PATTERN.test(element[config.security.PROP_PASSWORD])) {
         element[config.security.PROP_PASSWORD] = await encriptaPassword(element[config.security.PROP_PASSWORD])
         element.roles = ["Usuarios"]
-        element.activo = false
+        delete element.activo
         list.push(element)
         fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
-            .then(() => { res.sendStatus(201) })
+            .then(() => {
+                const token = CreatedTokenHMAC256.generar(element)
+                const location = `${req.protocol}://${req.hostname}:${req.connection.localPort}${req.originalUrl}`
+                res.status(202).json({
+                    statusGetUri: `${location}/status?instance=${token}`,
+                    confirmGetUri: `${location}/confirm?instance=${token}`,
+                    rejectGetUri: `${location}/reject?instance=${token}`
+                })
+            })
             .catch(err => { return next(generateErrorByError(err, 500)) })
     } else {
         return next(generateError('Formato incorrecto de la password.', 400))
     }
+})
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     RegisterStatus:
+ *       title: Estado Registro
+ *       description: Credenciales de autenticación
+ *       type: object
+ *       required:
+ *         - username
+ *         - password
+ *       properties:
+ *         status:
+ *           type: string
+ *           enum:
+ *             - pending
+ *             - complete
+ *             - canceled
+ *         result:
+ *           type: string
+ *           enum:
+ *             - confirm
+ *             - reject
+ *             - canceled
+ *             - timeout
+ * @swagger
+ * /register/status:
+ *   get:
+ *     tags: [ registro ]
+ *     summary: Estado del registro un nuevo usuario
+ *     parameters:
+ *       - name: instance
+ *         in: query
+ *         required: true
+ *         description: Identificador la instancia
+ *         schema:
+ *           type: string
+ *     responses:
+ *       "200":
+ *         description: "Finalize"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/RegisterStatus"
+ *       "202":
+ *         description: "Pending"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/RegisterStatus"
+ *       "400":
+ *         $ref: "#/components/responses/BadRequest"
+ */
+router.get('/register/status', async function (req, res, next) {
+    if (!req.query.instance) {
+        return next(generateError('Falta la instancia.', 400))
+    }
+    let usr;
+    try {
+        usr = CreatedTokenHMAC256.decode(req.query.instance).usr
+    } catch (ex) {
+        res.status(200).json({ status: 'canceled', result: 'timeout' }).end()
+        return
+    }
+    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
+    let list = JSON.parse(data)
+    let element = list.find(item => item[config.security.PROP_USERNAME] == usr)
+    if (!element) {
+        res.status(200).json({ status: 'complete', result: 'reject' }).end()
+    } else if (typeof (element.activo) === 'undefined') {
+        res.status(202).json({ status: 'pending' }).end()
+    } else {
+        res.status(200).json({ status: 'complete', result: element.activo ? 'confirm' : 'reject' }).end()
+    }
+})
+/**
+* @swagger
+* /register/confirm:
+*   get:
+*     tags: [ registro ]
+*     summary: Confirmar el email y activar al usuario
+*     parameters:
+*       - name: instance
+*         in: query
+*         required: true
+*         description: Identificador la instancia
+*         schema:
+*           type: string
+*     responses:
+*       "204":
+*         $ref: "#/components/responses/NoContent"
+*       "400":
+*         $ref: "#/components/responses/BadRequest"
+*/
+router.get('/register/confirm', async function (req, res, next) {
+    if (!req.query.instance) {
+        return next(generateError('Falta la instancia.', 400))
+    }
+    let usr;
+    try {
+        usr = CreatedTokenHMAC256.decode(req.query.instance).usr
+    } catch (ex) {
+        return next(generateError('Ya no existe la instancia.', 400))
+    }
+    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
+    let list = JSON.parse(data)
+    let index = list.findIndex(row => row[config.security.PROP_USERNAME] == usr)
+    if (index == -1) {
+        return next(generateErrorByStatus(404))
+    }
+    let element = list.find(item => item[config.security.PROP_USERNAME] == usr)
+    if (!element.activo) {
+        element.activo = true
+        fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
+            .then(() => { res.sendStatus(204) })
+            .catch(err => { return next(generateErrorByError(err, 500)) })
+    }
+    res.sendStatus(204)
+})
+/**
+* @swagger
+* /register/reject:
+*   get:
+*     tags: [ registro ]
+*     summary: Rechazar el email y borrar al usuario
+*     parameters:
+*       - name: instance
+*         in: query
+*         required: true
+*         description: Identificador la instancia
+*         schema:
+*           type: string
+*     responses:
+*       "204":
+*         $ref: "#/components/responses/NoContent"
+*       "400":
+*         $ref: "#/components/responses/BadRequest"
+*/
+router.get('/register/reject', async function (req, res, next) {
+    if (!req.query.instance) {
+        return next(generateError('Falta la instancia.', 400))
+    }
+    let usr;
+    try {
+        usr = CreatedTokenHMAC256.decode(req.query.instance).usr
+    } catch (ex) {
+        return next(generateError('Ya no existe la instancia.', 400))
+    }
+    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
+    let list = JSON.parse(data)
+    let index = list.findIndex(row => row[config.security.PROP_USERNAME] == usr)
+    if (index == -1) {
+        return next(generateErrorByStatus(404))
+    }
+    if (list[index].activo) {
+        return next(generateError('Ya esta confirmado.', 400))
+    }
+    list.splice(index, 1)
+    fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
+        .then(() => { res.sendStatus(204) })
+        .catch(err => { return next(generateErrorByError(err, 500)) })
 })
 
 let autenticados = express.Router();

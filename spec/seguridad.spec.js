@@ -1,3 +1,4 @@
+/* eslint-disable jest/prefer-lowercase-title */
 /* eslint-disable node/no-unpublished-require */
 const request = require('supertest');
 const cookieParser = require('cookie-parser');
@@ -23,7 +24,13 @@ const usuarios = [
         "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
         "nombre": "Usuario registrado",
         "roles": ["Usuarios", "Empleados"],
-        "activo": true
+        "activo": false
+    },
+    {
+        "idUsuario": "pending@kk.kk",
+        "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
+        "nombre": "Usuario registrado",
+        "roles": ["Usuarios", "Empleados"]
     },
 ]
 const usuarioBorrado = {
@@ -328,7 +335,7 @@ describe('Seguridad', () => {
     })
 
     describe('Pruebas con ficheros simulados', () => {
-         let fsMock
+        let fsMock
 
         beforeEach(() => {
             jest.mock('fs/promises');
@@ -398,6 +405,24 @@ describe('Seguridad', () => {
                         .send({ "username": "admin", "password": "P@$Sword" })
                         .expect(400)
                 });
+                it('POST: Usuario no activo', async () => {
+                    await request(app)
+                        .post('/login')
+                        .set('Content-Type', 'application/json')
+                        .send({ "username": "fake@kk.kk", "password": "P@$$w0rd" })
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(response => expect(response.body.success).toBeFalsy())
+                });
+                it('POST: Usuario sin confirmar', async () => {
+                    await request(app)
+                        .post('/login')
+                        .set('Content-Type', 'application/json')
+                        .send({ "username": "pending@kk.kk", "password": "P@$$w0rd" })
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(response => expect(response.body.success).toBeFalsy())
+                });
             });
         })
         describe('/login/signature', () => {
@@ -405,7 +430,7 @@ describe('Seguridad', () => {
                 request(app)
                     .get('/login/signature')
                     .expect(200, done)
-                    .expect('Content-Type', 'text/plain; charset=utf-8') 
+                    .expect('Content-Type', 'text/plain; charset=utf-8')
                     .expect(config.security.PUBLIC_KEY)
             });
         })
@@ -442,17 +467,164 @@ describe('Seguridad', () => {
                     request(app)
                         .post('/register')
                         .set('Content-Type', 'application/json')
-                        .send({ "idUsuario": "usr@kk.kk", "nombre": "Nuevo", "password": "P@$$w0rd", "roles": [] })
-                        .expect(201)
+                        .send({ "idUsuario": "usr@kk.kk", "nombre": "Nuevo", "password": "P@$$w0rd", "roles": [], "activo": true })
+                        .expect(202)
+                        .expect('Content-Type', /json/)
+                        .expect(response => {
+                            expect(response.body.statusGetUri).toBeDefined()
+                            expect(response.body.confirmGetUri).toBeDefined()
+                            expect(response.body.rejectGetUri).toBeDefined()
+                        })
                         .then(() => {
                             let data = JSON.parse(fsMock.__getMockFile('./data/usuarios.json'))
-                            expect(data.length).toBe(3);
-                            expect(data[2].idUsuario).toBe('usr@kk.kk')
-                            expect(data[2].nombre).toBe('Nuevo')
-                            expect(data[2].roles).toEqual(['Usuarios'])
+                            expect(data.length).toBe(4);
+                            const last = data[data.length - 1]
+                            expect(last.idUsuario).toBe('usr@kk.kk')
+                            expect(last.nombre).toBe('Nuevo')
+                            expect(last.roles).toEqual(['Usuarios'])
+                            expect(last.activo).toBeUndefined()
                             done();
                         })
                         .catch(err => done(err))
+                });
+                describe('/register/status', () => {
+                    it('status: pending', async () => {
+                        await request(app)
+                            .get(`/register/status?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'pending@kk.kk' })}`)
+                            .expect(202)
+                            .expect('Content-Type', /json/)
+                            .expect(response => {
+                                expect(response.body.status).toBe('pending')
+                            })
+                    });
+                    it('status: canceled, result: timeout', async () => {
+                        await request(app)
+                            .get(`/register/status?instance=XXX`)
+                            .expect(200)
+                            .expect('Content-Type', /json/)
+                            .expect(response => {
+                                expect(response.body.status).toBe('canceled')
+                                expect(response.body.result).toBe('timeout')
+                            })
+                    });
+                    it('status: complete, result: confirm', async () => {
+                        await request(app)
+                            .get(`/register/status?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'admin@kk.kk' })}`)
+                            .expect(200)
+                            .expect('Content-Type', /json/)
+                            .expect(response => {
+                                expect(response.body.status).toBe('complete')
+                                expect(response.body.result).toBe('confirm')
+                            })
+                    });
+                    it('status: complete, result: reject by activo=false', async () => {
+                        await request(app)
+                            .get(`/register/status?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'fake@kk.kk' })}`)
+                            .expect(200)
+                            .expect('Content-Type', /json/)
+                            .expect(response => {
+                                expect(response.body.status).toBe('complete')
+                                expect(response.body.result).toBe('reject')
+                            })
+                    });
+                    it('status: complete, result: reject by delete', async () => {
+                        await request(app)
+                            .get(`/register/status?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'delete@kk.kk' })}`)
+                            .expect(200)
+                            .expect('Content-Type', /json/)
+                            .expect(response => {
+                                expect(response.body.status).toBe('complete')
+                                expect(response.body.result).toBe('reject')
+                            })
+                    });
+                });
+                describe('/register/confirm', () => {
+                    it('status: pending', async () => {
+                        const idUsuario = 'pending@kk.kk'
+                        await request(app)
+                            .get(`/register/confirm?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
+                            .expect(204)
+                            .then(() => {
+                                let data = JSON.parse(fsMock.__getMockFile('./data/usuarios.json'))
+                                const last = data[data.length - 1]
+                                expect(last.idUsuario).toBe(idUsuario)
+                                expect(last.activo).toBeTruthy()
+                            })
+                    });
+                    it('status: complete by activo=true', async () => {
+                        const idUsuario = 'admin@kk.kk'
+                        await request(app)
+                            .get(`/register/confirm?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
+                            .expect(204)
+                            .then(() => {
+                                let data = JSON.parse(fsMock.__getMockFile('./data/usuarios.json'))
+                                expect(data[0].idUsuario).toBe(idUsuario)
+                                expect(data[0].activo).toBeTruthy()
+                            })
+                    });
+                    it('status: complete by activo=false', async () => {
+                        const idUsuario = 'fake@kk.kk'
+                        await request(app)
+                            .get(`/register/confirm?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
+                            .expect(204)
+                            .then(() => {
+                                let data = JSON.parse(fsMock.__getMockFile('./data/usuarios.json'))
+                                expect(data[1].idUsuario).toBe(idUsuario)
+                                expect(data[1].activo).toBeTruthy()
+                            })
+                    });
+                    it('BAD instance', async () => {
+                        await request(app)
+                            .get(`/register/confirm?instance=XXX`)
+                            .expect(400)
+                            .expect('Content-Type', /json/)
+                    });
+                    it('404', async () => {
+                        await request(app)
+                            .get(`/register/confirm?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'kk@kk.kk' })}`)
+                            .expect(404)
+                            .expect('Content-Type', /json/)
+                    });
+                });
+                describe('/register/reject', () => {
+                    it('status: pending', async () => {
+                        const idUsuario = 'pending@kk.kk'
+                        await request(app)
+                            .get(`/register/reject?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
+                            .expect(204)
+                            .then(() => {
+                                let data = JSON.parse(fsMock.__getMockFile('./data/usuarios.json'))
+                                expect(data.length).toBe(2);
+                            })
+                    });
+                    it('status: complete by activo=true', async () => {
+                        const idUsuario = 'admin@kk.kk'
+                        await request(app)
+                            .get(`/register/reject?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
+                            .expect(400)
+                    });
+                    it('status: complete by activo=false', async () => {
+                        const idUsuario = 'fake@kk.kk'
+                        await request(app)
+                            .get(`/register/reject?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
+                            .expect(204)
+                            .then(() => {
+                                let data = JSON.parse(fsMock.__getMockFile('./data/usuarios.json'))
+                                expect(data.length).toBe(2);
+                            })
+                    });
+                    it('BAD instance', async () => {
+                        await request(app)
+                            .get(`/register/reject?instance=XXX`)
+                            .expect(400)
+                            .expect('Content-Type', /json/)
+                    });
+                    it('404', async () => {
+                        await request(app)
+                            .get(`/register/reject?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'kk@kk.kk' })}`)
+                            .expect(404)
+                            .expect('Content-Type', /json/)
+                    });
                 });
                 it('GET: Con token', async () => {
                     let index = 0
@@ -472,7 +644,7 @@ describe('Seguridad', () => {
                         .send({ "nombre": "Nuevo nombre", "password": "ignorar", "roles": [] })
                     expect(response.statusCode).toBe(204)
                     let data = JSON.parse(fsMock.__getMockFile('./data/usuarios.json'))
-                    expect(data.length).toBe(2);
+                    expect(data.length).toBe(3);
                     expect(data[index].idUsuario).toBe(usuarios[index].idUsuario)
                     expect(data[index].nombre).toBe('Nuevo nombre')
                     expect(data[index].password).toBe(usuarios[index].password)
@@ -527,12 +699,12 @@ describe('Seguridad', () => {
                 it('PUT: Otro usuario', done => {
                     request(app)
                         .put('/register')
-                        .set('authorization', seguridad.generarTokenScheme( usuarios[0]))
+                        .set('authorization', seguridad.generarTokenScheme(usuarios[0]))
                         .set('Content-Type', 'application/json')
-                        .send( usuarios[1])
+                        .send(usuarios[1])
                         .expect(403, done)
                 });
-                 it('PUT: Usuario eliminado', done => {
+                it('PUT: Usuario eliminado', done => {
                     request(app)
                         .put('/register')
                         .set('authorization', seguridad.generarTokenScheme(usuarioBorrado))
@@ -561,7 +733,7 @@ describe('Seguridad', () => {
                         .send({ "oldPassword": "P@$$w0rd", "newPassword": "Pa$$w0rd" })
                     expect(response.statusCode).toBe(204)
                     let data = JSON.parse(fsMock.__getMockFile('./data/usuarios.json'))
-                    expect(data.length).toBe(2);
+                    expect(data.length).toBe(3);
                     expect(data[index].idUsuario).toBe(usuarios[index].idUsuario)
                     expect(data[index].nombre).toBe(usuarios[index].nombre)
                     expect(data[index].password).not.toBe(usuarios[index].password)
