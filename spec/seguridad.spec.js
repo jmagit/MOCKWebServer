@@ -41,6 +41,8 @@ const usuarioBorrado = {
         "Usuarios"
     ]
 }
+const contraseña = 'P@$$w0rd'
+
 // eslint-disable-next-line no-unused-vars
 const errorMiddleware = (err, _req, res, _next) => {
     // console.error('ERROR: %s', req.originalUrl, err)
@@ -350,7 +352,7 @@ describe('Seguridad', () => {
                     request(app)
                         .post('/login')
                         .set('Content-Type', 'application/json')
-                        .send({ "username": "admin@kk.kk", "password": "P@$$w0rd" })
+                        .send({ "username": "admin@kk.kk", "password": contraseña })
                         .expect('Content-Type', /json/)
                         .then(response => {
                             expect(response.statusCode).toBe(200);
@@ -363,7 +365,7 @@ describe('Seguridad', () => {
                     let response = await request(app)
                         .post('/login?cookie=true')
                         .set('Content-Type', 'application/json')
-                        .send({ "username": "admin@kk.kk", "password": "P@$$w0rd" })
+                        .send({ "username": "admin@kk.kk", "password": contraseña })
                     expect(response.statusCode).toBe(200)
                     expect(response.headers['set-cookie']).toBeTruthy()
                     let cookie = response.headers['set-cookie']
@@ -384,7 +386,7 @@ describe('Seguridad', () => {
                     await request(app)
                         .post('/login')
                         .set('Content-Type', 'application/json')
-                        .send({ "username": "admina", "password": "P@$$w0rd" })
+                        .send({ "username": "admina", "password": contraseña })
                         .expect(200)
                         .expect('Content-Type', /json/)
                         .expect(response => expect(response.body.success).toBeFalsy())
@@ -409,7 +411,7 @@ describe('Seguridad', () => {
                     await request(app)
                         .post('/login')
                         .set('Content-Type', 'application/json')
-                        .send({ "username": "fake@kk.kk", "password": "P@$$w0rd" })
+                        .send({ "username": "fake@kk.kk", "password": contraseña })
                         .expect(200)
                         .expect('Content-Type', /json/)
                         .expect(response => expect(response.body.success).toBeFalsy())
@@ -418,7 +420,7 @@ describe('Seguridad', () => {
                     await request(app)
                         .post('/login')
                         .set('Content-Type', 'application/json')
-                        .send({ "username": "pending@kk.kk", "password": "P@$$w0rd" })
+                        .send({ "username": "pending@kk.kk", "password": contraseña })
                         .expect(200)
                         .expect('Content-Type', /json/)
                         .expect(response => expect(response.body.success).toBeFalsy())
@@ -467,7 +469,7 @@ describe('Seguridad', () => {
                     request(app)
                         .post('/register')
                         .set('Content-Type', 'application/json')
-                        .send({ "idUsuario": "usr@kk.kk", "nombre": "Nuevo", "password": "P@$$w0rd", "roles": [], "activo": true })
+                        .send({ "idUsuario": "usr@kk.kk", "nombre": "Nuevo", "password": contraseña, "roles": [], "activo": true })
                         .expect(202)
                         .expect('Content-Type', /json/)
                         .expect(response => {
@@ -656,7 +658,7 @@ describe('Seguridad', () => {
                     await request(app)
                         .post('/register')
                         .set('Content-Type', 'application/json')
-                        .send({ "nombre": "Nuevo", "password": "P@$$w0rd" })
+                        .send({ "nombre": "Nuevo", "password": contraseña })
                         .expect(400)
                         .expect('Content-Type', /json/)
                         .expect(response => expect(response.body.title).toBe('Falta el nombre de usuario.'))
@@ -665,7 +667,7 @@ describe('Seguridad', () => {
                     await request(app)
                         .post('/register')
                         .set('Content-Type', 'application/json')
-                        .send({ "idUsuario": "usr@kk.kk", "nombre": "Nuevo", "password": "p@$$w0rd" })
+                        .send({ "idUsuario": "usr@kk.kk", "nombre": "Nuevo", "password": "contraseña" })
                         .expect(400)
                         .expect('Content-Type', /json/)
                         .expect(response => expect(response.body.title).toBe('Formato incorrecto de la password.'))
@@ -674,7 +676,7 @@ describe('Seguridad', () => {
                     await request(app)
                         .post('/register')
                         .set('Content-Type', 'application/json')
-                        .send({ "idUsuario": usuarios[1].idUsuario, "nombre": "Nuevo", "password": "P@$$w0rd" })
+                        .send({ "idUsuario": usuarios[1].idUsuario, "nombre": "Nuevo", "password": contraseña })
                         .expect(400)
                         .expect('Content-Type', /json/)
                         .expect(response => expect(response.body.title).toBe('El usuario ya existe.'))
