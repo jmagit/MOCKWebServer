@@ -2,7 +2,6 @@ const fs = require('fs/promises')
 const path = require('path');
 const { createServer } = require('http');
 const express = require('express')
-const rateLimit = require('express-rate-limit')
 const Formidable = require('formidable');
 const morgan = require('morgan')
 const rfs = require('rotating-file-stream')
@@ -66,13 +65,6 @@ app.use(express.urlencoded({
 }))
 // parse header/cookies
 app.use(cookieParser())
-// limitación de velocidad para evitar ataques de denegación de servicio
-app.use(rateLimit({
-	windowMs: 1 * 60 * 1000, // 1 minutes
-	max: 1000, // Limit each IP to 100 requests per `window` (here, per 1 minutes)
-	standardHeaders: false, // Disable rate limit info in the `RateLimit-*` headers
-	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-}))
 
 // Ficheros públicos
 app.use(express.static(config.paths.PUBLIC))
