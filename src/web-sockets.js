@@ -1,9 +1,18 @@
 const os = require('os');
+const rateLimit = require('express-rate-limit')
 const { WebSocketServer, WebSocket } = require('ws');
 const { faker } = require('@faker-js/faker/locale/es');
 const config = require('../config')
 
 module.exports.createWSServer = app => {
+    // limitación de velocidad para evitar ataques de denegación de servicio
+    app.use(rateLimit({
+        windowMs: 1 * 60 * 1000, // 1 minutes
+        max: 1000, // Limit each IP to 100 requests per `window` (here, per 1 minutes)
+        standardHeaders: false, // Disable rate limit info in the `RateLimit-*` headers
+        legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    }))
+
     app.get('/ws/chat', (_req, res) => {
         res.sendFile(config.paths.APP_ROOT + '/static/chat.html');
     });
