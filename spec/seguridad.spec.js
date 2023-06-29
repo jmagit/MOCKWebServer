@@ -113,7 +113,7 @@ describe('Seguridad', () => {
                 mockApp.use(errorMiddleware);
 
                 const response = await request(mockApp).get('/')
-                    .set('authorization', 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1AZXhhbXBsZS5jb20iLCJuYW1lIjoiQWRtaW5pc3RyYWRvciIsInJvbGVzIjpbIlVzdWFyaW9zIiwiQWRtaW5pc3RyYWRvcmVzIl0sImlhdCI6MTY3MDM0MjE3MiwiZXhwIjoxNjcwMzQyNDcyLCJhdWQiOiJhdXRob3JpemF0aW9uIiwiaXNzIjoiTWljcm9zZXJ2aWNpb3NKV1QifQ.dlt-d1K6wGoe-VBsPtE6SYx25wPgR0k7RwVdkdzMRKoZxYjVjUCAl9P1o4yd4pemG2B2jVu5cq4birz5EqBRy4cgVeNxD86E9f89QwOimNDr3dKGxbVbiS40RyJ1cm9qJ5_aEiBA-LZunByWp5OOtPf1Eq6Hs-AJoDWxidS0kgdjSZmeojzzzcZiE_sb8AoFhKiWC_UXpJr880YQ1jceqQ-qQmD_WCf6JICDqN-cv9Z4uMtdBCFWuMtc_6RCEd38iURtiDYS1a_oSKEZyQTf7cc3etA-4MuckdIItCRqDLiuUyJcuaJV1ODw0dI40MDU2a6Ju0LVB8QPQyNTNLKQvQ')
+                    .set('authorization', `${config.security.AUTHENTICATION_SCHEME}eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1AZXhhbXBsZS5jb20iLCJuYW1lIjoiQWRtaW5pc3RyYWRvciIsInJvbGVzIjpbIlVzdWFyaW9zIiwiQWRtaW5pc3RyYWRvcmVzIl0sImlhdCI6MTY3MDM0MjE3MiwiZXhwIjoxNjcwMzQyNDcyLCJhdWQiOiJhdXRob3JpemF0aW9uIiwiaXNzIjoiTWljcm9zZXJ2aWNpb3NKV1QifQ.dlt-d1K6wGoe-VBsPtE6SYx25wPgR0k7RwVdkdzMRKoZxYjVjUCAl9P1o4yd4pemG2B2jVu5cq4birz5EqBRy4cgVeNxD86E9f89QwOimNDr3dKGxbVbiS40RyJ1cm9qJ5_aEiBA-LZunByWp5OOtPf1Eq6Hs-AJoDWxidS0kgdjSZmeojzzzcZiE_sb8AoFhKiWC_UXpJr880YQ1jceqQ-qQmD_WCf6JICDqN-cv9Z4uMtdBCFWuMtc_6RCEd38iURtiDYS1a_oSKEZyQTf7cc3etA-4MuckdIItCRqDLiuUyJcuaJV1ODw0dI40MDU2a6Ju0LVB8QPQyNTNLKQvQ`)
 
                 expect(response.statusCode).toBe(401)
                 expect(response.body.detail).toEqual('Token expired')
@@ -268,7 +268,7 @@ describe('Seguridad', () => {
                 expect(response.headers['access-control-allow-origin']).toBe('*')
                 expect(response.headers['access-control-allow-headers']).toBeTruthy()
                 expect(response.headers['access-control-allow-methods']).toBeTruthy()
-                expect(response.headers['access-control-allow-credentials']).toBeTruthy()
+                expect(response.headers['access-control-allow-credentials']).toBeUndefined()
             })
             it('Con Origin', async () => {
                 mockApp.use(seguridad.useCORS)
