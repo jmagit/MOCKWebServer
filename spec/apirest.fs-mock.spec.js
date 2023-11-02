@@ -659,7 +659,7 @@ describe('API Rest: Ficheros simulados', () => {
                     .set('Content-Type', 'application/json')
                     .send({ "id": "1", "name": "Nuevo" })
                     .expect(400)
-                    .expect(response => expect(response.body.title).toBe('Duplicate key'))
+                    .expect(response => expect(response.body.detail).toBe('Duplicate key'))
                     .end(done)
             });
             it('Sin Content-Type: application/json', done => {
@@ -720,7 +720,7 @@ describe('API Rest: Ficheros simulados', () => {
                     .set('Content-Type', 'application/json')
                     .send({ "id": "1", "name": "Nuevo" })
                     .expect(400)
-                    .expect(response => expect(response.body.title).toBe('Invalid identifier'))
+                    .expect(response => expect(response.body.detail).toBe('Invalid identifier'))
                     .end(done)
             });
             it('No encontrado: con id', done => {
@@ -751,7 +751,7 @@ describe('API Rest: Ficheros simulados', () => {
                     .put("/api/fake")
                     .set('Content-Type', 'application/json')
                     .expect(400)
-                    .expect(response => expect(response.body.title).toBe('Invalid identifier'))
+                    .expect(response => expect(response.body.detail).toBe('Invalid identifier'))
                     .end(done)
             });
         })
@@ -802,7 +802,7 @@ describe('API Rest: Ficheros simulados', () => {
                     .set('Content-Type', 'application/json')
                     .send({ "id": "1", "name": "Nuevo" })
                     .expect(400)
-                    .expect(response => expect(response.body.title).toBe('Invalid identifier'))
+                    .expect(response => expect(response.body.detail).toBe('Invalid identifier'))
                     .end(done)
             });
             it('No encontrado: con id', done => {

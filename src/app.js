@@ -335,9 +335,10 @@ app.get('/*', async function (req, res, next) {
 });
 
 // eslint-disable-next-line no-unused-vars
-app.use(function (err, _req, res, _next) {
+app.use(function (err, req, res, _next) {
   // console.error('ERROR: %s', req.originalUrl, err)
   let error = err.payload ? err : generateErrorByError(err)
+  error.payload.instance = req.originalUrl
   res.status(error.payload.status).json(error.payload);
 });
 
