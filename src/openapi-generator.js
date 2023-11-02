@@ -123,7 +123,8 @@ const swaggerDocument = {
         "schemas": {
             "ErrorMessage": {
                 "type": "object",
-                "title": "Error message",
+                "title": "Problem Details",
+                "description": "Problem Details for HTTP APIs ([RFC 7807](https://datatracker.ietf.org/doc/html/rfc7807))",
                 "required": [
                     "type",
                     "status",
@@ -132,19 +133,33 @@ const swaggerDocument = {
                 "properties": {
                     "type": {
                         "type": "string",
-                    },
-                    "status": {
-                        "type": "integer",
+                        "description": "URI que identifica el tipo de problema y proporciona documentación legible por humanos para el tipo de problema.",
                     },
                     "title": {
                         "type": "string",
+                        "description": "Breve resumen legible por humanos del problema escribe.",
+                    },
+                    "status": {
+                        "type": "integer",
+                        "description": "Código de estado HTTP.",
                     },
                     "detail": {
                         "type": "string",
+                        "description": "Explicación legible por humanos específica de la ocurrencia concreta del problema.",
+                    },
+                    "instance": {
+                        "type": "string",
+                        "description": "URI de referencia que identifica el origen de la ocurrencia del problema.",
+                    },
+                    "errors": {
+                        "type": "array",
+                        "description": "Lista de errores de validación",
                     },
                     "source": {
                         "type": "string",
+                        "description": "En modo depuración, información complementaria sobre el origen del error.",
                     }
+
                 }
             }
         },
