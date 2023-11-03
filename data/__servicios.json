@@ -54,8 +54,8 @@
                 "telefono": {
                     "title": "Telefono",
                     "type": "string",
-                    "example": "642 051 348",
-                    "pattern": "^(\\d{3}\\s){2}\\d{3}$"
+                    "pattern": "^(\\d{3}\\s){2}\\d{3}$",
+                    "example": "642 051 348"
                 },
                 "email": {
                     "title": "Email",
