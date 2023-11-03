@@ -1,11 +1,13 @@
 const Ajv = require("ajv")
 const addFormats = require("ajv-formats")
+const validator = require('validator');
 const swaggerJsdoc = require('swagger-jsdoc')
 const config = require('../config')
 const serviciosConfig = require('../data/__servicios.json');
 
 const ajv = new Ajv()
 addFormats(ajv)
+ajv.addFormat("nif", { type: 'nif', validate: (v) => validator.isIdentityCard(v, 'ES') })
 
 const serviciosConfigSchema = {
     "type": "array",

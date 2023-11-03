@@ -1,4 +1,7 @@
-POST http://localhost:4321/login
+@hostname = http://localhost:4321
+
+# @name apilogin
+POST {{hostname}}/login
 Content-Type: application/json
 
 {
@@ -6,16 +9,17 @@ Content-Type: application/json
     "password": "P@$$w0rd" 
 }
 ###
-GET http://localhost:4321/auth
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ5MzM0MDQzLCJleHAiOjE2NDkzMzc2NDN9._KrvnPd7CnvcwoQiwO0ztIRMvFVVVM2Nrbex_2OGKxo
+
+GET {{hostname}}/auth
+Authorization: {{apilogin.response.body.$.token}}
 
 ###
 
-GET http://localhost:4321/register
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ5MzM3NTQ2LCJleHAiOjE2NDkzNDExNDZ9.C5TN0iEEmdhlKrcIs-IjfRC9pd334pWKt6wzF36-3eg
+GET {{hostname}}/register
+Authorization: {{apilogin.response.body.$.token}}
 
 ###
-POST http://localhost:4321/register
+POST {{hostname}}/register
 Content-Type: application/json
 
 {
@@ -28,9 +32,9 @@ Content-Type: application/json
 }
 
 ###
-PUT http://localhost:4321/register
+PUT {{hostname}}/register
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJra0BrayIsIm5hbWUiOiJkZW1vIiwicm9sZXMiOlsiVXN1YXJpb3MiXSwiaWF0IjoxNjQ5MzM1NDgwLCJleHAiOjE2NDkzMzkwODB9._xdLYBEPGAQL2rLdUQKW522RJYorSckPASfkw5Ztlxw
+Authorization: {{apilogin.response.body.$.token}}
 
 {
   "idUsuario": "kk@kk",
@@ -42,7 +46,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJra0BrayIsI
 }
 
 ###
-PUT http://localhost:4321/register/password
+PUT {{hostname}}/register/password
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ5MzM5MDgwLCJleHAiOjE2NDkzNDI2ODB9.1XAvQTzCSgEjs6NVhA0rgFt5NeEb_DMMVIn4DfNOjvg
 
@@ -53,7 +57,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsI
 
 ###
 
-POST http://localhost:4321/register
+POST {{hostname}}/register
 Content-Type: application/json
 
 {
@@ -64,9 +68,27 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:4321/register/status?instance=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjg3OTAzNjAxLCJleHAiOjE2ODc5OTAwMDF9.EH7pV4dMaVOSJisNGTwA7uiefuoUXacq-oWkXeY-Mtg
+GET {{hostname}}/register/status?instance=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjg3OTAzNjAxLCJleHAiOjE2ODc5OTAwMDF9.EH7pV4dMaVOSJisNGTwA7uiefuoUXacq-oWkXeY-Mtg
 
 ###
 
-GET http://localhost:4321/register/reject?instance=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjg3OTAzNjAxLCJleHAiOjE2ODc5OTAwMDF9.EH7pV4dMaVOSJisNGTwA7uiefuoUXacq-oWkXeY-Mtg
+GET {{hostname}}/register/reject?instance=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjg3OTAzNjAxLCJleHAiOjE2ODc5OTAwMDF9.EH7pV4dMaVOSJisNGTwA7uiefuoUXacq-oWkXeY-Mtg
 
+###
+
+POST  {{hostname}}/api/contactos
+Content-Type: application/json
+
+{
+  "tratamiento": "Excmo.",
+  "nombre": "iVBORw0KGgoAAAANSUhEUgAiVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAALJSURBVDjLpVNbS1RRFP72nHGaUedmpamj5pgKSUli0eXJfOipoELs+hA+FFT44oMSRBkZ1GNC/oAoCJ+C8QaSZhdCTEU0rbyP05jTzOTczv20zkz6IBFBBxZrs9f+vv3t76zFNE3D/3zGjYXa01OuKUqtJstZqizPUnSb6+vDem29o8OpiuIFimZFEOZUQXiY09rq0WtMV6B2d98k8F2YTU4YOKjRCKTw+qQqSZcJFKPoTMty7Nu2pwRKJILY2DjiPv9TIrvGlK6uk5osvjSUl4ERGJIEmEyQlpeRmJpeUkQxaikp3mt2u4FwEPoFcDgR6u1FaHzivpGk3uDy88DiccDnBxQVkGWkFReAO3SgUONFcGAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAALJSURBVDjLpVNbS1RRFP72nHGaUedmpamj5pgKSUli0eXJfOipoELs+hA+FFT44oMSRBkZ1GNC/oAoCJ+C8QaSZhdCTEU0rbyP05jTzOTczv20zkz6IBFBBxZrs9f+vv3t76zFNE3D/3zGjYXa01OuKUqtJstZqizPUnSb6+vDem29o8OpiuIFimZFEOZUQXiY09rq0WtMV6B2d98k8F2YTU4YOKjRCKTw+qQqSZcJFKPoTMty7Nu2pwRKJILY2DjiPv9TIrvGlK6uk5osvjSUl4ERGJIEmEyQlpeRmJpeUkQxaikp3mt2u4FwEPoFcDgR6u1FaHzivpGk3uDy88DiccDnBxQVkGWkFReAO3SgUONFcG",
+  "apellidos": "Grillo",
+  "telefono": "642516 348",
+  "email": "kkkk",
+  "nif": "0000004g",
+  "sexo": "j",
+  "nacimiento": "1963-10-11",
+  "avatar": "https://randomuser.me/api/portraits/men/0.jpg",
+  "conflictivo": true,
+  "icono": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAALJSURBVDjLpVNbS1RRFP72nHGaUedmpamj5pgKSUli0eXJfOipoELs+hA+FFT44oMSRBkZ1GNC/oAoCJ+C8QaSZhdCTEU0rbyP05jTzOTczv20zkz6IBFBBxZrs9f+vv3t76zFNE3D/3zGjYXa01OuKUqtJstZqizPUnSb6+vDem29o8OpiuIFimZFEOZUQXiY09rq0WtMV6B2d98k8F2YTU4YOKjRCKTw+qQqSZcJFKPoTMty7Nu2pwRKJILY2DjiPv9TIrvGlK6uk5osvjSUl4ERGJIEmEyQlpeRmJpeUkQxaikp3mt2u4FwEPoFcDgR6u1FaHzivpGk3uDy88DiccDnBxQVkGWkFReAO3SgUONFcGYLMDxC71RTF1jTYTt2FIEPw1eMJLOCs9mAuXkqyoBGhxQF+PQFBjvtcwyY+aq7BIhyKgeCYCUqFJ636QSmJIAXAEFIEYhSimTFl1STvFkPjfYEqqmUJRFkpmokg9bJ+Z1MpgKfIICSAutAZcs6mSmMBvLCADLRYCCWfnlmBnDlAbEokCASnqcbhFQW+VRO7lPQX0CpG4GB17qCZyzc3u4mFf2WItdu864cYHIKWAv+bg5lU4V3bYxiFLHQd3CZNqT9zIynx7PLuAceTyg2OPiK9/kPqqEfeWmV+8HSqb8WvSkwue5dHUXIHkbFmQaUXmxETrYVIX6FC0YmFtlGK39rabHTm5pIVqOzqtJqzc8F3r2nNoxiaLkT1Q1NsMwOkLFvALsDAWMRPvYNzbOtszDf0FBNRI8dxYWHd9TWJE3rbzuF449egFWd3jwXvpOLkaGAxv40TJ/r6hxEco+8ue4syGVTC88TR85fsmQseSAk/KCWQ2Sdw/QsVtjfpnGipuYs9Ykr4pp3mqwZtwq2y0ajwYvImoyFVU6ReO02+9dxfnuusDkW9F3lFFakcNoKoZ6c6JPbfgHHGqU/+iLy1wAAAABJRU5ErkJggg=="
+}
