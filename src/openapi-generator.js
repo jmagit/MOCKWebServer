@@ -159,7 +159,6 @@ const swaggerDocument = {
                         "type": "string",
                         "description": "En modo depuración, información complementaria sobre el origen del error.",
                     }
-
                 }
             }
         },
@@ -644,7 +643,7 @@ const generaSwaggerSpecification = (server, dirAPIs, shutdown, dirAPIsSeguridad)
     });
     dirAPIsSeguridad = dirAPIsSeguridad || dirAPIs
     if(dirAPIsSeguridad === '/') dirAPIsSeguridad = '';
-    Object.assign(swaggerDocument.tags, swaggerDocument.tags,  apisSeguridad.tags)
+    swaggerDocument.tags = [ ...swaggerDocument.tags, ...apisSeguridad.tags ]
     for(let path in apisSeguridad.paths) {
         swaggerDocument.paths[dirAPIsSeguridad + path] = apisSeguridad.paths[path]
     }

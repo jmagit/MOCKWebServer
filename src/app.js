@@ -2,8 +2,8 @@ const fs = require('fs/promises')
 const path = require('path');
 const { createServer } = require('http');
 const express = require('express')
-const Formidable = require('formidable');
 const morgan = require('morgan')
+const multer = require('multer')
 const rfs = require('rotating-file-stream')
 const cookieParser = require('cookie-parser')
 const swaggerUi = require('swagger-ui-express');
@@ -68,65 +68,41 @@ app.use(cookieParser())
 
 // Ficheros públicos
 app.use(express.static(config.paths.PUBLIC))
+
+const upload = multer({
+  limits: { fileSize: 2 * 1024 * 1024 /* 2mb */ },
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => cb(null, 'uploads/'),
+    filename: (req, file, cb) => cb(null, file.originalname)
+  })
+})
 app.use('/files', express.static('uploads'))
 app.get('/fileupload', function (_req, res) {
   res.status(200).end(plantillaHTML('fileupload', `
     <h1>Multiple file uploads</h1>
     <form action="fileupload" method="post" enctype="multipart/form-data">
       <p>
-        <input type="file" name="filetoupload" multiple="multiple" required><br>
+        <input type="file" name="filestoupload" multiple="multiple" required><br>
         <input type="submit">
       </p>
     </form>
   `))
 })
 
-app.post('/fileupload', function (req, res) {
-  const form = new Formidable();
-  form.maxFileSize = 2000000; // 2mb
-  form.uploadDir = config.paths.UPLOADS;
-  form.keepExtensions = false;
-  form.multiples = true;
-  form.minFileSize = 1;
-
-  form.parse(req, async function (err, _fields, files) {
-    try {
-      if (err) throw err;
-      let rutas = []
-      let ficheros = []
-      if (files.filetoupload instanceof Array)
-        ficheros = files.filetoupload
-      else
-        ficheros.push(files.filetoupload);
-      for (let file of ficheros) {
-        let oldpath = file.path;
-        if (file.name) {
-          let newpath = config.paths.UPLOADS + file.name;
-          try {
-            await fs.unlink(newpath)
-            // eslint-disable-next-line no-empty
-          } catch {
-          }
-          await fs.rename(oldpath, newpath);
-          rutas.push({ url: `${app.URL_SERVER}/files/${file.name}` });
-        } else {
-          await fs.unlink(oldpath)
-        }
-      }
-      if (req.headers?.accept?.includes('application/json'))
-        res.status(200).json(rutas).end();
-      else {
-        let body = '<ol>'
-        for (let ruta of rutas) {
-          body += `<li><a href="${ruta.url}">${ruta.url}</a></li>`
-        }
-        body += '</ol>'
-        res.status(200).end(plantillaHTML('Ficheros', body));
-      }
-    } catch (error) {
-      res.status(500).json(error).end();
+app.post('/fileupload', upload.array('filestoupload'), function (req, res) {
+  try {
+    let rutas = req.files.map(f => ({ url: `${app.URL_SERVER}/files/${f.originalname}` }))
+    if (req.headers?.accept?.includes('application/json'))
+      res.status(200).json(rutas).end();
+    else {
+      res.status(200).end(plantillaHTML('Ficheros', `
+        <h1>Ficheros subidos</h1>
+        <ul>${rutas.map(r => `<li><a href="${r.url}">${r.url}</a></li>`).join('')}</ul>
+      `));
     }
-  });
+  } catch (error) {
+    res.status(500).json(generateErrorByError(500, error)).end();
+  }
 })
 
 // Cross-origin resource sharing (CORS)
@@ -175,7 +151,13 @@ app.all('/api-docs/v1/openapi.yaml', function (_req, res) {
 
 // Swaggger-ui
 const options = {
-  explorer: true
+  explorer: true,
+  swaggerOptions: {
+    url: '/api-docs/v1/openapi.json',
+    docExpansion: 'none',
+    tagsSorter: 'alpha',
+    operationsSorter: 'alpha',
+  }
 };
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(generaSwaggerSpecification(app.PUERTO, config.paths.API_REST, shutdown, config.paths.API_AUTH), options));
 
