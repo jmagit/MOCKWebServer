@@ -4,11 +4,19 @@
     // Para más información, visite: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "type": "node",
             "request": "launch",
             "name": "Run",
             "program": "${workspaceFolder}\\server.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "xsrf",
+            "program": "${workspaceFolder}\\server.js",
+            "args": ["--xsrf"]
         },
         {
             "name": "Docker Node.js Launch",

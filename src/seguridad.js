@@ -159,7 +159,7 @@ function isInvalidXsrfToken(req) {
 module.exports.useXSRF = (req, res, next) => {
     if (!req.cookies['XSRF-TOKEN'])
         generateXsrfCookie(req, res)
-    if ('POST|PUT|DELETE|PATCH'.indexOf(req.method.toUpperCase()) >= 0 && isInvalidXsrfToken(req)) {
+    if ('POST|PUT|DELETE|PATCH'.includes(req.method.toUpperCase()) && isInvalidXsrfToken(req)) {
         if (req.cookies['XSRF-TOKEN'] !== module.exports.generateXsrfToken(req))
             generateXsrfCookie(req, res)
         return next(generateError('Invalid XSRF-TOKEN', 401))
