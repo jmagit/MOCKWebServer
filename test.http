@@ -3,11 +3,17 @@
 # @name apilogin
 POST {{hostname}}/login
 Content-Type: application/json
+Cookie: XSRF-TOKEN=5TW6CW%2FYimdgr3gqB5C3w%2Bm4hN6kb8DLURthY8uE4DM%3D
 
 {
     "username": "admin", 
     "password": "P@$$w0rd" 
 }
+###
+
+GET {{hostname}}
+Authorization: {{apilogin.response.body.$.token}}
+
 ###
 
 GET {{hostname}}/auth
