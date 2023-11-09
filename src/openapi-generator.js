@@ -156,6 +156,11 @@ const swaggerDocument = {
                     "errors": {
                         "type": "array",
                         "description": "Lista de errores de validación",
+                        "items": {
+                            "type": "object",
+                            "minProperties": 1,
+                            "additionalProperties": true
+                        }
                     },
                     "source": {
                         "type": "string",

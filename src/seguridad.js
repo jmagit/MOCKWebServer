@@ -94,7 +94,7 @@ module.exports.useAuthentication = (req, res, next) => {
     } catch (err) {
         if (err.name === 'TokenExpiredError') {
             res.set('WWW-Authenticate', 'Bearer realm="MicroserviciosJWT", error="invalid_token", error_description="The access token expired"')
-            return next(generateError(`Invalid token: token expired`, 403, { expiredAt: err.expiredAt }))
+            return next(generateError(`Invalid token: token expired`, 403, [{ expiredAt: err.expiredAt }]))
         }
         return next(generateError('Invalid token', 401))
     }
@@ -354,10 +354,10 @@ router.post('/login/refresh', async function (req, res, next) {
         switch (err.name) {
             case 'TokenExpiredError':
                 res.set('WWW-Authenticate', 'Bearer realm="MicroserviciosJWT", error="invalid_token", error_description="The access token expired"')
-                rslt = generateError(`Invalid token: token expired`, 403, { expiredAt: err.expiredAt })
+                rslt = generateError(`Invalid token: token expired`, 403, [{ expiredAt: err.expiredAt }])
                 break;
             case 'NotBeforeError':
-                rslt = generateError(`Invalid token: token not active`, 403, { notBefore: err.date })
+                rslt = generateError(`Invalid token: token not active`, 403, [{ notBefore: err.date }])
                 break;
             default:
                 rslt = generateError('Invalid token', 403)
