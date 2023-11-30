@@ -1,7 +1,26 @@
 const serviciosConfig = require('../data/__servicios.json');
 const http = require('http');
+const production = process.env.NODE_ENV === 'production';
 
 module.exports.getServiciosConfig = () => serviciosConfig  // Facilitator de mock
+
+module.exports.extractURL = (req) => `${req.protocol}://${req.hostname}:${req.connection.localPort}${req.originalUrl}`
+module.exports.formatLocation = (req, id) => `${req.protocol}://${req.hostname}:${req.connection.localPort}${req.originalUrl}/${id}`
+module.exports.generateProjection = (source, projection) => {
+    const propiedades = projection.replace(/\s/g, '').split(',');
+        let target = {};
+        propiedades.forEach(item => {
+            if (source[item] != undefined) target[item] = source[item]
+        });
+        return Object.keys(target).length > 0 ? target : source;
+}
+module.exports.emptyPropertiesToNull = source => {
+    const target = { ...source }
+    Object.keys(target).forEach(prop => {
+        if(target[prop] === "") target[prop] = null 
+    })
+    return target
+}
 
 // Unificación de los errores
 
@@ -24,15 +43,17 @@ class ApplicationError extends Error {
 */
 
 class ApiError extends Error {
-    constructor(message) {
+    constructor(status, message, payload = undefined) {
         super(message);
-        this.name = "ApiError";
+        this.status = status;
+        this.name = 'ApiError';
+        if(payload) this.payload = payload
     }
 }
 module.exports.ApiError = ApiError
 
-const production = process.env.NODE_ENV === 'production';
 const details = {
+    0: { type: 'about:blank', title: 'Unknown error' },
     400: { type: 'https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1', title: 'Bad Request' },
     401: { type: 'https://datatracker.ietf.org/doc/html/rfc7235#section-3.1 ', title: 'Unauthorized' },
     402: { type: 'https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.2', title: 'Payment Required' },
@@ -54,30 +75,26 @@ const details = {
     426: { type: 'https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.15', title: 'Upgrade Required' },
     500: { type: 'https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1', title: 'Internal Server Error' },
 }
-
-const generateError = (detail, status = 500, errors = undefined, source = undefined) => {
-    const title = http.STATUS_CODES[status] || '(desconocido)'
-    let error = new ApiError(title)
-    error.payload = { type: details[status].type || 'about:blank', title, status }
-    if (detail && detail !== title) error.payload.detail = detail
-    if (errors) error.payload.errors = errors
-    if (source) error.payload.source = source
-    return error
+module.exports.problemDetails = (req, status = 400, detail, errors = undefined, source = undefined) => {
+    const problem = Object.assign({}, details[status] ?? details[0], { status, instance: req.originalUrl })
+    if(detail && detail !== problem.title) problem.detail = detail
+    if(errors) problem.errors = errors
+    if(!production && source) problem.source = source
+    return problem
 }
-
-module.exports.generateError = generateError
-module.exports.generateErrorByStatus = (status = 500) => {
-    return generateError(http.STATUS_CODES[status] || '(desconocido)', status)
-}
-module.exports.generateErrorByError = (error, status = 500) => {
+module.exports.generateError = (res, detail, status = 500, errors = undefined, source = undefined) => 
+    new ApiError(status, http.STATUS_CODES[status], module.exports.problemDetails(res, status, detail, errors, source))
+module.exports.generateErrorByStatus = (res, status = 500) => module.exports.generateError(res, http.STATUS_CODES[status], status)
+module.exports.generateErrorByError = (req, error, status = 500) => {
     switch (error.name) {
         case 'dbJSONError':
-            return generateError(error.message, error.code)
+            return module.exports.generateError(req, error.message, error.code)
         case 'SequelizeValidationError':
         case 'SequelizeUniqueConstraintError':
-            return generateError('One or more validation errors occurred.', 400,
-                Object.assign({}, ...error.errors.map(item => ({ [item.path]: item.message }))))
+        case 'Bad Request': // OpenApiValidator
+            return module.exports.generateError(req, 'One or more validation errors occurred.', 400,
+                ...error.errors.map(item => ({ [item.path]: item.message })), error.trace ?? error.stack)
         default:
-            return generateError(error.message, error.statusCode || error.status || status, error.errors, production ? null : (error.trace || error.stack))
+            return module.exports.generateError(req, error.message, error.statusCode ?? error.status ?? status, error.errors, error.trace ?? error.stack)
     }
 }

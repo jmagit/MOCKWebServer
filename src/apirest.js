@@ -2,7 +2,7 @@ const express = require('express');
 const config = require('../config')
 const DbJSON = require('./dbJSON')
 const { useAuthentication, onlyAuthenticated, onlyInRole, readOnly } = require('./seguridad')
-const { generateError, generateErrorByStatus, generateErrorByError, getServiciosConfig } = require('./utils');
+const { formatLocation, generateError, generateErrorByStatus, generateErrorByError, getServiciosConfig } = require('./utils');
 
 const router = express.Router();
 const serviciosConfig = getServiciosConfig();
@@ -61,7 +61,7 @@ apis.getAll = async (servicio, req, res, next) => {
     }
     res.json(list)
   } catch (error) {
-    next(generateErrorByError(error))
+    next(generateErrorByError(req, error))
   }
 }
 apis.getOne = async (servicio, req, res, next) => {
@@ -71,18 +71,18 @@ apis.getOne = async (servicio, req, res, next) => {
     if (element) {
       res.status(200).json(element)
     } else {
-      return next(generateErrorByStatus(404))
+      return next(generateErrorByStatus(req, 404))
     }
   } catch (err) {
-    next(generateErrorByError(err))
+    next(generateErrorByError(req, err))
   }
 }
 apis.post = async (servicio, req, res, next) => {
   if (!req.is('json') || !req.body) {
-    return next(generateErrorByStatus(406))
+    return next(generateErrorByStatus(req, 406))
   }
   if (Object.keys(req.body).length == 0) {
-    return next(generateError('Faltan los datos.', 400))
+    return next(generateError(req, 'Faltan los datos.', 400))
   }
   try {
     await servicio.db.load()
@@ -91,38 +91,38 @@ apis.post = async (servicio, req, res, next) => {
       element[servicio.pk] = 0
     }
     element = await servicio.db.add(element, true);
-    res.status(201).header('location', `${req.protocol}://${req.hostname}:${req.connection.localPort}${req.originalUrl}/${element[servicio.pk]}`).end()
+    res.status(201).header('location', formatLocation(req, element[servicio.pk])).end()
   } catch (error) {
-    next(generateErrorByError(error))
+    next(generateErrorByError(req, error))
   }
 }
 apis.put = async (servicio, req, res, next) => {
   if (!req.is('json') || !req.body) {
-    return next(generateErrorByStatus(406))
+    return next(generateErrorByStatus(req, 406))
   }
   let element = req.body
   if (req.body[servicio.pk] == undefined) {
     if (Object.keys(req.body).length == 0) {
-      return next(generateError('Faltan los datos.', 400))
+      return next(generateError(req, 'Faltan los datos.', 400))
     }
     element[servicio.pk] = req.params.id
   } else if (req.body[servicio.pk] != req.params.id) {
-    return next(generateError('Invalid identifier', 400))
+    return next(generateError(req, 'Invalid identifier', 400))
   }
   try {
     await servicio.db.load()
     element = await servicio.db.update(element, true);
-    res.status(200).json(element).end()
+    res.sendStatus(204)
   } catch (error) {
-    next(generateErrorByError(error))
+    next(generateErrorByError(req, error))
   }
 }
 apis.putWithoutId = async (servicio, req, res, next) => {
   if (!req.is('json') || !req.body) {
-    return next(generateErrorByStatus(406))
+    return next(generateErrorByStatus(req, 406))
   }
   if (req.body[servicio.pk] == undefined) {
-    return next(generateError('Invalid identifier', 400))
+    return next(generateError(req, 'Invalid identifier', 400))
   }
   let element = req.body
   try {
@@ -130,18 +130,18 @@ apis.putWithoutId = async (servicio, req, res, next) => {
     element = await servicio.db.update(element, true);
     res.status(200).json(element).end()
   } catch (error) {
-    next(generateErrorByError(error))
+    next(generateErrorByError(req, error))
   }
 }
 apis.patch = async (servicio, req, res, next) => {
   if (!req.is('json') || !req.body) {
-    return next(generateErrorByStatus(406))
+    return next(generateErrorByStatus(req, 406))
   }
   if (Object.keys(req.body).length == 0) {
-    return next(generateError('Faltan los datos.', 400))
+    return next(generateError(req, 'Faltan los datos.', 400))
   }
   if (req.body[servicio.pk] != undefined && req.body[servicio.pk] != req.params.id) {
-    return next(generateError('Invalid identifier', 400))
+    return next(generateError(req, 'Invalid identifier', 400))
   }
   let partial = req.body
   try {
@@ -149,7 +149,7 @@ apis.patch = async (servicio, req, res, next) => {
     let element = await servicio.db.change(req.params.id, partial, true);
     res.status(200).json(element)
   } catch (error) {
-    next(generateErrorByError(error))
+    next(generateErrorByError(req, error))
   }
 }
 apis.delete = async (servicio, req, res, next) => {
@@ -158,7 +158,7 @@ apis.delete = async (servicio, req, res, next) => {
     await servicio.db.delete(req.params.id, true)
     res.sendStatus(204)
   } catch (error) {
-    next(generateErrorByError(error))
+    next(generateErrorByError(req, error))
   }
 }
 apis.options = async (_servicio, _req, res) => {

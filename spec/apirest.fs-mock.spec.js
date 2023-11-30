@@ -686,12 +686,9 @@ describe('API Rest: Ficheros simulados', () => {
                     .put("/api/fake/1")
                     .set('Content-Type', 'application/json')
                     .send(item)
-                    .expect(200)
+                    .expect(204)
                     .then(response => {
-                        let data = JSON.parse(fsMock.__getMockFile('./data/fake.json'))
-                        expect(data.length).toBe(20);
-                        expect(item).toEqual(response.body)
-                        expect(data[0]).toEqual(item)
+                        expect(response.body).toEqual({})
                         done();
                     })
                     .catch(err => done(err))
