@@ -53,6 +53,20 @@ Se han incorporado una serie de parámetros (querystring) para ampliar el contro
 }`
 * **_rows=*número*:** Número de filas por página, por defecto 20, si se omite pero aparece el parámetro *_page*.
 
+### Respuestas de error
+
+Las respuesta de error implementan el estándar *Problem Details for HTTP APIs* ([RFC 7807](https://datatracker.ietf.org/doc/html/rfc7807)).
+
+Los detalles del problema puede tener las siguientes propiedades:
+
+* **"type"** (cadena): URI que identifica el tipo de problema y proporciona documentación legible por humanos para el tipo de problema. El valor "about:blank" (predeterminado) indica que el problema no tiene semántica adicional a la del código de estado HTTP.
+* **"title"** (cadena): Breve resumen legible por humanos del problema escribe. No cambia de una ocurrencia a otra del mismo problema. Con "type": "about:blank", coincide con la versión textual del status.
+* **"status"** (número): Código de estado HTTP (por conveniencia, coincide con el código de estado de la respuesta).
+* **"detail"** (cadena): Explicación legible por humanos específica de la ocurrencia concreta del problema.
+* **"instance"** (cadena): URI de referencia que identifica el origen de la ocurrencia del problema.
+* **"errors"** (array): Lista de errores de validación en pares propiedad/literal de la restricción incumplida.
+* **"source"** (cadena): En modo depuración, información complementaria sobre el origen del error.
+
 ### Para añadir nuevos servicios
 
 1. En el subdirectorio `/data`, añadir un fichero .json con el array de objetos con los valores iniciales del resource. Para generar el fichero se pueden utilizar herramientas de generación automatizada de juegos de datos como <http://www.generatedata.com/?lang=es> o <https://www.mockaroo.com/>.

@@ -89,7 +89,7 @@ app.get('/fileupload', function (_req, res) {
   `))
 })
 
-app.post('/fileupload', upload.array('filestoupload'), function (req, res) {
+app.post('/fileupload', upload.array('filestoupload'), function (req, res, next) {
   try {
     let rutas = req.files.map(f => ({ url: `${app.URL_SERVER}/files/${f.originalname}` }))
     if (req.headers?.accept?.includes('application/json'))
@@ -101,7 +101,7 @@ app.post('/fileupload', upload.array('filestoupload'), function (req, res) {
       `));
     }
   } catch (error) {
-    res.status(500).json(generateErrorByError(500, error)).end();
+    next(generateErrorByError(req, error, 500))
   }
 })
 
@@ -318,10 +318,22 @@ app.get('/*', async function (req, res, next) {
 
 // eslint-disable-next-line no-unused-vars
 app.use(function (err, req, res, _next) {
-  // console.error('ERROR: %s', req.originalUrl, err)
-  let error = err.payload ? err : generateErrorByError(err)
-  error.payload.instance = req.originalUrl
-  res.status(error.payload.status).json(error.payload);
+  // // console.error('ERROR: %s', req.originalUrl, err)
+  // let error = err.payload ? err : generateErrorByError(req, err)
+  // error.payload.instance = req.originalUrl
+  // res.status(error.payload.status).json(error.payload);
+
+  const status = err.status ?? err.statusCode ??  500
+  if (req.accepts('application/json') || req.originalUrl.startsWith('/api/')) {
+    res.status(status).json(err.payload ? err.payload : generateErrorByError(req, err, status).payload)
+    return
+  }
+  // render the error page
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.status(status);
+  res.render('error');
+
 });
 
 module.exports = app;

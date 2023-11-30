@@ -417,14 +417,7 @@ const generaPut = (servicio) => {
                 "required": true,
             },
             "responses": {
-                "200": {
-                    "description": "OK",
-                    "content": {
-                        "application/json": {
-                            "schema": { "$ref": `#/components/schemas/${servicio.model}Projection` }
-                        }
-                    }
-                },
+                "204": { "$ref": "#/components/responses/NoContent" },
                 "400": { "$ref": "#/components/responses/BadRequest" },
                 "401": { "$ref": "#/components/responses/Unauthorized" },
                 "403": { "$ref": "#/components/responses/Forbidden" },
