@@ -14,6 +14,9 @@ module.exports.createWSServer = app => {
         legacyHeaders: false, // Disable the `X-RateLimit-*` headers
     }))
 
+    app.get('/ws/xss.min.js', (_req, res) => {
+        res.sendFile(config.paths.APP_ROOT + '/node_modules/xss/dist/xss.min.js');
+    });
     app.get('/ws/chat', (_req, res) => {
         res.sendFile(config.paths.APP_ROOT + '/static/chat.html');
     });

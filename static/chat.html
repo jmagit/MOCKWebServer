@@ -367,6 +367,7 @@
       </div>
     </form>
   </section>
+  <script src="xss.min.js"></script>
   <script>
     let socket
     let userList = document.querySelector('aside ul');
@@ -501,8 +502,9 @@
           frase += palabras[Math.floor(Math.random() * (palabras.length - 1))] + ' '
         input.value = frase.trim()
       }
-      send(input.value);
-      socket.send(input.value);
+      const clean = filterXSS(input.value);
+      send(clean);
+      socket.send(clean);
       input.value = '';
     });
   </script>
