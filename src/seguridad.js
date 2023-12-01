@@ -19,10 +19,10 @@ const RefreshTokenHMAC256 = {
     generar: (usuario) => {
         return jwt.sign({
             usr: usuario[config.security.PROP_USERNAME],
-        }, config.security.APP_SECRET, { issuer: 'MicroserviciosJWT', audience: 'authorization', expiresIn: config.security.EXPIRACION_MIN * config.security.REFRESH_FACTOR + 'm', notBefore: config.security.EXPIRACION_MIN + 'm' })
+        }, config.security.REFRESH_KEY, { issuer: 'MicroserviciosJWT', audience: 'authorization', expiresIn: config.security.EXPIRACION_MIN * config.security.REFRESH_FACTOR + 'm', notBefore: config.security.EXPIRACION_MIN + 'm' })
     },
     decode: (token) => {
-        return jwt.verify(token, config.security.APP_SECRET);
+        return jwt.verify(token, config.security.REFRESH_KEY);
     }
 }
 
@@ -45,10 +45,10 @@ const CreatedTokenHMAC256 = {
     generar: (usuario) => {
         return jwt.sign({
             usr: usuario[config.security.PROP_USERNAME],
-        }, config.security.APP_SECRET, { expiresIn: '24h' })
+        }, config.security.REFRESH_KEY, { expiresIn: '24h' })
     },
     decode: (token) => {
-        return jwt.verify(token, config.security.APP_SECRET);
+        return jwt.verify(token, config.security.REFRESH_KEY);
     }
 }
 module.exports.CreatedTokenHMAC256 = CreatedTokenHMAC256;
@@ -61,13 +61,14 @@ module.exports.generarTokenScheme = (usuario) => {
 
 // Middleware: Cross-origin resource sharing (CORS)
 module.exports.useCORS = (req, res, next) => {
-    let origen = req.header("Origin")
-    if (!origen) origen = '*'
+    let origen = req.header("origin")
+    if (/*req.method !== 'OPTIONS' ||*/ !origen || origen === '*') {
+        return next()
+    }
     res.header('Access-Control-Allow-Origin', origen)
     res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, authorization, X-Requested-With, X-XSRF-TOKEN')
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
-    if (origen !== '*')
-        res.header('Access-Control-Allow-Credentials', 'true')
+    res.header('Access-Control-Allow-Credentials', 'true')
     next()
 }
 

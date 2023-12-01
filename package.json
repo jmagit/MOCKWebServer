@@ -33,6 +33,7 @@
     "swagger-ui-express": "^5.0.0",
     "validator": "^13.11.0",
     "ws": "^8.14.2",
+    "xss": "^1.0.14",
     "yaml": "^2.3.4"
   },
   "devDependencies": {
