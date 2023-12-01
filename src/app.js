@@ -10,6 +10,7 @@ const swaggerUi = require('swagger-ui-express');
 const YAML = require('yaml')
 const OpenApiValidator = require('express-openapi-validator');
 const validator = require('validator');
+const xss = require('xss')
 const config = require('../config')
 const { generaSwaggerSpecification } = require('./openapi-generator');
 const { generateErrorByError } = require('./utils')
@@ -95,10 +96,10 @@ app.post('/fileupload', upload.array('filestoupload'), function (req, res, next)
     if (req.headers?.accept?.includes('application/json'))
       res.status(200).json(rutas).end();
     else {
-      res.status(200).end(plantillaHTML('Ficheros', `
+      res.status(200).end(plantillaHTML('Ficheros', xss(`
         <h1>Ficheros subidos</h1>
         <ul>${rutas.map(r => `<li><a href="${r.url}">${r.url}</a></li>`).join('')}</ul>
-      `));
+      `)));
     }
   } catch (error) {
     next(generateErrorByError(req, error, 500))
@@ -205,7 +206,7 @@ app.all('/form', function (req, res) {
   </table>
   ${volver}
   `
-  res.status(200).end(plantillaHTML('Petición', rslt))
+  res.status(200).end(plantillaHTML('Petición', xss(rslt)))
 })
 
 // Eco de la petición

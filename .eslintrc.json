@@ -5,14 +5,16 @@
         // "plugin:jest/all"
     ],
     "env": {
-        "jest/globals": true
+        "jest/globals": true,
+        "commonjs": true,
+        "node": true,
+        "es2021": true
     },
     "plugins": [
         "jest"
     ],
     "parserOptions": {
-        // Only ESLint 6.2.0 and later support ES2020.
-        "ecmaVersion": 2020
+        "ecmaVersion": "latest"
     },
     "rules": {
         "node/exports-style": [

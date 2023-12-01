@@ -1,8 +1,9 @@
 const os = require('os');
 const rateLimit = require('express-rate-limit')
 const { WebSocketServer, WebSocket } = require('ws');
-const { faker } = require('@faker-js/faker/locale/es');
+const { Faker, faker, es } = require('@faker-js/faker');
 const config = require('../config')
+const fakerES = new Faker({ locale: [es], });
 
 module.exports.createWSServer = app => {
     // limitación de velocidad para evitar ataques de denegación de servicio
@@ -124,8 +125,12 @@ module.exports.createWSServer = app => {
                 if (!autoChatInterval)
                     autoChatInterval = setInterval(function () {
                         const clientRnd = parseInt(Math.random() * 100)
-                        // console.log('chat interval: ' + faker.company.buzzPhrase());
+                        // console.log('chat interval: ' + fakerES.company.buzzPhrase());
+                        try {
+                        broadcastExcludeById({ clientId: clientRnd, message: `${clientRnd % 2 ? fakerES.company.catchPhrase() : fakerES.hacker.phrase()}` })
+                        } catch {
                         broadcastExcludeById({ clientId: clientRnd, message: `${clientRnd % 2 ? faker.company.catchPhrase() : faker.hacker.phrase()}` })
+                        }
                     }, 2000);
                 break;
             case 'chat':
