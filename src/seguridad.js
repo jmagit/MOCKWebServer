@@ -125,7 +125,7 @@ module.exports.onlyInRole = (roles) => (req, res, next) => {
         return next(generateErrorByStatus(req, 403))
     }
 }
-module.exports.onlySelf = (req, res, next) => {
+module.exports.onlySelf = (_req, res, next) => {
     res.locals.onlySelf = true;
     next()
 }

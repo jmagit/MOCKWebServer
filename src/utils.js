@@ -75,7 +75,7 @@ const details = {
     426: { type: 'https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.15', title: 'Upgrade Required' },
     500: { type: 'https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1', title: 'Internal Server Error' },
 }
-module.exports.problemDetails = (req, status = 400, detail, errors = undefined, source = undefined) => {
+module.exports.problemDetails = (req, status = 400, detail = undefined, errors = undefined, source = undefined) => {
     const problem = Object.assign({}, details[status] ?? details[0], { status, instance: req.originalUrl })
     if(detail && detail !== problem.title) problem.detail = detail
     if(errors) problem.errors = errors
