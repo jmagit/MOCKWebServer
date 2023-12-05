@@ -70,12 +70,14 @@ app.use(cookieParser())
 // Ficheros públicos
 app.use(express.static(config.paths.PUBLIC))
 
-const upload = multer({
-  limits: { fileSize: 2 * 1024 * 1024 /* 2mb */ },
-  storage: multer.diskStorage({
-    destination: (req, file, cb) => cb(null, 'uploads/'),
-    filename: (req, file, cb) => cb(null, file.originalname)
+const diskStorage = multer.diskStorage({
+    destination: (_req, _file, cb) => cb(null, 'uploads/'),
+    filename: (_req, file, cb) => cb(null, file.originalname),
+    limits: { fileSize: 100000 /* 2 * 1024 * 1024 /* 2mb */ },
   })
+const upload = multer({
+  storage: diskStorage,
+  limits: { fileSize: 100000 /* 2 * 1024 * 1024 /* 2mb */ },
 })
 app.use('/files', express.static('uploads'))
 app.get('/fileupload', function (_req, res) {
@@ -113,9 +115,6 @@ app.use(seguridad.useCORS)
 if (VALIDATE_XSRF_TOKEN) {
   app.use(seguridad.useXSRF)
 }
-
-// Autenticación
-// app.use(seguridad.useAuthentication)
 
 // Control de acceso
 // app.use(DIR_API_REST, seguridad)
@@ -319,11 +318,6 @@ app.get('/*', async function (req, res, next) {
 
 // eslint-disable-next-line no-unused-vars
 app.use(function (err, req, res, _next) {
-  // // console.error('ERROR: %s', req.originalUrl, err)
-  // let error = err.payload ? err : generateErrorByError(req, err)
-  // error.payload.instance = req.originalUrl
-  // res.status(error.payload.status).json(error.payload);
-
   const status = err.status ?? err.statusCode ??  500
   if (req.accepts('application/json') || req.originalUrl.startsWith('/api/')) {
     res.status(status).json(err.payload ? err.payload : generateErrorByError(req, err, status).payload)

@@ -2,6 +2,7 @@ const os = require('os');
 const rateLimit = require('express-rate-limit')
 const { WebSocketServer, WebSocket } = require('ws');
 const { Faker, faker, es } = require('@faker-js/faker');
+const { randomInt } = require('crypto');
 const config = require('../config')
 const fakerES = new Faker({ locale: [es], });
 
@@ -31,6 +32,10 @@ module.exports.createWSServer = app => {
     });
 
     const wss = new WebSocketServer({ server: app.server });
+    const generaAleatorio = (rango = 100) => randomInt(0, rango);
+    const dashboard = { count: 0, interval: null }
+    const resources = { count: 0, interval: null }
+    const autoChat = { count: 0, interval: null }
 
     function broadcastInclude(ws, data, isBinary) {
         wss.clients.forEach(client => {
@@ -54,10 +59,90 @@ module.exports.createWSServer = app => {
         });
     }
 
-    let dashboardCount = 0;
-    let dashboardInterval = null;
-    let autoChatCount = 0;
-    let autoChatInterval = null;
+    function wssDashboard(ws) {
+        if (dashboard.count) return;
+        console.log('stating client interval');
+        dashboard.count++;
+        dashboard.interval = setInterval(function () {
+            broadcastInclude(ws, JSON.stringify(['developer', 'staging', 'production 1', 'production 2']
+                .map(srv => ({
+                    name: srv,
+                    cpu: generaAleatorio(),
+                    memory: generaAleatorio(),
+                    disk: generaAleatorio(),
+                    network: generaAleatorio(),
+                }))), false);
+        }, 1000);
+        ws.on('close', function () {
+            dashboard.count--;
+            if (!dashboard.count && dashboard.interval) {
+                console.log('stopping client interval');
+                clearInterval(dashboard.interval);
+                dashboard.interval = null;
+            }
+        });
+    }
+
+    function wssResources(ws) {
+        if (resources.count) return;
+        console.log('stating client interval');
+        resources.count++;
+        resources.interval = setInterval(function () {
+            broadcastInclude(ws, JSON.stringify({ memory: process.memoryUsage(), cpu: os.cpus() }), false);
+        }, 500);
+        ws.on('close', function () {
+            resources.count--;
+            if (!resources.count && resources.interval) {
+                console.log('stopping client interval');
+                clearInterval(resources.interval);
+                resources.interval = null;
+            }
+        });
+    }
+
+    function wssChat(ws, clientId, channel) {
+        ws.clientId = clientId;
+        ws.send(JSON.stringify({ clientId: 0, message: `Te has conectado al canal ${channel} como ${clientId}` }));
+        ws.on('message', function (message, isBinary) {
+            console.log(`Received message of ${ws.clientId} to ${ws.channel}: ${message}`);
+            // broadcastInclude(ws, message, isBinary)
+            broadcastExclude(ws, JSON.stringify({ clientId: ws.clientId, message: `${message}` }), isBinary);
+        });
+        ws.on('close', () => console.log('stopping client chat'));
+    }
+
+    function wssAutoChat(ws, clientId, channel) {
+        if (autoChat.count) return;
+        ws.clientId = clientId;
+        autoChat.count++;
+        ws.send(JSON.stringify({ clientId: 0, message: `Te has conectado al canal ${channel} como ${clientId}` }));
+        ws.on('message', function (message, isBinary) {
+            console.log(`Received message of ${ws.clientId} to ${ws.channel}: ${message}`);
+            broadcastExclude(ws, JSON.stringify({ clientId: ws.clientId, message: `${message}` }), isBinary);
+        });
+        ws.on('close', function () {
+            if (autoChat.count) {
+                autoChat.count--;
+            } else {
+                console.log('stopping client chat');
+                if (autoChat.interval) {
+                    console.log('stopping char interval');
+                    clearInterval(autoChat.interval);
+                    autoChat.interval = null;
+                }
+            }
+        });
+        if (!autoChat.interval)
+            autoChat.interval = setInterval(function () {
+                const clientRnd = generaAleatorio();
+                try {
+                    broadcastExcludeById({ clientId: clientRnd, message: `${clientRnd % 2 ? fakerES.company.catchPhrase() : fakerES.hacker.phrase()}` });
+                } catch {
+                    broadcastExcludeById({ clientId: clientRnd, message: `${clientRnd % 2 ? faker.company.catchPhrase() : faker.hacker.phrase()}` });
+                }
+            }, 2000);
+    }
+
     wss.on('connection', function (ws, req) {
         let path = req.url.toLocaleLowerCase().split('/')
         let index = path[1] === 'ws' ? 2 : 1
@@ -70,85 +155,19 @@ module.exports.createWSServer = app => {
                     ws.channel = clientId;
                 break;
             case 'resources':
-                if (dashboardCount) break;
-                console.log('stating client interval');
-                dashboardCount++
-                dashboardInterval = setInterval(function () {
-                    broadcastInclude(ws, JSON.stringify({ memory: process.memoryUsage(), cpu: os.cpus() }), false);
-                }, 500);
-                ws.on('close', function () {
-                    dashboardCount--
-                    if (!dashboardCount && dashboardInterval) {
-                        console.log('stopping client interval');
-                        clearInterval(dashboardInterval);
-                        dashboardInterval = null;
-                    }
-                });
+                wssResources(ws);
                 break;
             case 'dashboard':
-                if (dashboardCount) break;
-                console.log('stating client interval');
-                dashboardCount++
-                dashboardInterval = setInterval(function () {
-                    broadcastInclude(ws, JSON.stringify(['developer', 'staging', 'production 1', 'production 2']
-                        .map(srv => ({
-                            name: srv,
-                            cpu: Math.floor(Math.random() * 100),
-                            memory: Math.floor(Math.random() * 100),
-                            disk: Math.floor(Math.random() * 100),
-                            network: Math.floor(Math.random() * 100),
-                        }))), false);
-                }, 1000);
-                ws.on('close', function () {
-                    dashboardCount--
-                    if (!dashboardCount && dashboardInterval) {
-                        console.log('stopping client interval');
-                        clearInterval(dashboardInterval);
-                        dashboardInterval = null;
-                    }
-                });
+                wssDashboard(ws);
                 break;
             case 'auto-chat':
-                ws.clientId = clientId
-                autoChatCount++
-                ws.send(JSON.stringify({ clientId: 0, message: `Te has conectado al canal ${channel} como ${clientId}` }));
-                ws.on('message', function (message, isBinary) {
-                    console.log(`Received message of ${ws.clientId} to ${ws.channel}: ${message}`);
-                    broadcastExclude(ws, JSON.stringify({ clientId: ws.clientId, message: `${message}` }), isBinary)
-                });
-                ws.on('close', function () {
-                    if (autoChatCount) autoChatCount--
-                    console.log('stopping client chat')
-                    if (!autoChatCount && autoChatInterval) {
-                        console.log('stopping char interval');
-                        clearInterval(autoChatInterval);
-                        autoChatInterval = null;
-                    }
-                });
-                if (!autoChatInterval)
-                    autoChatInterval = setInterval(function () {
-                        const clientRnd = parseInt(Math.random() * 100)
-                        // console.log('chat interval: ' + fakerES.company.buzzPhrase());
-                        try {
-                        broadcastExcludeById({ clientId: clientRnd, message: `${clientRnd % 2 ? fakerES.company.catchPhrase() : fakerES.hacker.phrase()}` })
-                        } catch {
-                        broadcastExcludeById({ clientId: clientRnd, message: `${clientRnd % 2 ? faker.company.catchPhrase() : faker.hacker.phrase()}` })
-                        }
-                    }, 2000);
+                wssAutoChat(ws, clientId, channel);
                 break;
             case 'chat':
-                ws.clientId = clientId
-                ws.send(JSON.stringify({ clientId: 0, message: `Te has conectado al canal ${channel} como ${clientId}` }));
-                ws.on('message', function (message, isBinary) {
-                    console.log(`Received message of ${ws.clientId} to ${ws.channel}: ${message}`);
-                    // broadcastInclude(ws, message, isBinary)
-                    broadcastExclude(ws, JSON.stringify({ clientId: ws.clientId, message: `${message}` }), isBinary)
-                });
-                ws.on('close', () => console.log('stopping client chat'));
+                wssChat(ws, clientId, channel);
                 break;
             default:
                 ws.on('message', function (message, isBinary) {
-                    // console.log(`Received message of ${ws.clientId} to ${ws.channel}: ${message}`);
                     broadcastInclude(ws, message, isBinary)
                 });
                 ws.on('close', () => console.log('stopping client chat'));

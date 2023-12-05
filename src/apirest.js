@@ -111,7 +111,7 @@ apis.put = async (servicio, req, res, next) => {
   }
   try {
     await servicio.db.load()
-    element = await servicio.db.update(element, true);
+    await servicio.db.update(element, true);
     res.sendStatus(204)
   } catch (error) {
     next(generateErrorByError(req, error))
