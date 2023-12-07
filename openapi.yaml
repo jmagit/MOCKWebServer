@@ -1423,6 +1423,8 @@ paths:
                 $ref: "#/components/schemas/RespuestaLogin"
         "400":
           $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
   /api/login/signature:
     get:
       tags:
@@ -1533,6 +1535,8 @@ paths:
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
         "404":
@@ -1581,6 +1585,8 @@ paths:
           $ref: "#/components/responses/NoContent"
         "400":
           $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
   /api/register/reject:
     get:
       tags:
@@ -1598,6 +1604,8 @@ paths:
           $ref: "#/components/responses/NoContent"
         "400":
           $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
   /api/auth:
     get:
       tags:
@@ -1651,6 +1659,8 @@ paths:
           $ref: "#/components/responses/NoContent"
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
         "404":
@@ -2529,9 +2539,6 @@ components:
       title: Estado Registro
       description: Credenciales de autenticación
       type: object
-      required:
-        - username
-        - password
       properties:
         status:
           type: string
