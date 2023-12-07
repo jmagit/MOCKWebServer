@@ -7,6 +7,7 @@ module.exports.getServiciosConfig = () => serviciosConfig  // Facilitator de moc
 module.exports.extractURL = (req) => `${req.protocol}://${req.hostname}:${req.connection.localPort}${req.originalUrl}`
 module.exports.formatLocation = (req, id) => `${req.protocol}://${req.hostname}:${req.connection.localPort}${req.originalUrl}/${id}`
 module.exports.generateProjection = (source, projection) => {
+    if(!source || !projection) return source
     const propiedades = projection.replace(/\s/g, '').split(',');
     let target = {};
     const fields = Object.keys(source)
@@ -16,6 +17,7 @@ module.exports.generateProjection = (source, projection) => {
     return Object.keys(target).length > 0 ? target : source;
 }
 module.exports.emptyPropertiesToNull = source => {
+    if(!source) return source
     const target = { ...source }
     Object.keys(target).forEach(prop => {
         if (target[prop] === '') target[prop] = null
