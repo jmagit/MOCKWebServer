@@ -381,13 +381,13 @@ describe('Seguridad', () => {
                 it('POST: Sin body', done => {
                     request(app)
                         .post(`${config.paths.API_AUTH}/login`)
-                        .expect(400, done)
+                        .expect(415, done)
                 });
                 it('POST: Usuario invalido: username', async () => {
                     await request(app)
                         .post(`${config.paths.API_AUTH}/login`)
                         .set('Content-Type', 'application/json')
-                        .send({ "username": "admina", "password": contraseña })
+                        .send({ "username": "noexiste@kk.kk", "password": contraseña })
                         .expect(200)
                         .expect('Content-Type', /json/)
                         .expect(response => expect(response.body.success).toBeFalsy())

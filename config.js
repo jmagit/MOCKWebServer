@@ -7,7 +7,7 @@ module.exports = {
     },
     paths: {
         API_REST: '/api',
-        API_AUTH: '/api', // DIR_API_REST
+        API_AUTH: '', // DIR_API_REST
         PUBLIC: './public',
         UPLOADS: './uploads/',
         DATA: './data/',
