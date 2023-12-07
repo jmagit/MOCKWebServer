@@ -121,7 +121,7 @@ module.exports.createWSServer = app => {
             broadcastExclude(ws, JSON.stringify({ clientId: ws.clientId, message: `${message}` }), isBinary);
         });
         ws.on('close', function () {
-            if (autoChat.count) {
+            if (autoChat.count > 1) {
                 autoChat.count--;
             } else {
                 console.log('stopping client chat');
@@ -129,6 +129,7 @@ module.exports.createWSServer = app => {
                     console.log('stopping char interval');
                     clearInterval(autoChat.interval);
                     autoChat.interval = null;
+                    autoChat.count = 0;
                 }
             }
         });

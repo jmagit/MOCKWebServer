@@ -70,13 +70,12 @@ app.use(cookieParser())
 // Ficheros públicos
 app.use(express.static(config.paths.PUBLIC))
 
-const diskStorage = multer.diskStorage({
+const upload = multer({
+  storage: {
     destination: (_req, _file, cb) => cb(null, 'uploads/'),
     filename: (_req, file, cb) => cb(null, file.originalname),
     limits: { fileSize: 100000 /* 2 * 1024 * 1024 /* 2mb */ },
-  })
-const upload = multer({
-  storage: diskStorage,
+  },
   limits: { fileSize: 100000 /* 2 * 1024 * 1024 /* 2mb */ },
 })
 app.use('/files', express.static('uploads'))

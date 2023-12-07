@@ -45,7 +45,14 @@ describe("Test the root path", () => {
       .expect(200)
       .end(done)
   });
-  it("POST /fileupload", done => {
+  it("POST /fileupload - HTML", done => {
+    request(app)
+      .post("/fileupload")
+      .accept('text/html')
+      .expect(500)
+      .end(done)
+  });
+  it("POST /fileupload - JSON", done => {
     request(app)
       .post("/fileupload")
       .expect(500)
