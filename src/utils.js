@@ -8,16 +8,17 @@ module.exports.extractURL = (req) => `${req.protocol}://${req.hostname}:${req.co
 module.exports.formatLocation = (req, id) => `${req.protocol}://${req.hostname}:${req.connection.localPort}${req.originalUrl}/${id}`
 module.exports.generateProjection = (source, projection) => {
     const propiedades = projection.replace(/\s/g, '').split(',');
-        let target = {};
-        propiedades.forEach(item => {
-            if (source[item] != undefined) target[item] = source[item]
-        });
-        return Object.keys(target).length > 0 ? target : source;
+    let target = {};
+    const fields = Object.keys(source)
+    propiedades.forEach(item => {
+        if (fields.includes(item)) target[item] = source[item]
+    });
+    return Object.keys(target).length > 0 ? target : source;
 }
 module.exports.emptyPropertiesToNull = source => {
     const target = { ...source }
     Object.keys(target).forEach(prop => {
-        if(target[prop] === "") target[prop] = null 
+        if (target[prop] === '') target[prop] = null
     })
     return target
 }
@@ -47,7 +48,7 @@ class ApiError extends Error {
         super(message);
         this.status = status;
         this.name = 'ApiError';
-        if(payload) this.payload = payload
+        if (payload) this.payload = payload
     }
 }
 module.exports.ApiError = ApiError
@@ -77,12 +78,12 @@ const details = {
 }
 module.exports.problemDetails = (req, status = 400, detail = undefined, errors = undefined, source = undefined) => {
     const problem = Object.assign({}, details[status] ?? details[0], { status, instance: req.originalUrl })
-    if(detail && detail !== problem.title) problem.detail = detail
-    if(errors) problem.errors = errors
-    if(!production && source) problem.source = source
+    if (detail && detail !== problem.title) problem.detail = detail
+    if (errors) problem.errors = errors
+    if (!production && source) problem.source = source
     return problem
 }
-module.exports.generateError = (res, detail, status = 500, errors = undefined, source = undefined) => 
+module.exports.generateError = (res, detail, status = 500, errors = undefined, source = undefined) =>
     new ApiError(status, http.STATUS_CODES[status], module.exports.problemDetails(res, status, detail, errors, source))
 module.exports.generateErrorByStatus = (res, status = 500) => module.exports.generateError(res, http.STATUS_CODES[status], status)
 module.exports.generateErrorByError = (req, error, status = 500) => {

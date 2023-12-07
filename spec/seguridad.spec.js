@@ -265,9 +265,9 @@ describe('Seguridad', () => {
                 mockApp.use(errorMiddleware);
                 const response = await request(mockApp).get('/')
                 expect(response.statusCode).toBe(200)
-                expect(response.headers['access-control-allow-origin']).toBe('*')
-                expect(response.headers['access-control-allow-headers']).toBeTruthy()
-                expect(response.headers['access-control-allow-methods']).toBeTruthy()
+                expect(response.headers['access-control-allow-origin']).toBeUndefined()
+                expect(response.headers['access-control-allow-headers']).toBeUndefined()
+                expect(response.headers['access-control-allow-methods']).toBeUndefined()
                 expect(response.headers['access-control-allow-credentials']).toBeUndefined()
             })
             it('Con Origin', async () => {
@@ -452,6 +452,12 @@ describe('Seguridad', () => {
         })
         describe('/login/refresh', () => {
             describe('KO', () => {
+                it('POST: sin token', async () => {
+                    await request(app)
+                        .post('/login/refresh')
+                        .set('Content-Type', 'application/json')
+                        .expect(400)
+                });
                 it('POST: Token expirado', async () => {
                     await request(app)
                         .post('/login/refresh')
