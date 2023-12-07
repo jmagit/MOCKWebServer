@@ -115,10 +115,6 @@ if (VALIDATE_XSRF_TOKEN) {
   app.use(seguridad.useXSRF)
 }
 
-// Control de acceso
-// app.use(DIR_API_REST, seguridad)
-app.use(config.paths.API_AUTH ?? '/', seguridad)
-
 // Validación OpenApi
 app.use(
   OpenApiValidator.middleware({
@@ -134,6 +130,10 @@ app.use(
     ]
   })
 )
+
+// Control de acceso
+// app.use(DIR_API_REST, seguridad)
+app.use(config.paths.API_AUTH ?? '/', seguridad)
 
 // Servicios web
 app.use(config.paths.API_REST, apiRouter.router);

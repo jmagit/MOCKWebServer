@@ -626,8 +626,11 @@ const addServiceDocumentation = (servicio, dirAPIs) => {
 
 let cache = false
 const generaSwaggerSpecification = (server, dirAPIs, shutdown, dirAPIsSeguridad) => {
-    if(cache)
+    if (cache) {
+        if (server.hostname && swaggerDocument.servers[0].url !== `{protocol}://${server.hostname}:{port}/`)
+            swaggerDocument.servers[0].url = `{protocol}://${server.hostname}:{port}/`
         return swaggerDocument
+    }
     cache = true
     const valid = validate(serviciosConfig)
     if (!valid) {
@@ -635,7 +638,7 @@ const generaSwaggerSpecification = (server, dirAPIs, shutdown, dirAPIsSeguridad)
         shutdown()
     }
 
-    swaggerDocument.servers[0].variables.port.default = server
+    swaggerDocument.servers[0].variables.port.default = server.port ?? server
     serviciosConfig.forEach(servicio => addServiceDocumentation(servicio, dirAPIs))
     let apisSeguridad = swaggerJsdoc({
         swaggerDefinition: { openapi: swaggerDocument.openapi, info: swaggerDocument.info },

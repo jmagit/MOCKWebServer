@@ -329,6 +329,8 @@ router.post('/login', async function (req, res, next) {
  *               $ref: "#/components/schemas/RespuestaLogin"
  *       "400":
  *         $ref: "#/components/responses/BadRequest"
+ *       "403":
+ *         $ref: "#/components/responses/Forbidden"
  */
 router.post('/login/refresh', async function (req, res, next) {
     if (!req.body || !req.body.token) {
@@ -751,6 +753,8 @@ autenticados.get('/', async function (req, res, next) {
  *     responses:
  *       "204":
  *         $ref: "#/components/responses/NoContent"
+ *       "401":
+ *         $ref: "#/components/responses/Unauthorized"
  *       "403":
  *         $ref: "#/components/responses/Forbidden"
  *       "404":
@@ -802,6 +806,8 @@ autenticados.put('/', async function (req, res, next) {
  *         $ref: "#/components/responses/NoContent"
  *       "400":
  *         $ref: "#/components/responses/BadRequest"
+ *       "401":
+ *         $ref: "#/components/responses/Unauthorized"
  *       "403":
  *         $ref: "#/components/responses/Forbidden"
  *       "404":
