@@ -381,7 +381,7 @@ describe('Seguridad', () => {
                 it('POST: Sin body', done => {
                     request(app)
                         .post(`${config.paths.API_AUTH}/login`)
-                        .expect(415, done)
+                        .expect(config.paths.API_AUTH ? 415 : 400, done)
                 });
                 it('POST: Usuario invalido: username', async () => {
                     await request(app)
