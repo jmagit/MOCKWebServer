@@ -42,12 +42,12 @@
   },
   "tags": [
     {
-      "name": "autenticación",
-      "description": "Login"
+      "name": "contactos",
+      "description": "Gestión de contactos"
     },
     {
-      "name": "registro",
-      "description": "Cuentas de usuarios"
+      "name": "peliculas",
+      "description": "Mantenimiento de peliculas"
     },
     {
       "name": "personas",
@@ -72,6 +72,14 @@
     {
       "name": "vehiculos",
       "description": "Mantenimiento de vehiculos"
+    },
+    {
+      "name": "autenticación",
+      "description": "Login"
+    },
+    {
+      "name": "registro",
+      "description": "Cuentas de usuarios"
     }
   ],
   "paths": {
@@ -238,15 +246,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ContactoProjection"
-                }
-              }
-            }
+          "204": {
+            "$ref": "#/components/responses/NoContent"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -503,15 +504,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PeliculaProjection"
-                }
-              }
-            }
+          "204": {
+            "$ref": "#/components/responses/NoContent"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -751,15 +745,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PersonaProjection"
-                }
-              }
-            }
+          "204": {
+            "$ref": "#/components/responses/NoContent"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -846,10 +833,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -884,10 +871,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       }
@@ -943,10 +930,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -966,15 +953,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TarjetaProjection"
-                }
-              }
-            }
+          "204": {
+            "$ref": "#/components/responses/NoContent"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -991,10 +971,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       }
@@ -1049,10 +1029,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1087,10 +1067,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1112,10 +1092,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       }
@@ -1171,10 +1151,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1194,15 +1174,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ArticuloProjection"
-                }
-              }
-            }
+          "204": {
+            "$ref": "#/components/responses/NoContent"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -1219,10 +1192,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1244,10 +1217,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1292,10 +1265,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1320,10 +1293,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       }
@@ -1378,10 +1351,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1416,10 +1389,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1441,10 +1414,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       }
@@ -1500,10 +1473,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1523,15 +1496,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LibroProjection"
-                }
-              }
-            }
+          "204": {
+            "$ref": "#/components/responses/NoContent"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -1548,10 +1514,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1573,10 +1539,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1621,10 +1587,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1649,10 +1615,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       }
@@ -1737,10 +1703,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1828,15 +1794,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/VolumenProjection"
-                }
-              }
-            }
+          "204": {
+            "$ref": "#/components/responses/NoContent"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -1853,10 +1812,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1918,10 +1877,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1946,10 +1905,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       }
@@ -2004,10 +1963,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -2042,10 +2001,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -2067,10 +2026,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       }
@@ -2126,10 +2085,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -2149,15 +2108,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/VehiculoProjection"
-                }
-              }
-            }
+          "204": {
+            "$ref": "#/components/responses/NoContent"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -2174,10 +2126,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -2199,10 +2151,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -2247,10 +2199,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -2275,10 +2227,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       }
@@ -2385,6 +2337,17 @@
       }
     },
     "/api/login": {
+      "options": {
+        "tags": [
+          "autenticación"
+        ],
+        "summary": "Sondeo CORS",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
       "post": {
         "tags": [
           "autenticación"
@@ -2410,18 +2373,7 @@
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "description": "Usuario",
-                    "type": "string"
-                  },
-                  "password": {
-                    "description": "Contraseña",
-                    "type": "string",
-                    "format": "password"
-                  }
-                }
+                "$ref": "#/components/schemas/Login"
               }
             }
           },
@@ -2449,15 +2401,75 @@
             "$ref": "#/components/responses/BadRequest"
           }
         }
-      },
-      "options": {
+      }
+    },
+    "/api/login/refresh": {
+      "post": {
         "tags": [
           "autenticación"
         ],
-        "summary": "Sondeo CORS",
+        "summary": "Volver a iniciar sesión con el token de refresco",
+        "parameters": [
+          {
+            "name": "cookie",
+            "in": "query",
+            "required": false,
+            "description": "true para que genere y envíe la cookie",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshToken"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
-            "description": "OK"
+            "headers": {
+              "Set-Cookie": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Resultado de la autenticación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaLogin"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/api/login/signature": {
+      "get": {
+        "tags": [
+          "autenticación"
+        ],
+        "summary": "Clave publica para validar el token JWT",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       }
@@ -2471,51 +2483,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/auth": {
-      "get": {
-        "tags": [
-          "autenticación"
-        ],
-        "summary": "Obtener estado de sesión",
-        "security": [
-          {
-            "bearerAuth": []
-          },
-          {
-            "cookieAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "isAuthenticated": {
-                      "type": "boolean"
-                    },
-                    "usr": {
-                      "type": "string"
-                    },
-                    "name": {
-                      "type": "string"
-                    },
-                    "roles": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            }
           }
         }
       }
@@ -2550,8 +2517,33 @@
           "required": true
         },
         "responses": {
-          "201": {
-            "description": "Created"
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "webhook para controlar el registro del usuario",
+                  "properties": {
+                    "statusGetUri": {
+                      "description": "webhook vía GET para consultar el estado del registro",
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "confirmGetUri": {
+                      "description": "webhook vía GET para confirmar el email y activar al usuario",
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "rejectGetUri": {
+                      "description": "webhook vía GET para rechazar el email y borrar al usuario",
+                      "type": "string",
+                      "format": "uri"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -2565,10 +2557,10 @@
         "summary": "Consultar su usuario",
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ],
         "responses": {
@@ -2609,10 +2601,10 @@
         "summary": "Modificar el nombre de su usuario",
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ],
         "requestBody": {
@@ -2646,6 +2638,149 @@
         }
       }
     },
+    "/api/register/status": {
+      "get": {
+        "tags": [
+          "registro"
+        ],
+        "summary": "Estado del registro un nuevo usuario",
+        "parameters": [
+          {
+            "name": "instance",
+            "in": "query",
+            "required": true,
+            "description": "Identificador la instancia",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Finalize",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterStatus"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Pending",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/api/register/confirm": {
+      "get": {
+        "tags": [
+          "registro"
+        ],
+        "summary": "Confirmar el email y activar al usuario",
+        "parameters": [
+          {
+            "name": "instance",
+            "in": "query",
+            "required": true,
+            "description": "Identificador la instancia",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/api/register/reject": {
+      "get": {
+        "tags": [
+          "registro"
+        ],
+        "summary": "Rechazar el email y borrar al usuario",
+        "parameters": [
+          {
+            "name": "instance",
+            "in": "query",
+            "required": true,
+            "description": "Identificador la instancia",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/api/auth": {
+      "get": {
+        "tags": [
+          "autenticación"
+        ],
+        "summary": "Obtener estado de sesión",
+        "security": [
+          {
+            "bearerAuth": [ ]
+          },
+          {
+            "cookieAuth": [ ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isAuthenticated": {
+                      "type": "boolean"
+                    },
+                    "usr": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "roles": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/register/password": {
       "put": {
         "tags": [
@@ -2654,10 +2789,10 @@
         "summary": "Cambiar su contraseña",
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ],
         "description": "Es necesario conocer la contraseña actual antes de cambiarla",
@@ -2702,7 +2837,8 @@
     "schemas": {
       "ErrorMessage": {
         "type": "object",
-        "title": "Error message",
+        "title": "Problem Details",
+        "description": "Problem Details for HTTP APIs ([RFC 7807](https://datatracker.ietf.org/doc/html/rfc7807))",
         "required": [
           "type",
           "status",
@@ -2710,19 +2846,37 @@
         ],
         "properties": {
           "type": {
-            "type": "string"
-          },
-          "status": {
-            "type": "integer"
+            "type": "string",
+            "description": "URI que identifica el tipo de problema y proporciona documentación legible por humanos para el tipo de problema."
           },
           "title": {
-            "type": "string"
+            "type": "string",
+            "description": "Breve resumen legible por humanos del problema escribe."
+          },
+          "status": {
+            "type": "integer",
+            "description": "Código de estado HTTP."
           },
           "detail": {
-            "type": "string"
+            "type": "string",
+            "description": "Explicación legible por humanos específica de la ocurrencia concreta del problema."
+          },
+          "instance": {
+            "type": "string",
+            "description": "URI de referencia que identifica el origen de la ocurrencia del problema."
+          },
+          "errors": {
+            "type": "array",
+            "description": "Lista de errores de validación",
+            "items": {
+              "type": "object",
+              "minProperties": 1,
+              "additionalProperties": true
+            }
           },
           "source": {
-            "type": "string"
+            "type": "string",
+            "description": "En modo depuración, información complementaria sobre el origen del error."
           }
         }
       },
@@ -2779,8 +2933,8 @@
           "telefono": {
             "title": "Telefono",
             "type": "string",
-            "example": "642 051 348",
-            "pattern": "^(\\d{3}\\s){2}\\d{3}$"
+            "pattern": "^(\\d{3}\\s){2}\\d{3}$",
+            "example": "642 051 348"
           },
           "email": {
             "title": "Email",
@@ -3777,12 +3931,15 @@
           "password"
         ],
         "properties": {
-          "name": {
-            "type": "string"
+          "username": {
+            "type": "string",
+            "format": "email",
+            "example": "adm@example.com"
           },
           "password": {
             "type": "string",
-            "format": "password"
+            "format": "password",
+            "example": "P@$$w0rd"
           }
         }
       },
@@ -3796,6 +3953,9 @@
           "token": {
             "type": "string"
           },
+          "refresh": {
+            "type": "string"
+          },
           "name": {
             "type": "string"
           },
@@ -3804,11 +3964,52 @@
             "items": {
               "type": "string"
             }
+          },
+          "expires_in": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "RefreshToken": {
+        "type": "object",
+        "title": "Token de petición de refresco",
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "RegisterStatus": {
+        "title": "Estado Registro",
+        "description": "Credenciales de autenticación",
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "complete",
+              "canceled"
+            ]
+          },
+          "result": {
+            "type": "string",
+            "enum": [
+              "confirm",
+              "reject",
+              "canceled",
+              "timeout"
+            ]
           }
         }
       }
     },
-    "requestBodies": {},
+    "requestBodies": { },
     "responses": {
       "Created": {
         "description": "Created",
@@ -3881,6 +4082,7 @@
             {
               "type": "string",
               "enum": [
+                "count",
                 "COUNT"
               ]
             }

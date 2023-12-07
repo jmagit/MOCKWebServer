@@ -117,12 +117,12 @@ if (VALIDATE_XSRF_TOKEN) {
 
 // Control de acceso
 // app.use(DIR_API_REST, seguridad)
-app.use(config.paths.API_AUTH, seguridad)
+app.use(config.paths.API_AUTH ?? '/', seguridad)
 
 // Validación OpenApi
 app.use(
   OpenApiValidator.middleware({
-    apiSpec: generaSwaggerSpecification(app.PUERTO, config.paths.API_REST, shutdown, config.paths.API_AUTH),
+    apiSpec: generaSwaggerSpecification(app.PUERTO, config.paths.API_REST, shutdown, config.paths.API_AUTH ?? '/'),
     validateRequests: {
       allowUnknownQueryParameters: true,
     },
@@ -140,11 +140,11 @@ app.use(config.paths.API_REST, apiRouter.router);
 
 // Documentación OpenApi
 app.all('/api-docs/v1/openapi.json', function (_req, res) {
-  let result = generaSwaggerSpecification(app.PUERTO, config.paths.API_REST, shutdown, config.paths.API_AUTH)
+  let result = generaSwaggerSpecification(app.PUERTO, config.paths.API_REST, shutdown, config.paths.API_AUTH ?? '/')
   res.json(result)
 });
 app.all('/api-docs/v1/openapi.yaml', function (_req, res) {
-  let result = generaSwaggerSpecification(app.PUERTO, config.paths.API_REST, shutdown, config.paths.API_AUTH)
+  let result = generaSwaggerSpecification(app.PUERTO, config.paths.API_REST, shutdown, config.paths.API_AUTH ?? '/')
   res.contentType('text/yaml').end(YAML.stringify(result))
 });
 
@@ -158,7 +158,7 @@ const options = {
     operationsSorter: 'alpha',
   }
 };
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(generaSwaggerSpecification(app.PUERTO, config.paths.API_REST, shutdown, config.paths.API_AUTH), options));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(generaSwaggerSpecification(app.PUERTO, config.paths.API_REST, shutdown, config.paths.API_AUTH ?? '/'), options));
 
 
 // Páginas HTML
@@ -318,7 +318,7 @@ app.get('/*', async function (req, res, next) {
 // eslint-disable-next-line no-unused-vars
 app.use(function (err, req, res, _next) {
   const status = err.status ?? err.statusCode ??  500
-  if (req.accepts('application/json') || req.originalUrl.startsWith('/api/')) {
+  if (req.accepts('application/json') || req.originalUrl.startsWith(`${config.API_REST}/`)) {
     res.status(status).json(err.payload ? err.payload : generateErrorByError(req, err, status).payload)
     return
   }

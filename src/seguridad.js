@@ -192,11 +192,12 @@ module.exports.useXSRF = (req, res, next) => {
  *       properties:
  *         username:
  *           type: string
+ *           format: email
  *           example: 'adm@example.com'
  *         password:
  *           type: string
  *           format: password
- *           example: 'P@$$$$w0rd'
+ *           example: 'P@$$w0rd'
  *     RespuestaLogin:
  *       type: object
  *       title: Respuesta Login
@@ -258,15 +259,7 @@ router.options('/login', function (_req, res) {
  *             $ref: "#/components/schemas/Login"
  *         application/x-www-form-urlencoded:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 description: Usuario
- *                 type: string
- *               password:
- *                 description: Contraseña
- *                 type: string
- *                 format: password
+ *             $ref: "#/components/schemas/Login"
  *       required: true
  *     responses:
  *       "200":

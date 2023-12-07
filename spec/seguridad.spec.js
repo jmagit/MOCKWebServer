@@ -331,7 +331,7 @@ describe('Seguridad', () => {
         });
         it('OPTIONS', done => {
             request(app)
-                .options('/login')
+                .options(`${config.paths.API_AUTH}/login`)
                 .expect(200, done)
         });
     })
@@ -346,11 +346,11 @@ describe('Seguridad', () => {
                 './data/usuarios.json': JSON.stringify(usuarios),
             });
         });
-        describe('/login', () => {
+        describe(`${config.paths.API_AUTH}/login`, () => {
             describe('OK', () => {
                 it('POST: Login Admin', done => {
                     request(app)
-                        .post('/login')
+                        .post(`${config.paths.API_AUTH}/login`)
                         .set('Content-Type', 'application/json')
                         .send({ "username": "admin@kk.kk", "password": contraseña })
                         .expect('Content-Type', /json/)
@@ -363,7 +363,7 @@ describe('Seguridad', () => {
                 });
                 it('Autenticación por cookies', async () => {
                     let response = await request(app)
-                        .post('/login?cookie=true')
+                        .post(`${config.paths.API_AUTH}/login?cookie=true`)
                         .set('Content-Type', 'application/json')
                         .send({ "username": "admin@kk.kk", "password": contraseña })
                     expect(response.statusCode).toBe(200)
@@ -371,7 +371,7 @@ describe('Seguridad', () => {
                     let cookie = response.headers['set-cookie']
 
                     response = await request(app)
-                        .get('/register')
+                        .get(`${config.paths.API_AUTH}/register`)
                         .set('Cookie', cookie)
                     expect(response.statusCode).toBe(200)
                 });
@@ -379,12 +379,12 @@ describe('Seguridad', () => {
             describe('KO', () => {
                 it('POST: Sin body', done => {
                     request(app)
-                        .post('/login')
+                        .post(`${config.paths.API_AUTH}/login`)
                         .expect(400, done)
                 });
                 it('POST: Usuario invalido: username', async () => {
                     await request(app)
-                        .post('/login')
+                        .post(`${config.paths.API_AUTH}/login`)
                         .set('Content-Type', 'application/json')
                         .send({ "username": "admina", "password": contraseña })
                         .expect(200)
@@ -393,7 +393,7 @@ describe('Seguridad', () => {
                 });
                 it('POST: Usuario invalido: password', () => {
                     return request(app)
-                        .post('/login')
+                        .post(`${config.paths.API_AUTH}/login`)
                         .set('Content-Type', 'application/json')
                         .send({ "username": "admin@kk.kk", "password": "P@$Sw0rd" })
                         .expect(200)
@@ -402,14 +402,14 @@ describe('Seguridad', () => {
                 });
                 it('POST: formato invalido de password', () => {
                     return request(app)
-                        .post('/login')
+                        .post(`${config.paths.API_AUTH}/login`)
                         .set('Content-Type', 'application/json')
                         .send({ "username": "admin", "password": "P@$Sword" })
                         .expect(400)
                 });
                 it('POST: Usuario no activo', async () => {
                     await request(app)
-                        .post('/login')
+                        .post(`${config.paths.API_AUTH}/login`)
                         .set('Content-Type', 'application/json')
                         .send({ "username": "fake@kk.kk", "password": contraseña })
                         .expect(200)
@@ -418,7 +418,7 @@ describe('Seguridad', () => {
                 });
                 it('POST: Usuario sin confirmar', async () => {
                     await request(app)
-                        .post('/login')
+                        .post(`${config.paths.API_AUTH}/login`)
                         .set('Content-Type', 'application/json')
                         .send({ "username": "pending@kk.kk", "password": contraseña })
                         .expect(200)
@@ -427,40 +427,40 @@ describe('Seguridad', () => {
                 });
             });
         })
-        describe('/login/signature', () => {
+        describe(`${config.paths.API_AUTH}/login/signature`, () => {
             it('GET', done => {
                 request(app)
-                    .get('/login/signature')
+                    .get(`${config.paths.API_AUTH}/login/signature`)
                     .expect(200, done)
                     .expect('Content-Type', 'text/plain; charset=utf-8')
                     .expect(config.security.PUBLIC_KEY)
             });
         })
-        describe('/logout', () => {
+        describe(`${config.paths.API_AUTH}/logout`, () => {
             describe('OK', () => {
                 it('GET', done => {
                     request(app)
-                        .get('/logout')
+                        .get(`${config.paths.API_AUTH}/logout`)
                         .expect(200, done)
                 });
                 it('POST', done => {
                     request(app)
-                        .post('/logout')
+                        .post(`${config.paths.API_AUTH}/logout`)
                         .expect(200, done)
                 });
             })
         })
-        describe('/login/refresh', () => {
+        describe(`${config.paths.API_AUTH}/login/refresh`, () => {
             describe('KO', () => {
                 it('POST: sin token', async () => {
                     await request(app)
-                        .post('/login/refresh')
+                        .post(`${config.paths.API_AUTH}/login/refresh`)
                         .set('Content-Type', 'application/json')
                         .expect(400)
                 });
                 it('POST: Token expirado', async () => {
                     await request(app)
-                        .post('/login/refresh')
+                        .post(`${config.paths.API_AUTH}/login/refresh`)
                         .set('Content-Type', 'application/json')
                         .send({ "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1AZXhhbXBsZS5jb20iLCJpYXQiOjE2NzAzNDIxNzIsIm5iZiI6MTY3MDM0MjQ3MiwiZXhwIjoxNjcwMzQzMzcyLCJhdWQiOiJhdXRob3JpemF0aW9uIiwiaXNzIjoiTWljcm9zZXJ2aWNpb3NKV1QifQ.8q1Nwd9E6ZgpMyOPGUTFrv7EGRwvk_6J-J6Uzvk4o_A" })
                         .expect(403)
@@ -469,11 +469,11 @@ describe('Seguridad', () => {
                 });
             });
         })
-        describe('/register', () => {
+        describe(`${config.paths.API_AUTH}/register`, () => {
             describe('OK', () => {
                 it('POST: Nuevo usuario', done => {
                     request(app)
-                        .post('/register')
+                        .post(`${config.paths.API_AUTH}/register`)
                         .set('Content-Type', 'application/json')
                         .send({ "idUsuario": "usr@kk.kk", "nombre": "Nuevo", "password": contraseña, "roles": [], "activo": true })
                         .expect(202)
@@ -495,7 +495,7 @@ describe('Seguridad', () => {
                         })
                         .catch(err => done(err))
                 });
-                describe('/register/status', () => {
+                describe(`${config.paths.API_AUTH}/register/status`, () => {
                     it('status: pending', async () => {
                         await request(app)
                             .get(`/register/status?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'pending@kk.kk' })}`)
@@ -546,7 +546,7 @@ describe('Seguridad', () => {
                             })
                     });
                 });
-                describe('/register/confirm', () => {
+                describe(`${config.paths.API_AUTH}/register/confirm`, () => {
                     it('status: pending', async () => {
                         const idUsuario = 'pending@kk.kk'
                         await request(app)
@@ -594,7 +594,7 @@ describe('Seguridad', () => {
                             .expect('Content-Type', /json/)
                     });
                 });
-                describe('/register/reject', () => {
+                describe(`${config.paths.API_AUTH}/register/reject`, () => {
                     it('status: pending', async () => {
                         const idUsuario = 'pending@kk.kk'
                         await request(app)
@@ -636,7 +636,7 @@ describe('Seguridad', () => {
                 });
                 it('GET: Con token', async () => {
                     let index = 0
-                    const response = await request(app).get('/register')
+                    const response = await request(app).get(`${config.paths.API_AUTH}/register`)
                         .set('authorization', seguridad.generarTokenScheme(usuarios[index]))
                     expect(response.statusCode).toBe(200)
                     expect(response.body.idUsuario).toBe(usuarios[index].idUsuario)
@@ -646,7 +646,7 @@ describe('Seguridad', () => {
                 it('PUT: Modificar usuario', async () => {
                     let index = 0
                     const response = await request(app)
-                        .put('/register')
+                        .put(`${config.paths.API_AUTH}/register`)
                         .set('authorization', seguridad.generarTokenScheme(usuarios[index]))
                         .set('Content-Type', 'application/json')
                         .send({ "nombre": "Nuevo nombre", "password": "ignorar", "roles": [] })
@@ -662,7 +662,7 @@ describe('Seguridad', () => {
             describe('KO', () => {
                 it('POST: Falta el nombre de usuario', async () => {
                     await request(app)
-                        .post('/register')
+                        .post(`${config.paths.API_AUTH}/register`)
                         .set('Content-Type', 'application/json')
                         .send({ "nombre": "Nuevo", "password": contraseña })
                         .expect(400)
@@ -671,7 +671,7 @@ describe('Seguridad', () => {
                 });
                 it('POST: Formato incorrecto de la password', async () => {
                     await request(app)
-                        .post('/register')
+                        .post(`${config.paths.API_AUTH}/register`)
                         .set('Content-Type', 'application/json')
                         .send({ "idUsuario": "usr@kk.kk", "nombre": "Nuevo", "password": "contraseña" })
                         .expect(400)
@@ -680,7 +680,7 @@ describe('Seguridad', () => {
                 });
                 it('POST: El usuario ya existe', async () => {
                     await request(app)
-                        .post('/register')
+                        .post(`${config.paths.API_AUTH}/register`)
                         .set('Content-Type', 'application/json')
                         .send({ "idUsuario": usuarios[1].idUsuario, "nombre": "Nuevo", "password": contraseña })
                         .expect(400)
@@ -689,24 +689,24 @@ describe('Seguridad', () => {
                 });
                 it('GET: Sin token', done => {
                     request(app)
-                        .get('/register')
+                        .get(`${config.paths.API_AUTH}/register`)
                         .expect(401, done)
                 });
                 it('GET: Usuario eliminado', async () => {
-                    const response = await request(app).get('/register')
+                    const response = await request(app).get(`${config.paths.API_AUTH}/register`)
                         .set('authorization', seguridad.generarTokenScheme(usuarioBorrado))
                     expect(response.statusCode).toBe(401)
                 });
                 it('PUT: Sin token', done => {
                     request(app)
-                        .put('/register')
+                        .put(`${config.paths.API_AUTH}/register`)
                         .set('Content-Type', 'application/json')
                         .send({ "idUsuario": usuarios[0].idUsuario, "nombre": "Nuevo nombre", "password": "ignorar", "roles": [] })
                         .expect(401, done)
                 });
                 it('PUT: Otro usuario', done => {
                     request(app)
-                        .put('/register')
+                        .put(`${config.paths.API_AUTH}/register`)
                         .set('authorization', seguridad.generarTokenScheme(usuarios[0]))
                         .set('Content-Type', 'application/json')
                         .send(usuarios[1])
@@ -714,7 +714,7 @@ describe('Seguridad', () => {
                 });
                 it('PUT: Usuario eliminado', done => {
                     request(app)
-                        .put('/register')
+                        .put(`${config.paths.API_AUTH}/register`)
                         .set('authorization', seguridad.generarTokenScheme(usuarioBorrado))
                         .set('Content-Type', 'application/json')
                         .send(usuarioBorrado)
@@ -722,7 +722,7 @@ describe('Seguridad', () => {
                 });
                 it('PUT: Falta el nombre de usuario', done => {
                     request(app)
-                        .put('/register')
+                        .put(`${config.paths.API_AUTH}/register`)
                         .set('authorization', seguridad.generarTokenScheme(usuarios[0]))
                         .set('Content-Type', 'application/json')
                         .send({ "nombre": "", "password": "ignorar", "roles": [] })
@@ -730,12 +730,12 @@ describe('Seguridad', () => {
                 });
             });
         })
-        describe('/register/password', () => {
+        describe(`${config.paths.API_AUTH}/register/password`, () => {
             describe('OK', () => {
                 it('PUT: Cambiar contraseña', async () => {
                     let index = 0
                     const response = await request(app)
-                        .put('/register/password')
+                        .put(`${config.paths.API_AUTH}/register/password`)
                         .set('authorization', seguridad.generarTokenScheme(usuarios[index]))
                         .set('Content-Type', 'application/json')
                         .send({ "oldPassword": "P@$$w0rd", "newPassword": "Pa$$w0rd" })
@@ -751,14 +751,14 @@ describe('Seguridad', () => {
             describe('KO', () => {
                 it('PUT: Cambiar contraseña sin token', done => {
                     request(app)
-                        .put('/register/password')
+                        .put(`${config.paths.API_AUTH}/register/password`)
                         .set('Content-Type', 'application/json')
                         .send({ "oldPassword": "P@$$w0rd", "newPassword": "Pa$$w0rd" })
                         .expect(401, done)
                 });
                 it('PUT: Cambiar contraseña usuario eliminado', done => {
                     request(app)
-                        .put('/register/password')
+                        .put(`${config.paths.API_AUTH}/register/password`)
                         .set('authorization', seguridad.generarTokenScheme(usuarioBorrado))
                         .set('Content-Type', 'application/json')
                         .send({ "oldPassword": "P@$$w0rd", "newPassword": "Pa$$w0rd" })
@@ -766,7 +766,7 @@ describe('Seguridad', () => {
                 });
                 it('PUT: Contraseña anterior invalida', done => {
                     request(app)
-                        .put('/register/password')
+                        .put(`${config.paths.API_AUTH}/register/password`)
                         .set('authorization', seguridad.generarTokenScheme(usuarios[0]))
                         .set('Content-Type', 'application/json')
                         .send({ "oldPassword": "Pa$$w0rd", "newPassword": "P@$$w0rd" })
@@ -774,7 +774,7 @@ describe('Seguridad', () => {
                 });
                 it('PUT: Contraseña nueva invalida', done => {
                     request(app)
-                        .put('/register/password')
+                        .put(`${config.paths.API_AUTH}/register/password`)
                         .set('authorization', seguridad.generarTokenScheme(usuarios[0]))
                         .set('Content-Type', 'application/json')
                         .send({ "oldPassword": "P@$$w0rd", "newPassword": "P@$$W0RD" })

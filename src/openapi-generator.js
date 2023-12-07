@@ -654,4 +654,4 @@ const generaSwaggerSpecification = (server, dirAPIs, shutdown, dirAPIsSeguridad)
     return swaggerDocument;
 }
 
-module.exports.generaSwaggerSpecification = (servidor, DIR_API_REST, shutdown, dirAPIsSeguridad) => generaSwaggerSpecification(servidor, DIR_API_REST, shutdown, dirAPIsSeguridad)
+module.exports.generaSwaggerSpecification = (servidor, dirAPIsRest, shutdown, dirAPIsSeguridad) => generaSwaggerSpecification(servidor, dirAPIsRest, shutdown, dirAPIsSeguridad)
