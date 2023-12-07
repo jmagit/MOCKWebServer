@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-hooks */
 /* eslint-disable jest/prefer-lowercase-title */
 /* eslint-disable node/no-unpublished-require */
 const request = require('supertest');
@@ -498,7 +499,7 @@ describe('Seguridad', () => {
                 describe(`${config.paths.API_AUTH}/register/status`, () => {
                     it('status: pending', async () => {
                         await request(app)
-                            .get(`/register/status?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'pending@kk.kk' })}`)
+                            .get(`${config.paths.API_AUTH}/register/status?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'pending@kk.kk' })}`)
                             .expect(202)
                             .expect('Content-Type', /json/)
                             .expect(response => {
@@ -507,7 +508,7 @@ describe('Seguridad', () => {
                     });
                     it('status: canceled, result: timeout', async () => {
                         await request(app)
-                            .get(`/register/status?instance=XXX`)
+                            .get(`${config.paths.API_AUTH}/register/status?instance=XXX`)
                             .expect(200)
                             .expect('Content-Type', /json/)
                             .expect(response => {
@@ -517,7 +518,7 @@ describe('Seguridad', () => {
                     });
                     it('status: complete, result: confirm', async () => {
                         await request(app)
-                            .get(`/register/status?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'admin@kk.kk' })}`)
+                            .get(`${config.paths.API_AUTH}/register/status?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'admin@kk.kk' })}`)
                             .expect(200)
                             .expect('Content-Type', /json/)
                             .expect(response => {
@@ -527,7 +528,7 @@ describe('Seguridad', () => {
                     });
                     it('status: complete, result: reject by activo=false', async () => {
                         await request(app)
-                            .get(`/register/status?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'fake@kk.kk' })}`)
+                            .get(`${config.paths.API_AUTH}/register/status?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'fake@kk.kk' })}`)
                             .expect(200)
                             .expect('Content-Type', /json/)
                             .expect(response => {
@@ -537,7 +538,7 @@ describe('Seguridad', () => {
                     });
                     it('status: complete, result: reject by delete', async () => {
                         await request(app)
-                            .get(`/register/status?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'delete@kk.kk' })}`)
+                            .get(`${config.paths.API_AUTH}/register/status?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'delete@kk.kk' })}`)
                             .expect(200)
                             .expect('Content-Type', /json/)
                             .expect(response => {
@@ -550,7 +551,7 @@ describe('Seguridad', () => {
                     it('status: pending', async () => {
                         const idUsuario = 'pending@kk.kk'
                         await request(app)
-                            .get(`/register/confirm?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
+                            .get(`${config.paths.API_AUTH}/register/confirm?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
                             .expect(204)
                             .then(() => {
                                 let data = JSON.parse(fsMock.__getMockFile('./data/usuarios.json'))
@@ -562,7 +563,7 @@ describe('Seguridad', () => {
                     it('status: complete by activo=true', async () => {
                         const idUsuario = 'admin@kk.kk'
                         await request(app)
-                            .get(`/register/confirm?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
+                            .get(`${config.paths.API_AUTH}/register/confirm?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
                             .expect(204)
                             .then(() => {
                                 let data = JSON.parse(fsMock.__getMockFile('./data/usuarios.json'))
@@ -573,7 +574,7 @@ describe('Seguridad', () => {
                     it('status: complete by activo=false', async () => {
                         const idUsuario = 'fake@kk.kk'
                         await request(app)
-                            .get(`/register/confirm?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
+                            .get(`${config.paths.API_AUTH}/register/confirm?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
                             .expect(204)
                             .then(() => {
                                 let data = JSON.parse(fsMock.__getMockFile('./data/usuarios.json'))
@@ -583,13 +584,13 @@ describe('Seguridad', () => {
                     });
                     it('BAD instance', async () => {
                         await request(app)
-                            .get(`/register/confirm?instance=XXX`)
+                            .get(`${config.paths.API_AUTH}/register/confirm?instance=XXX`)
                             .expect(400)
                             .expect('Content-Type', /json/)
                     });
                     it('404', async () => {
                         await request(app)
-                            .get(`/register/confirm?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'kk@kk.kk' })}`)
+                            .get(`${config.paths.API_AUTH}/register/confirm?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'kk@kk.kk' })}`)
                             .expect(404)
                             .expect('Content-Type', /json/)
                     });
@@ -598,7 +599,7 @@ describe('Seguridad', () => {
                     it('status: pending', async () => {
                         const idUsuario = 'pending@kk.kk'
                         await request(app)
-                            .get(`/register/reject?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
+                            .get(`${config.paths.API_AUTH}/register/reject?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
                             .expect(204)
                             .then(() => {
                                 let data = JSON.parse(fsMock.__getMockFile('./data/usuarios.json'))
@@ -608,13 +609,13 @@ describe('Seguridad', () => {
                     it('status: complete by activo=true', async () => {
                         const idUsuario = 'admin@kk.kk'
                         await request(app)
-                            .get(`/register/reject?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
+                            .get(`${config.paths.API_AUTH}/register/reject?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
                             .expect(400)
                     });
                     it('status: complete by activo=false', async () => {
                         const idUsuario = 'fake@kk.kk'
                         await request(app)
-                            .get(`/register/reject?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
+                            .get(`${config.paths.API_AUTH}/register/reject?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
                             .expect(204)
                             .then(() => {
                                 let data = JSON.parse(fsMock.__getMockFile('./data/usuarios.json'))
@@ -623,13 +624,13 @@ describe('Seguridad', () => {
                     });
                     it('BAD instance', async () => {
                         await request(app)
-                            .get(`/register/reject?instance=XXX`)
+                            .get(`${config.paths.API_AUTH}/register/reject?instance=XXX`)
                             .expect(400)
                             .expect('Content-Type', /json/)
                     });
                     it('404', async () => {
                         await request(app)
-                            .get(`/register/reject?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'kk@kk.kk' })}`)
+                            .get(`${config.paths.API_AUTH}/register/reject?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'kk@kk.kk' })}`)
                             .expect(404)
                             .expect('Content-Type', /json/)
                     });
@@ -782,12 +783,12 @@ describe('Seguridad', () => {
                 });
             });
         })
-        describe('/auth', () => {
+        describe(`${config.paths.API_AUTH}/auth`, () => {
             describe('OK', () => {
                 it('GET: Con token', done => {
                     let index = 0
                     request(app)
-                        .get('/auth')
+                        .get(`${config.paths.API_AUTH}/auth`)
                         .set('authorization', seguridad.generarTokenScheme(usuarios[index]))
                         .expect(200)
                         .then(response => {

@@ -638,7 +638,7 @@ const generaSwaggerSpecification = (server, dirAPIs, shutdown, dirAPIsSeguridad)
     swaggerDocument.servers[0].variables.port.default = server
     serviciosConfig.forEach(servicio => addServiceDocumentation(servicio, dirAPIs))
     let apisSeguridad = swaggerJsdoc({
-        swaggerDefinition: { openapi: swaggerDocument.openapi },
+        swaggerDefinition: { openapi: swaggerDocument.openapi, info: swaggerDocument.info },
         apis: [`${__dirname}/seguridad.js`]
     });
     dirAPIsSeguridad = dirAPIsSeguridad || dirAPIs

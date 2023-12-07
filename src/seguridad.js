@@ -494,9 +494,6 @@ router.post('/register', async function (req, res, next) {
  *       title: Estado Registro
  *       description: Credenciales de autenticación
  *       type: object
- *       required:
- *         - username
- *         - password
  *       properties:
  *         status:
  *           type: string
@@ -575,10 +572,9 @@ router.get('/register/status', async function (req, res, next) {
 *         schema:
 *           type: string
 *     responses:
-*       "204":
-*         $ref: "#/components/responses/NoContent"
-*       "400":
-*         $ref: "#/components/responses/BadRequest"
+*       "204": { $ref: "#/components/responses/NoContent" }
+*       "400": { $ref: "#/components/responses/BadRequest" }
+*       "404": { "$ref": "#/components/responses/NotFound" }
 */
 router.get('/register/confirm', async function (req, res, next) {
     if (!req.query.instance) {
@@ -619,10 +615,9 @@ router.get('/register/confirm', async function (req, res, next) {
 *         schema:
 *           type: string
 *     responses:
-*       "204":
-*         $ref: "#/components/responses/NoContent"
-*       "400":
-*         $ref: "#/components/responses/BadRequest"
+*       "204": { $ref: "#/components/responses/NoContent" }
+*       "400": { $ref: "#/components/responses/BadRequest" }
+*       "404": { "$ref": "#/components/responses/NotFound" }
 */
 router.get('/register/reject', async function (req, res, next) {
     if (!req.query.instance) {
