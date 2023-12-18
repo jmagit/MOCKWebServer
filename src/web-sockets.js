@@ -1,4 +1,5 @@
 const os = require('os');
+const { access, constants } = require('fs/promises');
 const rateLimit = require('express-rate-limit')
 const { WebSocketServer, WebSocket } = require('ws');
 const { Faker, faker, es } = require('@faker-js/faker');
@@ -15,8 +16,13 @@ module.exports.createWSServer = app => {
         legacyHeaders: false, // Disable the `X-RateLimit-*` headers
     }))
 
-    app.get('/ws/xss.min.js', (_req, res) => {
-        res.sendFile(config.paths.APP_ROOT + '/node_modules/xss/dist/xss.min.js');
+    app.get('/ws/xss.min.js', async (_req, res) => {
+        try {
+            await access(config.paths.APP_ROOT + '/node_modules/xss/dist/xss.min.js', constants.R_OK);
+            res.sendFile(config.paths.APP_ROOT + '/node_modules/xss/dist/xss.min.js');
+        } catch {
+            res.sendFile('/node_modules/xss/dist/xss.min.js');
+        }
     });
     app.get('/ws/chat', (_req, res) => {
         res.sendFile(config.paths.APP_ROOT + '/static/chat.html');
