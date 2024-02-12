@@ -130,7 +130,7 @@ class DbJSON {
         let index = this.indexById(key)
         if (index < 0)
             throw new DbJSONError('Not Found', 404)
-        this.__data[index] = { ...this.__data[index], element }
+        this.__data[index] = Object.assign({}, this.__data[index], element)
         if (persist || this.__autoSave) this.save()
         return this.__data[index]
     }

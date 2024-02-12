@@ -759,7 +759,7 @@ describe('API Rest: Ficheros simulados', () => {
     describe('PATCH', () => {
         describe('OK', () => {
             it('Con id', done => {
-                const item = { "id": "1", "name": "Nuevo" }
+                const item = { "id": 1, "name": "Nuevo" }
                 request(app)
                     .patch(`${config.paths.API_REST}/fake/1`)
                     .set('Content-Type', 'application/json')
