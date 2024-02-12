@@ -134,6 +134,7 @@ app.use(
 // Control de acceso
 // app.use(DIR_API_REST, seguridad)
 app.use(config.paths.API_AUTH ?? '/', seguridad)
+app.use(config.paths.API_REST ?? '/', seguridad)
 
 // Servicios web
 app.use(config.paths.API_REST, apiRouter.router);
@@ -300,24 +301,28 @@ app.get('/', function (req, res) {
 })
 
 // favicon.ico por defecto 
-app.all('/favicon.ico', async function (_req, res) {
+app.all('/favicon.ico', function (_req, res) {
   res.download(__dirname + '/favicon.ico')
 });
 
 // PushState de HTML5
-app.get('/*', async function (req, res, next) {
-  console.info('NOT FOUND: %s', req.originalUrl)
-  try {
-    await fs.access(config.paths.PUBLIC + '/index.html', fs.constants.R_OK | fs.constants.W_OK);
-    res.sendFile('index.html', { root: config.paths.PUBLIC });
-  } catch {
-    next();
-  }
+app.get('/*', function (req, res, next) {
+  const fn = async () => {
+      try {
+        console.info('NOT FOUND 1: %s', req.originalUrl)
+        await fs.access(config.paths.PUBLIC + '/index.html', fs.constants.R_OK | fs.constants.W_OK);
+        res.sendFile('index.html', { root: config.paths.PUBLIC });
+      } catch {
+        console.info('NOT FOUND 2: %s', req.originalUrl)
+        next();
+      }
+    }
+  fn()
 });
 
 // eslint-disable-next-line no-unused-vars
 app.use(function (err, req, res, _next) {
-  const status = err.status ?? err.statusCode ??  500
+  const status = err.status ?? err.statusCode ?? 500
   if (req.accepts('application/json') || req.originalUrl.startsWith(`${config.API_REST}/`)) {
     res.status(status).json(err.payload ? err.payload : generateErrorByError(req, err, status).payload)
     return

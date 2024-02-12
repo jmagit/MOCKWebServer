@@ -286,13 +286,17 @@ router.post('/login', async function (req, res, next) {
         // setTimeout(() => next(generateErrorByStatus(req, 400)), 1000)
         return next(generateErrorByStatus(req, 400))
     }
-    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-    let list = JSON.parse(data)
-    let element = list.find(item => item[config.security.PROP_USERNAME] == usr && item.activo)
-    if (element && await bcrypt.compare(pwd, element[config.security.PROP_PASSWORD])) {
-        sendLogin(req, res, element)
-    } else {
-        res.status(200).json({ success: false })
+    try {
+        let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
+        let list = JSON.parse(data)
+        let element = list.find(item => item[config.security.PROP_USERNAME] == usr && item.activo)
+        if (element && await bcrypt.compare(pwd, element[config.security.PROP_PASSWORD])) {
+            sendLogin(req, res, element)
+        } else {
+            res.status(200).json({ success: false })
+        }
+    } catch (error) {
+        res.status(500).json(generateError(req, error.message, 500).payload)
     }
 })
 
