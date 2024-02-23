@@ -275,8 +275,8 @@ router.options('/login', function (_req, res) {
  *       "400":
  *         $ref: "#/components/responses/BadRequest"
  */
-router.post('/login', async function (req, res, next) {
-    if (!req.body || !req.body.username || !req.body.password) {
+router.post('/login', function (req, res, next) {
+    if (!req.body?.username || !req.body?.password) {
         // setTimeout(() => next(generateErrorByStatus(req, 400)), 1000)
         return next(generateErrorByStatus(req, 400))
     }
@@ -286,18 +286,20 @@ router.post('/login', async function (req, res, next) {
         // setTimeout(() => next(generateErrorByStatus(req, 400)), 1000)
         return next(generateErrorByStatus(req, 400))
     }
-    try {
-        let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-        let list = JSON.parse(data)
-        let element = list.find(item => item[config.security.PROP_USERNAME] == usr && item.activo)
-        if (element && await bcrypt.compare(pwd, element[config.security.PROP_PASSWORD])) {
-            sendLogin(req, res, element)
-        } else {
-            res.status(200).json({ success: false })
+    (async () => {
+        try {
+            let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
+            let list = JSON.parse(data)
+            let element = list.find(item => item[config.security.PROP_USERNAME] == usr && item.activo)
+            if (element && await bcrypt.compare(pwd, element[config.security.PROP_PASSWORD])) {
+                sendLogin(req, res, element)
+            } else {
+                res.status(200).json({ success: false })
+            }
+        } catch (error) {
+            res.status(500).json(generateError(req, error.message, 500).payload)
         }
-    } catch (error) {
-        res.status(500).json(generateError(req, error.message, 500).payload)
-    }
+    })()
 })
 
 /**
@@ -336,37 +338,39 @@ router.post('/login', async function (req, res, next) {
  *       "403":
  *         $ref: "#/components/responses/Forbidden"
  */
-router.post('/login/refresh', async function (req, res, next) {
-    if (!req.body || !req.body.token) {
+router.post('/login/refresh', function (req, res, next) {
+    if (!req.body?.token) {
         return next(generateErrorByStatus(req, 400))
     }
-    try {
-        let decoded = RefreshTokenHMAC256.decode(req.body.token);
-        let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-        let list = JSON.parse(data)
-        let element = list.find(item => item[config.security.PROP_USERNAME] == decoded.usr && item.activo)
-        if (element) {
-            sendLogin(req, res, element)
-        } else {
-            res.status(200).json({ success: false })
-        }
-    } catch (err) {
-        let rslt;
-        switch (err.name) {
-            case 'TokenExpiredError':
-                res.set('WWW-Authenticate', 'Bearer realm="MicroserviciosJWT", error="invalid_token", error_description="The access token expired"')
-                rslt = generateError(req, `Invalid token: token expired`, 403, [{ expiredAt: err.expiredAt }])
-                break;
-            case 'NotBeforeError':
-                rslt = generateError(req, `Invalid token: token not active`, 403, [{ notBefore: err.date }])
-                break;
-            default:
-                rslt = generateError(req, 'Invalid token', 403)
-                break;
+    (async () => {
+        try {
+            let decoded = RefreshTokenHMAC256.decode(req.body.token);
+            let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
+            let list = JSON.parse(data)
+            let element = list.find(item => item[config.security.PROP_USERNAME] == decoded.usr && item.activo)
+            if (element) {
+                sendLogin(req, res, element)
+            } else {
+                res.status(200).json({ success: false })
+            }
+        } catch (err) {
+            let rslt;
+            switch (err.name) {
+                case 'TokenExpiredError':
+                    res.set('WWW-Authenticate', 'Bearer realm="MicroserviciosJWT", error="invalid_token", error_description="The access token expired"')
+                    rslt = generateError(req, `Invalid token: token expired`, 403, [{ expiredAt: err.expiredAt }])
+                    break;
+                case 'NotBeforeError':
+                    rslt = generateError(req, `Invalid token: token not active`, 403, [{ notBefore: err.date }])
+                    break;
+                default:
+                    rslt = generateError(req, 'Invalid token', 403)
+                    break;
 
+            }
+            res.status(403).json(rslt.payload)
         }
-        res.status(403).json(rslt.payload)
-    }
+    })()
 })
 /**
  * @swagger
@@ -464,33 +468,35 @@ router.all('/logout', function (_req, res) {
  *       "400":
  *         $ref: "#/components/responses/BadRequest"
  */
-router.post('/register', async function (req, res, next) {
-    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-    let list = JSON.parse(data)
-    let element = req.body
-    if (element[config.security.PROP_USERNAME] == undefined) {
-        return next(generateError(req, 'Falta el nombre de usuario.', 400))
-    } else if (list.find(item => item[config.security.PROP_USERNAME] == element[config.security.PROP_USERNAME])) {
-        return next(generateError(req, 'El usuario ya existe.', 400))
-    } else if (config.security.PASSWORD_PATTERN.test(element[config.security.PROP_PASSWORD])) {
-        element[config.security.PROP_PASSWORD] = await encriptaPassword(element[config.security.PROP_PASSWORD])
-        element.roles = ["Usuarios"]
-        delete element.activo
-        list.push(element)
-        fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
-            .then(() => {
-                const token = CreatedTokenHMAC256.generar(element)
-                const location = `${req.protocol}://${req.hostname}:${req.connection.localPort}${req.originalUrl}`
-                res.status(202).json({
-                    statusGetUri: `${location}/status?instance=${token}`,
-                    confirmGetUri: `${location}/confirm?instance=${token}`,
-                    rejectGetUri: `${location}/reject?instance=${token}`
+router.post('/register', function (req, res, next) {
+    (async () => {
+        let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
+        let list = JSON.parse(data)
+        let element = req.body
+        if (element[config.security.PROP_USERNAME] == undefined) {
+            return next(generateError(req, 'Falta el nombre de usuario.', 400))
+        } else if (list.find(item => item[config.security.PROP_USERNAME] == element[config.security.PROP_USERNAME])) {
+            return next(generateError(req, 'El usuario ya existe.', 400))
+        } else if (config.security.PASSWORD_PATTERN.test(element[config.security.PROP_PASSWORD])) {
+            element[config.security.PROP_PASSWORD] = await encriptaPassword(element[config.security.PROP_PASSWORD])
+            element.roles = ["Usuarios"]
+            delete element.activo
+            list.push(element)
+            fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
+                .then(() => {
+                    const token = CreatedTokenHMAC256.generar(element)
+                    const location = `${req.protocol}://${req.hostname}:${req.connection.localPort}${req.originalUrl}`
+                    res.status(202).json({
+                        statusGetUri: `${location}/status?instance=${token}`,
+                        confirmGetUri: `${location}/confirm?instance=${token}`,
+                        rejectGetUri: `${location}/reject?instance=${token}`
+                    })
                 })
-            })
-            .catch(err => { return next(generateErrorByError(req, err, 500)) })
-    } else {
-        return next(generateError(req, 'Formato incorrecto de la password.', 400))
-    }
+                .catch(err => { return next(generateErrorByError(req, err, 500)) })
+        } else {
+            return next(generateError(req, 'Formato incorrecto de la password.', 400))
+        }
+    })()
 })
 /**
  * @swagger
@@ -542,7 +548,7 @@ router.post('/register', async function (req, res, next) {
  *       "400":
  *         $ref: "#/components/responses/BadRequest"
  */
-router.get('/register/status', async function (req, res, next) {
+router.get('/register/status', function (req, res, next) {
     if (!req.query.instance) {
         return next(generateError(req, 'Falta la instancia.', 400))
     }
@@ -553,16 +559,18 @@ router.get('/register/status', async function (req, res, next) {
         res.status(200).json({ status: 'canceled', result: 'timeout' }).end()
         return
     }
-    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-    let list = JSON.parse(data)
-    let element = list.find(item => item[config.security.PROP_USERNAME] == usr)
-    if (!element) {
-        res.status(200).json({ status: 'complete', result: 'reject' }).end()
-    } else if (typeof (element.activo) === 'undefined') {
-        res.status(202).json({ status: 'pending' }).end()
-    } else {
-        res.status(200).json({ status: 'complete', result: element.activo ? 'confirm' : 'reject' }).end()
-    }
+    (async () => {
+        let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
+        let list = JSON.parse(data)
+        let element = list.find(item => item[config.security.PROP_USERNAME] == usr)
+        if (!element) {
+            res.status(200).json({ status: 'complete', result: 'reject' }).end()
+        } else if (typeof (element.activo) === 'undefined') {
+            res.status(202).json({ status: 'pending' }).end()
+        } else {
+            res.status(200).json({ status: 'complete', result: element.activo ? 'confirm' : 'reject' }).end()
+        }
+    })()
 })
 /**
 * @swagger
@@ -582,7 +590,7 @@ router.get('/register/status', async function (req, res, next) {
 *       "400": { $ref: "#/components/responses/BadRequest" }
 *       "404": { "$ref": "#/components/responses/NotFound" }
 */
-router.get('/register/confirm', async function (req, res, next) {
+router.get('/register/confirm', function (req, res, next) {
     if (!req.query.instance) {
         return next(generateError(req, 'Falta la instancia.', 400))
     }
@@ -592,20 +600,22 @@ router.get('/register/confirm', async function (req, res, next) {
     } catch (ex) {
         return next(generateError(req, 'Ya no existe la instancia.', 400))
     }
-    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-    let list = JSON.parse(data)
-    let index = list.findIndex(row => row[config.security.PROP_USERNAME] == usr)
-    if (index == -1) {
-        return next(generateErrorByStatus(req, 404))
-    }
-    let element = list.find(item => item[config.security.PROP_USERNAME] == usr)
-    if (!element.activo) {
-        element.activo = true
-        fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
-            .then(() => { res.sendStatus(204) })
-            .catch(err => { return next(generateErrorByError(req, err, 500)) })
-    }
-    res.sendStatus(204)
+    (async () => {
+        let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
+        let list = JSON.parse(data)
+        let index = list.findIndex(row => row[config.security.PROP_USERNAME] == usr)
+        if (index == -1) {
+            return next(generateErrorByStatus(req, 404))
+        }
+        let element = list.find(item => item[config.security.PROP_USERNAME] == usr)
+        if (!element.activo) {
+            element.activo = true
+            fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
+                .then(() => { res.sendStatus(204) })
+                .catch(err => { return next(generateErrorByError(req, err, 500)) })
+        }
+        res.sendStatus(204)
+    })()
 })
 /**
 * @swagger
@@ -625,7 +635,7 @@ router.get('/register/confirm', async function (req, res, next) {
 *       "400": { $ref: "#/components/responses/BadRequest" }
 *       "404": { "$ref": "#/components/responses/NotFound" }
 */
-router.get('/register/reject', async function (req, res, next) {
+router.get('/register/reject', function (req, res, next) {
     if (!req.query.instance) {
         return next(generateError(req, 'Falta la instancia.', 400))
     }
@@ -635,19 +645,21 @@ router.get('/register/reject', async function (req, res, next) {
     } catch (ex) {
         return next(generateError(req, 'Ya no existe la instancia.', 400))
     }
-    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-    let list = JSON.parse(data)
-    let index = list.findIndex(row => row[config.security.PROP_USERNAME] == usr)
-    if (index == -1) {
-        return next(generateErrorByStatus(req, 404))
-    }
-    if (list[index].activo) {
-        return next(generateError(req, 'Ya esta confirmado.', 400))
-    }
-    list.splice(index, 1)
-    fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
-        .then(() => { res.sendStatus(204) })
-        .catch(err => { return next(generateErrorByError(req, err, 500)) })
+    (async () => {
+        let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
+        let list = JSON.parse(data)
+        let index = list.findIndex(row => row[config.security.PROP_USERNAME] == usr)
+        if (index == -1) {
+            return next(generateErrorByStatus(req, 404))
+        }
+        if (list[index].activo) {
+            return next(generateError(req, 'Ya esta confirmado.', 400))
+        }
+        list.splice(index, 1)
+        fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
+            .then(() => { res.sendStatus(204) })
+            .catch(err => { return next(generateErrorByError(req, err, 500)) })
+    })()
 })
 
 let autenticados = express.Router();
@@ -721,17 +733,19 @@ autenticados.use(module.exports.onlySelf)
  *       "401":
  *         $ref: "#/components/responses/Unauthorized"
  */
-autenticados.get('/', async function (req, res, next) {
+autenticados.get('/', function (req, res, next) {
     let usr = res.locals.usr;
-    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-    let list = JSON.parse(data)
-    let element = list.find(item => item[config.security.PROP_USERNAME] == usr)
-    if (element) {
-        delete element[config.security.PROP_PASSWORD]
-        res.status(200).json(element)
-    } else {
-        return next(generateErrorByStatus(req, 401))
-    }
+    (async () => {
+        let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
+        let list = JSON.parse(data)
+        let element = list.find(item => item[config.security.PROP_USERNAME] == usr)
+        if (element) {
+            delete element[config.security.PROP_PASSWORD]
+            res.status(200).json(element)
+        } else {
+            return next(generateErrorByStatus(req, 401))
+        }
+    })()
 })
 /**
  * @swagger
@@ -764,22 +778,24 @@ autenticados.get('/', async function (req, res, next) {
  *       "404":
  *         $ref: "#/components/responses/NotFound"
  */
-autenticados.put('/', async function (req, res, next) {
+autenticados.put('/', function (req, res, next) {
     if (!isSelf(res, req.body.idUsuario))
         return next(generateErrorByStatus(req, 403))
-    let element = req.body
-    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-    let list = JSON.parse(data)
-    let index = list.findIndex(row => row[config.security.PROP_USERNAME] == res.locals.usr)
-    if (index == -1) {
-        return next(generateErrorByStatus(req, 404))
-    } else {
-        if (element.nombre)
-            list[index].nombre = element.nombre;
-        fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
-            .then(() => { res.sendStatus(204) })
-            .catch(err => { return next(generateErrorByError(req, err, 500)) })
-    }
+    let element = req.body;
+    (async () => {
+        let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
+        let list = JSON.parse(data)
+        let index = list.findIndex(row => row[config.security.PROP_USERNAME] == res.locals.usr)
+        if (index == -1) {
+            return next(generateErrorByStatus(req, 404))
+        } else {
+            if (element.nombre)
+                list[index].nombre = element.nombre;
+            fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
+                .then(() => { res.sendStatus(204) })
+                .catch(err => { return next(generateErrorByError(req, err, 500)) })
+        }
+    })()
 })
 /**
  * @swagger
@@ -817,21 +833,23 @@ autenticados.put('/', async function (req, res, next) {
  *       "404":
  *         $ref: "#/components/responses/NotFound"
  */
-autenticados.put('/password', async function (req, res, next) {
-    let element = req.body
-    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-    let list = JSON.parse(data)
-    let index = list.findIndex(row => row[config.security.PROP_USERNAME] == res.locals.usr)
-    if (index == -1) {
-        return next(generateErrorByStatus(req, 404))
-    } else if (config.security.PASSWORD_PATTERN.test(element.newPassword) && await bcrypt.compare(element.oldPassword, list[index][config.security.PROP_PASSWORD])) {
-        list[index][config.security.PROP_PASSWORD] = await encriptaPassword(element.newPassword)
-        fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
-            .then(() => { res.sendStatus(204) })
-            .catch(err => { return next(generateErrorByError(req, err, 500)) })
-    } else {
-        return next(generateError(req, 'Invalid data', 400))
-    }
+autenticados.put('/password', function (req, res, next) {
+    let element = req.body;
+    (async () => {
+        let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
+        let list = JSON.parse(data)
+        let index = list.findIndex(row => row[config.security.PROP_USERNAME] == res.locals.usr)
+        if (index == -1) {
+            return next(generateErrorByStatus(req, 404))
+        } else if (config.security.PASSWORD_PATTERN.test(element.newPassword) && await bcrypt.compare(element.oldPassword, list[index][config.security.PROP_PASSWORD])) {
+            list[index][config.security.PROP_PASSWORD] = await encriptaPassword(element.newPassword)
+            fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
+                .then(() => { res.sendStatus(204) })
+                .catch(err => { return next(generateErrorByError(req, err, 500)) })
+        } else {
+            return next(generateError(req, 'Invalid data', 400))
+        }
+    })()
 })
 
 router.use('/register', autenticados)
