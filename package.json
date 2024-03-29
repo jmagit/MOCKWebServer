@@ -8,7 +8,7 @@
     "restart": "nodemon server.js",
     "lint": "eslint **/*.js",
     "test": "jest --collectCoverage",
-    "sonar": "sonar-scanner.bat -D\"sonar.projectKey=MOCKWebServer\" -D\"sonar.sources=./src\" -D\"sonar.tests=./spec\" -D\"sonar.javascript.lcov.reportPaths=./coverage/lcov.info\" -D\"sonar.host.url=http://localhost:9000\" -D\"sonar.login=sqp_2c1fd59d8a8c98eff7a7079fa4d353178e638bb4\""
+    "sonar": "sonar-scanner.bat -D\"sonar.projectKey=MOCKWebServer\" -D\"sonar.sources=./src\" -D\"sonar.tests=./spec\" -D\"sonar.javascript.lcov.reportPaths=./coverage/lcov.info\" -D\"sonar.host.url=http://localhost:9000\" -D\"sonar.login=sqp_44ea606e549203c9863d0c782d32679fcf94e664\""
   },
   "author": "Javier Martín",
   "license": "ISC",
@@ -16,35 +16,35 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
-    "@faker-js/faker": "^8.3.1",
+    "@faker-js/faker": "^8.4.1",
     "ajv": "^8.12.0",
     "ajv-formats": "^2.1.1",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
-    "express": "^4.18.2",
-    "express-openapi-validator": "^5.1.2",
-    "express-rate-limit": "^7.1.5",
+    "express": "^4.19.2",
+    "express-openapi-validator": "^5.1.6",
+    "express-rate-limit": "^7.2.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "rotating-file-stream": "^3.1.1",
+    "rotating-file-stream": "^3.2.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "validator": "^13.11.0",
-    "ws": "^8.14.2",
-    "xss": "^1.0.14",
-    "yaml": "^2.3.4"
+    "ws": "^8.16.0",
+    "xss": "^1.0.15",
+    "yaml": "^2.4.1"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.11",
-    "@types/supertest": "^2.0.16",
-    "eslint": "^8.55.0",
-    "eslint-plugin-jest": "^27.6.0",
+    "@types/jest": "^29.5.12",
+    "@types/supertest": "^6.0.2",
+    "eslint": "^8.57.0",
+    "eslint-plugin-jest": "^27.9.0",
     "eslint-plugin-node": "^11.1.0",
     "jest": "^29.7.0",
-    "nodemon": "^3.0.2",
-    "supertest": "^6.3.3",
+    "nodemon": "^3.1.0",
+    "supertest": "^6.3.4",
     "superwstest": "^2.0.3"
   }
 }
