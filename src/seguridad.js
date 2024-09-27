@@ -67,10 +67,11 @@ module.exports.useCORS = (req, res, next) => {
         return next()
     }
     res.header('Access-Control-Allow-Origin', origen)
-    res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, authorization, X-Requested-With, X-XSRF-TOKEN')
+    // res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, authorization, X-Requested-With, X-XSRF-TOKEN, accept-language')
+    res.header('Access-Control-Allow-Headers', '*')
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
     res.header('Access-Control-Allow-Credentials', validator.isURL(origen, { require_tld: false }))
-    next()
+    return next()
 }
 
 // Middleware: Autenticación
