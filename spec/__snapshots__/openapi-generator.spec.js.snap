@@ -1,0 +1,4161 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Pruebas unitarias Generar OpenApi 1`] = `
+{
+  "components": {
+    "parameters": {
+      "buscar": {
+        "allowReserved": true,
+        "description": "Selecciona todos aquellos que en alguna de sus propiedades contenga el valor proporcionado.",
+        "in": "query",
+        "name": "_search",
+        "required": false,
+        "schema": {
+          "type": "string",
+        },
+      },
+      "filas": {
+        "description": "Número de filas por página, por defecto 20 si se omite pero aparece el parámetro *_page*.",
+        "in": "query",
+        "name": "_rows",
+        "required": false,
+        "schema": {
+          "minimum": 0,
+          "type": "integer",
+        },
+      },
+      "ordenar": {
+        "allowReserved": true,
+        "description": "Indica la lista de propiedades (separadas por comas) por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.",
+        "in": "query",
+        "name": "_sort",
+        "required": false,
+        "schema": {
+          "type": "string",
+        },
+      },
+      "pagina": {
+        "description": "Número de página empezando en 0 (primera página).",
+        "in": "query",
+        "name": "_page",
+        "required": false,
+        "schema": {
+          "oneOf": [
+            {
+              "minimum": 0,
+              "type": "integer",
+            },
+            {
+              "enum": [
+                "count",
+                "COUNT",
+              ],
+              "type": "string",
+            },
+          ],
+        },
+      },
+      "proyeccion": {
+        "allowReserved": true,
+        "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+        "in": "query",
+        "name": "_projection",
+        "required": false,
+        "schema": {
+          "type": "string",
+        },
+      },
+    },
+    "requestBodies": {},
+    "responses": {
+      "BadRequest": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage",
+            },
+          },
+        },
+        "description": "Invalid data",
+      },
+      "Created": {
+        "description": "Created",
+        "headers": {
+          "location": {
+            "description": "URL al elemento recién creado",
+            "schema": {
+              "format": "uri",
+              "type": "string",
+            },
+          },
+        },
+      },
+      "Forbidden": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage",
+            },
+          },
+        },
+        "description": "Forbidden",
+      },
+      "NoContent": {
+        "description": "No content",
+      },
+      "NotFound": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage",
+            },
+          },
+        },
+        "description": "Not found",
+      },
+      "Unauthorized": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessage",
+            },
+          },
+        },
+        "description": "Unauthorized",
+      },
+    },
+    "schemas": {
+      "ArticuloModel": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ArticuloProjection",
+          },
+        ],
+        "required": [
+          "id",
+          "titulo",
+        ],
+        "title": "Articulo (Modelo)",
+      },
+      "ArticuloProjection": {
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "autor": {
+            "example": "Javier",
+            "maxLength": 200,
+            "title": "Autor",
+            "type": "string",
+          },
+          "fecha": {
+            "example": "2016-02-29",
+            "format": "date",
+            "title": "Fecha",
+            "type": "string",
+          },
+          "fotourl": {
+            "example": "https://cdn-images-1.medium.com/max/800/1*V3Kfghg_jIV0ubxmAnCXBA.jpeg",
+            "format": "uri",
+            "title": "Fotourl",
+            "type": "string",
+          },
+          "id": {
+            "description": "El 0 actúa como autonumérico en la creación",
+            "example": 1,
+            "title": "Id",
+            "type": "integer",
+          },
+          "megusta": {
+            "example": 0,
+            "title": "Megusta",
+            "type": "integer",
+          },
+          "texto": {
+            "example": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores eveniet eum nisi expedita ab dolorum labore similique provident officia ipsa, aliquam recusandae dicta id, praesentium quasi consequatur minus laborum perferendis?",
+            "title": "Texto",
+            "type": "string",
+          },
+          "titulo": {
+            "example": "Saludo",
+            "maxLength": 200,
+            "title": "Titulo",
+            "type": "string",
+          },
+        },
+        "title": "Articulo (Proyección)",
+        "type": "object",
+      },
+      "Biblioteca": {
+        "items": {
+          "$ref": "#/components/schemas/VolumenProjection",
+        },
+        "title": "Biblioteca (Listado)",
+        "type": "array",
+      },
+      "BibliotecaPage": {
+        "properties": {
+          "content": {
+            "$ref": "#/components/schemas/Biblioteca",
+          },
+          "empty": {
+            "description": "Si la página está vacía",
+            "type": "boolean",
+          },
+          "first": {
+            "description": "Si la página es la primera",
+            "type": "boolean",
+          },
+          "last": {
+            "description": "Si la página es la última",
+            "type": "boolean",
+          },
+          "number": {
+            "description": "Número de página actual",
+            "type": "integer",
+          },
+          "numberOfElements": {
+            "description": "Número total de elementos en la página",
+            "type": "integer",
+          },
+          "size": {
+            "description": "Tamaño de página en elementos",
+            "type": "integer",
+          },
+          "totalElements": {
+            "description": "Número total de elementos",
+            "type": "integer",
+          },
+          "totalPages": {
+            "description": "Número total de páginas",
+            "type": "integer",
+          },
+        },
+        "title": "Biblioteca (Página)",
+        "type": "object",
+      },
+      "Blog": {
+        "items": {
+          "$ref": "#/components/schemas/ArticuloProjection",
+        },
+        "title": "Blog (Listado)",
+        "type": "array",
+      },
+      "BlogPage": {
+        "properties": {
+          "content": {
+            "$ref": "#/components/schemas/Blog",
+          },
+          "empty": {
+            "description": "Si la página está vacía",
+            "type": "boolean",
+          },
+          "first": {
+            "description": "Si la página es la primera",
+            "type": "boolean",
+          },
+          "last": {
+            "description": "Si la página es la última",
+            "type": "boolean",
+          },
+          "number": {
+            "description": "Número de página actual",
+            "type": "integer",
+          },
+          "numberOfElements": {
+            "description": "Número total de elementos en la página",
+            "type": "integer",
+          },
+          "size": {
+            "description": "Tamaño de página en elementos",
+            "type": "integer",
+          },
+          "totalElements": {
+            "description": "Número total de elementos",
+            "type": "integer",
+          },
+          "totalPages": {
+            "description": "Número total de páginas",
+            "type": "integer",
+          },
+        },
+        "title": "Blog (Página)",
+        "type": "object",
+      },
+      "ContactoModel": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ContactoProjection",
+          },
+        ],
+        "required": [
+          "id",
+          "nombre",
+        ],
+        "title": "Contacto (Modelo)",
+      },
+      "ContactoProjection": {
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "apellidos": {
+            "example": "Woodall",
+            "maxLength": 100,
+            "title": "Apellidos",
+            "type": "string",
+          },
+          "avatar": {
+            "example": "https://randomuser.me/api/portraits/men/0.jpg",
+            "format": "uri",
+            "maxLength": 200,
+            "title": "Avatar",
+            "type": "string",
+          },
+          "conflictivo": {
+            "example": true,
+            "title": "Conflictivo",
+            "type": "boolean",
+          },
+          "direcciones": {
+            "items": {
+              "properties": {
+                "calle": {
+                  "example": "488 Pankratz Junction",
+                  "maxLength": 500,
+                  "title": "Calle",
+                  "type": "string",
+                },
+                "codigo": {
+                  "example": "29071",
+                  "pattern": "^\\d{4,5}$",
+                  "title": "Código Postal",
+                  "type": "string",
+                },
+                "pais": {
+                  "example": "España",
+                  "maxLength": 100,
+                  "title": "Pais",
+                  "type": "string",
+                },
+                "provincia": {
+                  "example": "Malaga",
+                  "maxLength": 100,
+                  "title": "Provincia",
+                  "type": "string",
+                },
+              },
+              "required": [
+                "calle",
+                "codigo",
+                "provincia",
+                "pais",
+              ],
+              "title": "Dirección",
+              "type": "object",
+            },
+            "title": "Direcciones",
+            "type": "array",
+            "uniqueItems": true,
+          },
+          "email": {
+            "example": "pwoodall0@army.mil",
+            "format": "email",
+            "maxLength": 100,
+            "title": "Email",
+            "type": "string",
+          },
+          "icono": {
+            "example": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAALJSURBVDjLpVNbS1RRFP72nHGaUedmpamj5pgKSUli0eXJfOipoELs+hA+FFT44oMSRBkZ1GNC/oAoCJ+C8QaSZhdCTEU0rbyP05jTzOTczv20zkz6IBFBBxZrs9f+vv3t76zFNE3D/3zGjYXa01OuKUqtJstZqizPUnSb6+vDem29o8OpiuIFimZFEOZUQXiY09rq0WtMV6B2d98k8F2YTU4YOKjRCKTw+qQqSZcJFKPoTMty7Nu2pwRKJILY2DjiPv9TIrvGlK6uk5osvjSUl4ERGJIEmEyQlpeRmJpeUkQxaikp3mt2u4FwEPoFcDgR6u1FaHzivpGk3uDy88DiccDnBxQVkGWkFReAO3SgUONFcGYLMDxC71RTF1jTYTt2FIEPw1eMJLOCs9mAuXkqyoBGhxQF+PQFBjvtcwyY+aq7BIhyKgeCYCUqFJ636QSmJIAXAEFIEYhSimTFl1STvFkPjfYEqqmUJRFkpmokg9bJ+Z1MpgKfIICSAutAZcs6mSmMBvLCADLRYCCWfnlmBnDlAbEokCASnqcbhFQW+VRO7lPQX0CpG4GB17qCZyzc3u4mFf2WItdu864cYHIKWAv+bg5lU4V3bYxiFLHQd3CZNqT9zIynx7PLuAceTyg2OPiK9/kPqqEfeWmV+8HSqb8WvSkwue5dHUXIHkbFmQaUXmxETrYVIX6FC0YmFtlGK39rabHTm5pIVqOzqtJqzc8F3r2nNoxiaLkT1Q1NsMwOkLFvALsDAWMRPvYNzbOtszDf0FBNRI8dxYWHd9TWJE3rbzuF449egFWd3jwXvpOLkaGAxv40TJ/r6hxEco+8ue4syGVTC88TR85fsmQseSAk/KCWQ2Sdw/QsVtjfpnGipuYs9Ykr4pp3mqwZtwq2y0ajwYvImoyFVU6ReO02+9dxfnuusDkW9F3lFFakcNoKoZ6c6JPbfgHHGqU/+iLy1wAAAABJRU5ErkJggg==",
+            "maxLength": 65000,
+            "title": "Icono",
+            "type": "string",
+          },
+          "id": {
+            "description": "El 0 actúa como autonumérico en la creación",
+            "example": 1,
+            "title": "Id",
+            "type": "integer",
+          },
+          "nacimiento": {
+            "example": "1963-10-11",
+            "format": "date",
+            "title": "Nacimiento",
+            "type": "string",
+          },
+          "nif": {
+            "example": "12345678Z",
+            "format": "nif",
+            "title": "N.I.F.",
+            "type": "string",
+          },
+          "nombre": {
+            "example": "Pietro",
+            "maxLength": 100,
+            "title": "Nombre",
+            "type": "string",
+          },
+          "sexo": {
+            "enum": [
+              "H",
+              "M",
+            ],
+            "example": "H",
+            "title": "Sexo",
+            "type": "string",
+          },
+          "telefono": {
+            "example": "642 051 348",
+            "pattern": "^(\\d{3}\\s){2}\\d{3}$",
+            "title": "Telefono",
+            "type": "string",
+          },
+          "tratamiento": {
+            "enum": [
+              "Sr.",
+              "Sra.",
+              "Srta.",
+              "Dr.",
+              "Dra.",
+              "Ilmo.",
+              "Ilma.",
+              "Excmo.",
+              "Excma.",
+            ],
+            "example": "Excmo.",
+            "title": "Tratamiento",
+            "type": "string",
+          },
+        },
+        "title": "Contacto (Proyección)",
+        "type": "object",
+      },
+      "Contactos": {
+        "items": {
+          "$ref": "#/components/schemas/ContactoProjection",
+        },
+        "title": "Contactos (Listado)",
+        "type": "array",
+      },
+      "ContactosPage": {
+        "properties": {
+          "content": {
+            "$ref": "#/components/schemas/Contactos",
+          },
+          "empty": {
+            "description": "Si la página está vacía",
+            "type": "boolean",
+          },
+          "first": {
+            "description": "Si la página es la primera",
+            "type": "boolean",
+          },
+          "last": {
+            "description": "Si la página es la última",
+            "type": "boolean",
+          },
+          "number": {
+            "description": "Número de página actual",
+            "type": "integer",
+          },
+          "numberOfElements": {
+            "description": "Número total de elementos en la página",
+            "type": "integer",
+          },
+          "size": {
+            "description": "Tamaño de página en elementos",
+            "type": "integer",
+          },
+          "totalElements": {
+            "description": "Número total de elementos",
+            "type": "integer",
+          },
+          "totalPages": {
+            "description": "Número total de páginas",
+            "type": "integer",
+          },
+        },
+        "title": "Contactos (Página)",
+        "type": "object",
+      },
+      "ErrorMessage": {
+        "description": "Problem Details for HTTP APIs ([RFC 7807](https://datatracker.ietf.org/doc/html/rfc7807))",
+        "properties": {
+          "detail": {
+            "description": "Explicación legible por humanos específica de la ocurrencia concreta del problema.",
+            "type": "string",
+          },
+          "errors": {
+            "description": "Lista de errores de validación",
+            "items": {
+              "additionalProperties": true,
+              "minProperties": 1,
+              "type": "object",
+            },
+            "type": "array",
+          },
+          "instance": {
+            "description": "URI de referencia que identifica el origen de la ocurrencia del problema.",
+            "type": "string",
+          },
+          "source": {
+            "description": "En modo depuración, información complementaria sobre el origen del error.",
+            "type": "string",
+          },
+          "status": {
+            "description": "Código de estado HTTP.",
+            "type": "integer",
+          },
+          "title": {
+            "description": "Breve resumen legible por humanos del problema escribe.",
+            "type": "string",
+          },
+          "type": {
+            "description": "URI que identifica el tipo de problema y proporciona documentación legible por humanos para el tipo de problema.",
+            "type": "string",
+          },
+        },
+        "required": [
+          "type",
+          "status",
+          "title",
+        ],
+        "title": "Problem Details",
+        "type": "object",
+      },
+      "LibroModel": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/LibroProjection",
+          },
+        ],
+        "required": [
+          "idLibro",
+          "titulo",
+        ],
+        "title": "Libro (Modelo)",
+      },
+      "LibroProjection": {
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "autor": {
+            "example": "Miguel de Cervantes",
+            "maxLength": 100,
+            "title": "Autor",
+            "type": "string",
+          },
+          "fecha": {
+            "example": "1605",
+            "title": "Fecha",
+            "type": "string",
+          },
+          "idLibro": {
+            "example": "1",
+            "title": "Idlibro",
+            "type": "string",
+          },
+          "paginas": {
+            "example": "377",
+            "title": "Paginas",
+            "type": "string",
+          },
+          "pais": {
+            "example": "España",
+            "maxLength": 50,
+            "title": "Pais",
+            "type": "string",
+          },
+          "titulo": {
+            "example": "El ingenioso hidalgo don Quijote de la Mancha ",
+            "maxLength": 200,
+            "title": "Titulo",
+            "type": "string",
+          },
+          "wiki": {
+            "example": "https://es.wikipedia.org/wiki/Don_Quijote_de_la_Mancha",
+            "format": "uri",
+            "title": "Wiki",
+            "type": "string",
+          },
+        },
+        "title": "Libro (Proyección)",
+        "type": "object",
+      },
+      "Libros": {
+        "items": {
+          "$ref": "#/components/schemas/LibroProjection",
+        },
+        "title": "Libros (Listado)",
+        "type": "array",
+      },
+      "LibrosPage": {
+        "properties": {
+          "content": {
+            "$ref": "#/components/schemas/Libros",
+          },
+          "empty": {
+            "description": "Si la página está vacía",
+            "type": "boolean",
+          },
+          "first": {
+            "description": "Si la página es la primera",
+            "type": "boolean",
+          },
+          "last": {
+            "description": "Si la página es la última",
+            "type": "boolean",
+          },
+          "number": {
+            "description": "Número de página actual",
+            "type": "integer",
+          },
+          "numberOfElements": {
+            "description": "Número total de elementos en la página",
+            "type": "integer",
+          },
+          "size": {
+            "description": "Tamaño de página en elementos",
+            "type": "integer",
+          },
+          "totalElements": {
+            "description": "Número total de elementos",
+            "type": "integer",
+          },
+          "totalPages": {
+            "description": "Número total de páginas",
+            "type": "integer",
+          },
+        },
+        "title": "Libros (Página)",
+        "type": "object",
+      },
+      "Login": {
+        "description": "Credenciales de autenticación",
+        "properties": {
+          "password": {
+            "example": "P@$$w0rd",
+            "format": "password",
+            "type": "string",
+          },
+          "username": {
+            "example": "adm@example.com",
+            "format": "email",
+            "type": "string",
+          },
+        },
+        "required": [
+          "username",
+          "password",
+        ],
+        "type": "object",
+      },
+      "MarcaModel": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/MarcaProjection",
+          },
+        ],
+        "required": [
+          "marca",
+          "modelos",
+        ],
+        "title": "Marca (Modelo)",
+      },
+      "MarcaProjection": {
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "marca": {
+            "example": "ALFA ROMEO",
+            "title": "Marca",
+            "type": "string",
+          },
+          "modelos": {
+            "items": {
+              "example": "Giulietta",
+              "title": "Modelo",
+              "type": "string",
+            },
+            "title": "Modelos",
+            "type": "array",
+            "uniqueItems": true,
+          },
+        },
+        "title": "Marca (Proyección)",
+        "type": "object",
+      },
+      "Marcas": {
+        "items": {
+          "$ref": "#/components/schemas/MarcaProjection",
+        },
+        "title": "Marcas (Listado)",
+        "type": "array",
+      },
+      "MarcasPage": {
+        "properties": {
+          "content": {
+            "$ref": "#/components/schemas/Marcas",
+          },
+          "empty": {
+            "description": "Si la página está vacía",
+            "type": "boolean",
+          },
+          "first": {
+            "description": "Si la página es la primera",
+            "type": "boolean",
+          },
+          "last": {
+            "description": "Si la página es la última",
+            "type": "boolean",
+          },
+          "number": {
+            "description": "Número de página actual",
+            "type": "integer",
+          },
+          "numberOfElements": {
+            "description": "Número total de elementos en la página",
+            "type": "integer",
+          },
+          "size": {
+            "description": "Tamaño de página en elementos",
+            "type": "integer",
+          },
+          "totalElements": {
+            "description": "Número total de elementos",
+            "type": "integer",
+          },
+          "totalPages": {
+            "description": "Número total de páginas",
+            "type": "integer",
+          },
+        },
+        "title": "Marcas (Página)",
+        "type": "object",
+      },
+      "PeliculaModel": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PeliculaProjection",
+          },
+        ],
+        "title": "Pelicula (Modelo)",
+      },
+      "PeliculaProjection": {
+        "minProperties": 1,
+        "properties": {
+          "id": {
+            "description": "El 0 actúa como autonumérico en la creación",
+            "format": "int32",
+            "minimum": 0,
+            "type": "integer",
+          },
+        },
+        "title": "Pelicula (Proyección)",
+        "type": "object",
+      },
+      "Peliculas": {
+        "items": {
+          "$ref": "#/components/schemas/PeliculaProjection",
+        },
+        "title": "Peliculas (Listado)",
+        "type": "array",
+      },
+      "PeliculasPage": {
+        "properties": {
+          "content": {
+            "$ref": "#/components/schemas/Peliculas",
+          },
+          "empty": {
+            "description": "Si la página está vacía",
+            "type": "boolean",
+          },
+          "first": {
+            "description": "Si la página es la primera",
+            "type": "boolean",
+          },
+          "last": {
+            "description": "Si la página es la última",
+            "type": "boolean",
+          },
+          "number": {
+            "description": "Número de página actual",
+            "type": "integer",
+          },
+          "numberOfElements": {
+            "description": "Número total de elementos en la página",
+            "type": "integer",
+          },
+          "size": {
+            "description": "Tamaño de página en elementos",
+            "type": "integer",
+          },
+          "totalElements": {
+            "description": "Número total de elementos",
+            "type": "integer",
+          },
+          "totalPages": {
+            "description": "Número total de páginas",
+            "type": "integer",
+          },
+        },
+        "title": "Peliculas (Página)",
+        "type": "object",
+      },
+      "PersonaModel": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PersonaProjection",
+          },
+        ],
+        "required": [
+          "id",
+          "nombre",
+        ],
+        "title": "Persona (Modelo)",
+      },
+      "PersonaProjection": {
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "apellidos": {
+            "example": "Grillo",
+            "title": "Apellidos",
+            "type": "string",
+          },
+          "correo": {
+            "example": "pepito@grillo.tv",
+            "format": "email",
+            "title": "Correo",
+            "type": "string",
+          },
+          "edad": {
+            "example": 37,
+            "maximum": 67,
+            "minimum": 16,
+            "title": "Edad",
+            "type": "integer",
+          },
+          "id": {
+            "description": "El 0 actúa como autonumérico en la creación",
+            "example": 1,
+            "title": "Id",
+            "type": "integer",
+          },
+          "nombre": {
+            "example": "Pepito",
+            "title": "Nombre",
+            "type": "string",
+          },
+          "telefono": {
+            "items": {
+              "example": "999 555 555",
+              "pattern": "^(\\d{3}\\s){2}\\d{3}$",
+              "title": "Teléfono",
+              "type": "string",
+            },
+            "title": "Teléfonos",
+            "type": "array",
+            "uniqueItems": true,
+          },
+        },
+        "title": "Persona (Proyección)",
+        "type": "object",
+      },
+      "Personas": {
+        "items": {
+          "$ref": "#/components/schemas/PersonaProjection",
+        },
+        "title": "Personas (Listado)",
+        "type": "array",
+      },
+      "PersonasPage": {
+        "properties": {
+          "content": {
+            "$ref": "#/components/schemas/Personas",
+          },
+          "empty": {
+            "description": "Si la página está vacía",
+            "type": "boolean",
+          },
+          "first": {
+            "description": "Si la página es la primera",
+            "type": "boolean",
+          },
+          "last": {
+            "description": "Si la página es la última",
+            "type": "boolean",
+          },
+          "number": {
+            "description": "Número de página actual",
+            "type": "integer",
+          },
+          "numberOfElements": {
+            "description": "Número total de elementos en la página",
+            "type": "integer",
+          },
+          "size": {
+            "description": "Tamaño de página en elementos",
+            "type": "integer",
+          },
+          "totalElements": {
+            "description": "Número total de elementos",
+            "type": "integer",
+          },
+          "totalPages": {
+            "description": "Número total de páginas",
+            "type": "integer",
+          },
+        },
+        "title": "Personas (Página)",
+        "type": "object",
+      },
+      "RefreshToken": {
+        "properties": {
+          "token": {
+            "type": "string",
+          },
+        },
+        "title": "Token de petición de refresco",
+        "type": "object",
+      },
+      "RegisterStatus": {
+        "description": "Credenciales de autenticación",
+        "properties": {
+          "result": {
+            "enum": [
+              "confirm",
+              "reject",
+              "canceled",
+              "timeout",
+            ],
+            "type": "string",
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "complete",
+              "canceled",
+            ],
+            "type": "string",
+          },
+        },
+        "title": "Estado Registro",
+        "type": "object",
+      },
+      "RespuestaLogin": {
+        "properties": {
+          "expires_in": {
+            "format": "int32",
+            "type": "integer",
+          },
+          "name": {
+            "type": "string",
+          },
+          "refresh": {
+            "type": "string",
+          },
+          "roles": {
+            "items": {
+              "type": "string",
+            },
+            "type": "array",
+          },
+          "success": {
+            "type": "boolean",
+          },
+          "token": {
+            "type": "string",
+          },
+        },
+        "title": "Respuesta Login",
+        "type": "object",
+      },
+      "TarjetaModel": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/TarjetaProjection",
+          },
+        ],
+        "required": [
+          "id",
+          "idCliente",
+          "numero",
+          "caducidad",
+          "CVC_CVV",
+          "tipo",
+        ],
+        "title": "Tarjeta (Modelo)",
+      },
+      "TarjetaProjection": {
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "CVC_CVV": {
+            "example": "147",
+            "title": "Cvc_cvv",
+            "type": "string",
+          },
+          "caducidad": {
+            "example": "03/2020",
+            "pattern": "^\\d{2}\\/\\d{4}$",
+            "title": "Caducidad",
+            "type": "string",
+          },
+          "id": {
+            "description": "El 0 actúa como autonumérico en la creación",
+            "example": 0,
+            "title": "Id",
+            "type": "integer",
+          },
+          "idCliente": {
+            "example": "a.auctor.non@dictummi.ca",
+            "format": "email",
+            "title": "IdCliente",
+            "type": "string",
+          },
+          "numero": {
+            "example": "4024 0071 1838 5904",
+            "pattern": "^(((\\d{4}\\s){3}\\d{4})|(\\d{13}))$",
+            "title": "Numero",
+            "type": "string",
+          },
+          "tipo": {
+            "example": "Visa",
+            "title": "Tipo",
+            "type": "string",
+          },
+        },
+        "title": "Tarjeta (Proyección)",
+        "type": "object",
+      },
+      "Tarjetas": {
+        "items": {
+          "$ref": "#/components/schemas/TarjetaProjection",
+        },
+        "title": "Tarjetas (Listado)",
+        "type": "array",
+      },
+      "TarjetasPage": {
+        "properties": {
+          "content": {
+            "$ref": "#/components/schemas/Tarjetas",
+          },
+          "empty": {
+            "description": "Si la página está vacía",
+            "type": "boolean",
+          },
+          "first": {
+            "description": "Si la página es la primera",
+            "type": "boolean",
+          },
+          "last": {
+            "description": "Si la página es la última",
+            "type": "boolean",
+          },
+          "number": {
+            "description": "Número de página actual",
+            "type": "integer",
+          },
+          "numberOfElements": {
+            "description": "Número total de elementos en la página",
+            "type": "integer",
+          },
+          "size": {
+            "description": "Tamaño de página en elementos",
+            "type": "integer",
+          },
+          "totalElements": {
+            "description": "Número total de elementos",
+            "type": "integer",
+          },
+          "totalPages": {
+            "description": "Número total de páginas",
+            "type": "integer",
+          },
+        },
+        "title": "Tarjetas (Página)",
+        "type": "object",
+      },
+      "VehiculoModel": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/VehiculoProjection",
+          },
+        ],
+        "required": [
+          "id",
+          "marca",
+          "modelo",
+          "matricula",
+        ],
+        "title": "Vehiculo (Modelo)",
+      },
+      "VehiculoProjection": {
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "direcciones": {
+            "items": {
+              "properties": {
+                "calle": {
+                  "example": "Compact Pussycat",
+                  "title": "Calle",
+                  "type": "string",
+                },
+                "cp": {
+                  "example": "11080",
+                  "title": "Cp",
+                  "type": "string",
+                },
+                "id": {
+                  "example": 1,
+                  "title": "Id",
+                  "type": "integer",
+                },
+                "localidad": {
+                  "example": "Rota",
+                  "title": "Localidad",
+                  "type": "string",
+                },
+                "provincia": {
+                  "example": 11,
+                  "title": "Provincia",
+                  "type": "integer",
+                },
+              },
+              "required": [
+                "id",
+                "calle",
+                "localidad",
+                "cp",
+                "provincia",
+              ],
+              "title": "Dirección",
+              "type": "object",
+            },
+            "title": "Direcciones",
+            "type": "array",
+            "uniqueItems": true,
+          },
+          "edad": {
+            "example": 2,
+            "title": "Edad",
+            "type": "integer",
+          },
+          "id": {
+            "description": "El 0 actúa como autonumérico en la creación",
+            "example": 1,
+            "title": "Id",
+            "type": "integer",
+          },
+          "marca": {
+            "example": "AUDI",
+            "title": "Marca",
+            "type": "string",
+          },
+          "matricula": {
+            "example": "1234ABC",
+            "title": "Matricula",
+            "type": "string",
+          },
+          "modelo": {
+            "example": "A3",
+            "title": "Modelo",
+            "type": "string",
+          },
+          "propietario": {
+            "properties": {
+              "apellidos": {
+                "example": "Glamour",
+                "title": "Apellidos",
+                "type": "string",
+              },
+              "dni": {
+                "example": "12345678Z",
+                "format": "nif",
+                "title": "Dni",
+                "type": "string",
+              },
+              "email": {
+                "example": "pglamour@example.com",
+                "format": "email",
+                "title": "Email",
+                "type": "string",
+              },
+              "nombre": {
+                "example": "Penélope",
+                "title": "Nombre",
+                "type": "string",
+              },
+            },
+            "required": [
+              "nombre",
+              "apellidos",
+              "dni",
+              "email",
+            ],
+            "title": "Propietario",
+            "type": "object",
+          },
+        },
+        "title": "Vehiculo (Proyección)",
+        "type": "object",
+      },
+      "Vehiculos": {
+        "items": {
+          "$ref": "#/components/schemas/VehiculoProjection",
+        },
+        "title": "Vehiculos (Listado)",
+        "type": "array",
+      },
+      "VehiculosPage": {
+        "properties": {
+          "content": {
+            "$ref": "#/components/schemas/Vehiculos",
+          },
+          "empty": {
+            "description": "Si la página está vacía",
+            "type": "boolean",
+          },
+          "first": {
+            "description": "Si la página es la primera",
+            "type": "boolean",
+          },
+          "last": {
+            "description": "Si la página es la última",
+            "type": "boolean",
+          },
+          "number": {
+            "description": "Número de página actual",
+            "type": "integer",
+          },
+          "numberOfElements": {
+            "description": "Número total de elementos en la página",
+            "type": "integer",
+          },
+          "size": {
+            "description": "Tamaño de página en elementos",
+            "type": "integer",
+          },
+          "totalElements": {
+            "description": "Número total de elementos",
+            "type": "integer",
+          },
+          "totalPages": {
+            "description": "Número total de páginas",
+            "type": "integer",
+          },
+        },
+        "title": "Vehiculos (Página)",
+        "type": "object",
+      },
+      "VolumenModel": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/VolumenProjection",
+          },
+        ],
+        "required": [
+          "id",
+          "titulo",
+          "autor",
+        ],
+        "title": "Volumen (Modelo)",
+      },
+      "VolumenProjection": {
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "autor": {
+            "example": "At Mi Imperdiet",
+            "maxLength": 100,
+            "title": "Autor",
+            "type": "string",
+          },
+          "id": {
+            "description": "El 0 actúa como autonumérico en la creación",
+            "example": 0,
+            "title": "Id",
+            "type": "integer",
+          },
+          "numPag": {
+            "example": 22,
+            "exclusiveMinimum": true,
+            "minimum": 0,
+            "title": "Número de páginas",
+            "type": "integer",
+          },
+          "titulo": {
+            "example": "Mauris",
+            "maxLength": 100,
+            "title": "Titulo",
+            "type": "string",
+          },
+        },
+        "title": "Volumen (Proyección)",
+        "type": "object",
+      },
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "bearerFormat": "JWT",
+        "scheme": "bearer",
+        "type": "http",
+      },
+      "cookieAuth": {
+        "in": "cookie",
+        "name": "Authorization",
+        "type": "apiKey",
+      },
+    },
+  },
+  "externalDocs": {
+    "description": "Repositorio del proyecto",
+    "url": "https://github.com/jmagit/MOCKWebServer",
+  },
+  "info": {
+    "contact": {
+      "email": "support@example.com",
+      "name": "Javier Martín",
+      "url": "https://github.com/jmagit",
+    },
+    "description": "Versión NodeJS del **servidor de pruebas** para cursos de FrontEnd.",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
+    },
+    "title": "MOCK Web Server",
+    "version": "2.0.0",
+  },
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/auth": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "isAuthenticated": {
+                      "type": "boolean",
+                    },
+                    "name": {
+                      "type": "string",
+                    },
+                    "roles": {
+                      "items": {
+                        "type": "string",
+                      },
+                      "type": "array",
+                    },
+                    "usr": {
+                      "type": "string",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "OK",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Obtener estado de sesión",
+        "tags": [
+          "autenticación",
+        ],
+      },
+    },
+    "/api/biblioteca": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pagina",
+          },
+          {
+            "$ref": "#/components/parameters/filas",
+          },
+          {
+            "$ref": "#/components/parameters/ordenar",
+          },
+          {
+            "$ref": "#/components/parameters/buscar",
+          },
+          {
+            "$ref": "#/components/parameters/proyeccion",
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Biblioteca",
+                    },
+                    {
+                      "$ref": "#/components/schemas/BibliotecaPage",
+                    },
+                  ],
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "summary": "Listar biblioteca",
+        "tags": [
+          "biblioteca",
+        ],
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "summary": "Sondeo CORS",
+        "tags": [
+          "biblioteca",
+        ],
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VolumenModel",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Crear volumen",
+        "tags": [
+          "biblioteca",
+        ],
+      },
+    },
+    "/api/biblioteca/{id}": {
+      "delete": {
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Borrar volumen",
+        "tags": [
+          "biblioteca",
+        ],
+      },
+      "get": {
+        "parameters": [
+          {
+            "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+            "in": "query",
+            "name": "_projection",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VolumenProjection",
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "summary": "Recuperar volumen",
+        "tags": [
+          "biblioteca",
+        ],
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "summary": "Sondeo CORS",
+        "tags": [
+          "biblioteca",
+        ],
+      },
+      "parameters": [
+        {
+          "description": "Identificador del recurso",
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "integer",
+          },
+        },
+      ],
+      "patch": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VolumenProjection",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VolumenProjection",
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Actualizar parcialmente volumen",
+        "tags": [
+          "biblioteca",
+        ],
+      },
+      "put": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VolumenModel",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Reemplazar volumen",
+        "tags": [
+          "biblioteca",
+        ],
+      },
+    },
+    "/api/blog": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pagina",
+          },
+          {
+            "$ref": "#/components/parameters/filas",
+          },
+          {
+            "$ref": "#/components/parameters/ordenar",
+          },
+          {
+            "$ref": "#/components/parameters/buscar",
+          },
+          {
+            "$ref": "#/components/parameters/proyeccion",
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Blog",
+                    },
+                    {
+                      "$ref": "#/components/schemas/BlogPage",
+                    },
+                  ],
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Listar blog",
+        "tags": [
+          "blog",
+        ],
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Sondeo CORS",
+        "tags": [
+          "blog",
+        ],
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArticuloModel",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Crear articulo",
+        "tags": [
+          "blog",
+        ],
+      },
+    },
+    "/api/blog/{id}": {
+      "delete": {
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Borrar articulo",
+        "tags": [
+          "blog",
+        ],
+      },
+      "get": {
+        "parameters": [
+          {
+            "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+            "in": "query",
+            "name": "_projection",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticuloProjection",
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Recuperar articulo",
+        "tags": [
+          "blog",
+        ],
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Sondeo CORS",
+        "tags": [
+          "blog",
+        ],
+      },
+      "parameters": [
+        {
+          "description": "Identificador del recurso",
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "integer",
+          },
+        },
+      ],
+      "patch": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArticuloProjection",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticuloProjection",
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Actualizar parcialmente articulo",
+        "tags": [
+          "blog",
+        ],
+      },
+      "put": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArticuloModel",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Reemplazar articulo",
+        "tags": [
+          "blog",
+        ],
+      },
+    },
+    "/api/contactos": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pagina",
+          },
+          {
+            "$ref": "#/components/parameters/filas",
+          },
+          {
+            "$ref": "#/components/parameters/ordenar",
+          },
+          {
+            "$ref": "#/components/parameters/buscar",
+          },
+          {
+            "$ref": "#/components/parameters/proyeccion",
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Contactos",
+                    },
+                    {
+                      "$ref": "#/components/schemas/ContactosPage",
+                    },
+                  ],
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "summary": "Listar contactos",
+        "tags": [
+          "contactos",
+        ],
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "summary": "Sondeo CORS",
+        "tags": [
+          "contactos",
+        ],
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactoModel",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "summary": "Crear contacto",
+        "tags": [
+          "contactos",
+        ],
+      },
+    },
+    "/api/contactos/{id}": {
+      "delete": {
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "summary": "Borrar contacto",
+        "tags": [
+          "contactos",
+        ],
+      },
+      "get": {
+        "parameters": [
+          {
+            "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+            "in": "query",
+            "name": "_projection",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactoProjection",
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "summary": "Recuperar contacto",
+        "tags": [
+          "contactos",
+        ],
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "summary": "Sondeo CORS",
+        "tags": [
+          "contactos",
+        ],
+      },
+      "parameters": [
+        {
+          "description": "Identificador del recurso",
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "integer",
+          },
+        },
+      ],
+      "patch": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactoProjection",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactoProjection",
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "summary": "Actualizar parcialmente contacto",
+        "tags": [
+          "contactos",
+        ],
+      },
+      "put": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactoModel",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "summary": "Reemplazar contacto",
+        "tags": [
+          "contactos",
+        ],
+      },
+    },
+    "/api/libros": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pagina",
+          },
+          {
+            "$ref": "#/components/parameters/filas",
+          },
+          {
+            "$ref": "#/components/parameters/ordenar",
+          },
+          {
+            "$ref": "#/components/parameters/buscar",
+          },
+          {
+            "$ref": "#/components/parameters/proyeccion",
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Libros",
+                    },
+                    {
+                      "$ref": "#/components/schemas/LibrosPage",
+                    },
+                  ],
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Listar libros",
+        "tags": [
+          "libros",
+        ],
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Sondeo CORS",
+        "tags": [
+          "libros",
+        ],
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LibroModel",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Crear libro",
+        "tags": [
+          "libros",
+        ],
+      },
+    },
+    "/api/libros/{id}": {
+      "delete": {
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Borrar libro",
+        "tags": [
+          "libros",
+        ],
+      },
+      "get": {
+        "parameters": [
+          {
+            "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+            "in": "query",
+            "name": "_projection",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibroProjection",
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Recuperar libro",
+        "tags": [
+          "libros",
+        ],
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Sondeo CORS",
+        "tags": [
+          "libros",
+        ],
+      },
+      "parameters": [
+        {
+          "description": "Identificador del recurso",
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "string",
+          },
+        },
+      ],
+      "patch": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LibroProjection",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibroProjection",
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Actualizar parcialmente libro",
+        "tags": [
+          "libros",
+        ],
+      },
+      "put": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LibroModel",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Reemplazar libro",
+        "tags": [
+          "libros",
+        ],
+      },
+    },
+    "/api/login": {
+      "options": {
+        "responses": {
+          "200": {
+            "description": "OK",
+          },
+        },
+        "summary": "Sondeo CORS",
+        "tags": [
+          "autenticación",
+        ],
+      },
+      "post": {
+        "parameters": [
+          {
+            "description": "true para que genere y envíe la cookie",
+            "in": "query",
+            "name": "cookie",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+            },
+          },
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Login",
+              },
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Login",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaLogin",
+                },
+              },
+            },
+            "description": "Resultado de la autenticación",
+            "headers": {
+              "Set-Cookie": {
+                "schema": {
+                  "type": "string",
+                },
+              },
+            },
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+        },
+        "summary": "Iniciar sesión",
+        "tags": [
+          "autenticación",
+        ],
+      },
+    },
+    "/api/login/refresh": {
+      "post": {
+        "parameters": [
+          {
+            "description": "true para que genere y envíe la cookie",
+            "in": "query",
+            "name": "cookie",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+            },
+          },
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshToken",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaLogin",
+                },
+              },
+            },
+            "description": "Resultado de la autenticación",
+            "headers": {
+              "Set-Cookie": {
+                "schema": {
+                  "type": "string",
+                },
+              },
+            },
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "summary": "Volver a iniciar sesión con el token de refresco",
+        "tags": [
+          "autenticación",
+        ],
+      },
+    },
+    "/api/login/signature": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                },
+              },
+            },
+            "description": "OK",
+          },
+        },
+        "summary": "Clave publica para validar el token JWT",
+        "tags": [
+          "autenticación",
+        ],
+      },
+    },
+    "/api/logout": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "OK",
+          },
+        },
+        "summary": "Cerrar sesión",
+        "tags": [
+          "autenticación",
+        ],
+      },
+    },
+    "/api/marcas": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pagina",
+          },
+          {
+            "$ref": "#/components/parameters/filas",
+          },
+          {
+            "$ref": "#/components/parameters/ordenar",
+          },
+          {
+            "$ref": "#/components/parameters/buscar",
+          },
+          {
+            "$ref": "#/components/parameters/proyeccion",
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Marcas",
+                    },
+                    {
+                      "$ref": "#/components/schemas/MarcasPage",
+                    },
+                  ],
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "summary": "Listar marcas",
+        "tags": [
+          "vehiculos",
+        ],
+      },
+    },
+    "/api/marcas/{id}": {
+      "get": {
+        "parameters": [
+          {
+            "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+            "in": "query",
+            "name": "_projection",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarcaProjection",
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "summary": "Recuperar marca",
+        "tags": [
+          "vehiculos",
+        ],
+      },
+      "parameters": [
+        {
+          "description": "Identificador del recurso",
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "string",
+          },
+        },
+      ],
+    },
+    "/api/peliculas": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pagina",
+          },
+          {
+            "$ref": "#/components/parameters/filas",
+          },
+          {
+            "$ref": "#/components/parameters/ordenar",
+          },
+          {
+            "$ref": "#/components/parameters/buscar",
+          },
+          {
+            "$ref": "#/components/parameters/proyeccion",
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Peliculas",
+                    },
+                    {
+                      "$ref": "#/components/schemas/PeliculasPage",
+                    },
+                  ],
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "summary": "Listar peliculas",
+        "tags": [
+          "peliculas",
+        ],
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "summary": "Sondeo CORS",
+        "tags": [
+          "peliculas",
+        ],
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PeliculaModel",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "summary": "Crear pelicula",
+        "tags": [
+          "peliculas",
+        ],
+      },
+    },
+    "/api/peliculas/{id}": {
+      "delete": {
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "summary": "Borrar pelicula",
+        "tags": [
+          "peliculas",
+        ],
+      },
+      "get": {
+        "parameters": [
+          {
+            "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+            "in": "query",
+            "name": "_projection",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PeliculaProjection",
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "summary": "Recuperar pelicula",
+        "tags": [
+          "peliculas",
+        ],
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "summary": "Sondeo CORS",
+        "tags": [
+          "peliculas",
+        ],
+      },
+      "parameters": [
+        {
+          "description": "Identificador del recurso",
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "integer",
+          },
+        },
+      ],
+      "patch": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PeliculaProjection",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PeliculaProjection",
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "summary": "Actualizar parcialmente pelicula",
+        "tags": [
+          "peliculas",
+        ],
+      },
+      "put": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PeliculaModel",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "summary": "Reemplazar pelicula",
+        "tags": [
+          "peliculas",
+        ],
+      },
+    },
+    "/api/personas": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pagina",
+          },
+          {
+            "$ref": "#/components/parameters/filas",
+          },
+          {
+            "$ref": "#/components/parameters/ordenar",
+          },
+          {
+            "$ref": "#/components/parameters/buscar",
+          },
+          {
+            "$ref": "#/components/parameters/proyeccion",
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Personas",
+                    },
+                    {
+                      "$ref": "#/components/schemas/PersonasPage",
+                    },
+                  ],
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "summary": "Listar personas",
+        "tags": [
+          "personas",
+        ],
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PersonaModel",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "summary": "Crear persona",
+        "tags": [
+          "personas",
+        ],
+      },
+    },
+    "/api/personas/{id}": {
+      "delete": {
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "summary": "Borrar persona",
+        "tags": [
+          "personas",
+        ],
+      },
+      "get": {
+        "parameters": [
+          {
+            "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+            "in": "query",
+            "name": "_projection",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaProjection",
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "summary": "Recuperar persona",
+        "tags": [
+          "personas",
+        ],
+      },
+      "parameters": [
+        {
+          "description": "Identificador del recurso",
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "integer",
+          },
+        },
+      ],
+      "put": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PersonaModel",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "summary": "Reemplazar persona",
+        "tags": [
+          "personas",
+        ],
+      },
+    },
+    "/api/register": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "idUsuario": {
+                      "format": "email",
+                      "type": "string",
+                    },
+                    "nombre": {
+                      "type": "string",
+                    },
+                    "roles": {
+                      "items": {
+                        "type": "string",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Consultar su usuario",
+        "tags": [
+          "registro",
+        ],
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "idUsuario": {
+                    "format": "email",
+                    "type": "string",
+                  },
+                  "nombre": {
+                    "type": "string",
+                  },
+                  "password": {
+                    "format": "password",
+                    "type": "string",
+                  },
+                },
+                "type": "object",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "webhook para controlar el registro del usuario",
+                  "properties": {
+                    "confirmGetUri": {
+                      "description": "webhook vía GET para confirmar el email y activar al usuario",
+                      "format": "uri",
+                      "type": "string",
+                    },
+                    "rejectGetUri": {
+                      "description": "webhook vía GET para rechazar el email y borrar al usuario",
+                      "format": "uri",
+                      "type": "string",
+                    },
+                    "statusGetUri": {
+                      "description": "webhook vía GET para consultar el estado del registro",
+                      "format": "uri",
+                      "type": "string",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Accepted",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+        },
+        "summary": "Registrar un nuevo usuario",
+        "tags": [
+          "registro",
+        ],
+      },
+      "put": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "nombre": {
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "nombre",
+                ],
+                "type": "object",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Modificar el nombre de su usuario",
+        "tags": [
+          "registro",
+        ],
+      },
+    },
+    "/api/register/confirm": {
+      "get": {
+        "parameters": [
+          {
+            "description": "Identificador la instancia",
+            "in": "query",
+            "name": "instance",
+            "required": true,
+            "schema": {
+              "type": "string",
+            },
+          },
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "summary": "Confirmar el email y activar al usuario",
+        "tags": [
+          "registro",
+        ],
+      },
+    },
+    "/api/register/password": {
+      "put": {
+        "description": "Es necesario conocer la contraseña actual antes de cambiarla",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "newPassword": {
+                    "format": "password",
+                    "type": "string",
+                  },
+                  "oldPassword": {
+                    "format": "password",
+                    "type": "string",
+                  },
+                },
+                "type": "object",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Cambiar su contraseña",
+        "tags": [
+          "registro",
+        ],
+      },
+    },
+    "/api/register/reject": {
+      "get": {
+        "parameters": [
+          {
+            "description": "Identificador la instancia",
+            "in": "query",
+            "name": "instance",
+            "required": true,
+            "schema": {
+              "type": "string",
+            },
+          },
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "summary": "Rechazar el email y borrar al usuario",
+        "tags": [
+          "registro",
+        ],
+      },
+    },
+    "/api/register/status": {
+      "get": {
+        "parameters": [
+          {
+            "description": "Identificador la instancia",
+            "in": "query",
+            "name": "instance",
+            "required": true,
+            "schema": {
+              "type": "string",
+            },
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterStatus",
+                },
+              },
+            },
+            "description": "Finalize",
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterStatus",
+                },
+              },
+            },
+            "description": "Pending",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+        },
+        "summary": "Estado del registro un nuevo usuario",
+        "tags": [
+          "registro",
+        ],
+      },
+    },
+    "/api/tarjetas": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pagina",
+          },
+          {
+            "$ref": "#/components/parameters/filas",
+          },
+          {
+            "$ref": "#/components/parameters/ordenar",
+          },
+          {
+            "$ref": "#/components/parameters/buscar",
+          },
+          {
+            "$ref": "#/components/parameters/proyeccion",
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Tarjetas",
+                    },
+                    {
+                      "$ref": "#/components/schemas/TarjetasPage",
+                    },
+                  ],
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Listar tarjetas",
+        "tags": [
+          "tarjetas",
+        ],
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TarjetaModel",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Crear tarjeta",
+        "tags": [
+          "tarjetas",
+        ],
+      },
+    },
+    "/api/tarjetas/{id}": {
+      "get": {
+        "parameters": [
+          {
+            "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+            "in": "query",
+            "name": "_projection",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TarjetaProjection",
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Recuperar tarjeta",
+        "tags": [
+          "tarjetas",
+        ],
+      },
+      "parameters": [
+        {
+          "description": "Identificador del recurso",
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "integer",
+          },
+        },
+      ],
+      "put": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TarjetaModel",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Reemplazar tarjeta",
+        "tags": [
+          "tarjetas",
+        ],
+      },
+    },
+    "/api/vehiculos": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pagina",
+          },
+          {
+            "$ref": "#/components/parameters/filas",
+          },
+          {
+            "$ref": "#/components/parameters/ordenar",
+          },
+          {
+            "$ref": "#/components/parameters/buscar",
+          },
+          {
+            "$ref": "#/components/parameters/proyeccion",
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Vehiculos",
+                    },
+                    {
+                      "$ref": "#/components/schemas/VehiculosPage",
+                    },
+                  ],
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Listar vehiculos",
+        "tags": [
+          "vehiculos",
+        ],
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Sondeo CORS",
+        "tags": [
+          "vehiculos",
+        ],
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehiculoModel",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Crear vehiculo",
+        "tags": [
+          "vehiculos",
+        ],
+      },
+    },
+    "/api/vehiculos/{id}": {
+      "delete": {
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Borrar vehiculo",
+        "tags": [
+          "vehiculos",
+        ],
+      },
+      "get": {
+        "parameters": [
+          {
+            "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+            "in": "query",
+            "name": "_projection",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehiculoProjection",
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Recuperar vehiculo",
+        "tags": [
+          "vehiculos",
+        ],
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Sondeo CORS",
+        "tags": [
+          "vehiculos",
+        ],
+      },
+      "parameters": [
+        {
+          "description": "Identificador del recurso",
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "integer",
+          },
+        },
+      ],
+      "patch": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehiculoProjection",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehiculoProjection",
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Actualizar parcialmente vehiculo",
+        "tags": [
+          "vehiculos",
+        ],
+      },
+      "put": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehiculoModel",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+          {
+            "cookieAuth": [],
+          },
+        ],
+        "summary": "Reemplazar vehiculo",
+        "tags": [
+          "vehiculos",
+        ],
+      },
+    },
+  },
+  "servers": [
+    {
+      "description": "Servidor local para las pruebas",
+      "url": "{protocol}://localhost:{port}/",
+      "variables": {
+        "port": {
+          "default": "8080",
+          "enum": [
+            "4321",
+            "8181",
+          ],
+        },
+        "protocol": {
+          "default": "http",
+          "enum": [
+            "http",
+            "https",
+          ],
+        },
+      },
+    },
+  ],
+  "tags": [
+    {
+      "description": "Gestión de contactos",
+      "name": "contactos",
+    },
+    {
+      "description": "Mantenimiento de peliculas",
+      "name": "peliculas",
+    },
+    {
+      "description": "Mantenimiento de personas",
+      "name": "personas",
+    },
+    {
+      "description": "Mantenimiento de tarjetas",
+      "name": "tarjetas",
+    },
+    {
+      "description": "Mantenimiento de blog",
+      "name": "blog",
+    },
+    {
+      "description": "Mantenimiento de libros",
+      "name": "libros",
+    },
+    {
+      "description": "Mantenimiento de biblioteca",
+      "name": "biblioteca",
+    },
+    {
+      "description": "Mantenimiento de vehiculos",
+      "name": "vehiculos",
+    },
+    {
+      "description": "Login",
+      "name": "autenticación",
+    },
+    {
+      "description": "Cuentas de usuarios",
+      "name": "registro",
+    },
+  ],
+}
+`;

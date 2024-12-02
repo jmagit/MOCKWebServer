@@ -8,7 +8,9 @@
     "restart": "nodemon server.js",
     "lint": "eslint **/*.js",
     "test": "jest --collectCoverage",
-    "sonar": "sonar-scanner.bat -D\"sonar.projectKey=MOCKWebServer\" -D\"sonar.sources=./src\" -D\"sonar.tests=./spec\" -D\"sonar.javascript.lcov.reportPaths=./coverage/lcov.info\" -D\"sonar.host.url=http://localhost:9000\" -D\"sonar.login=sqp_44ea606e549203c9863d0c782d32679fcf94e664\""
+    "mutation-test": "stryker run",
+    "mutation-test-trace": "stryker run --logLevel trace",
+    "sonar": "sonar-scanner.bat -D\"sonar.projectKey=MOCKWebServer\" -D\"sonar.sources=./src\" -D\"sonar.tests=./spec\" -D\"sonar.javascript.lcov.reportPaths=./coverage/lcov.info\" -D\"sonar.host.url=http://localhost:9000\" -D\"sonar.login=sqp_f467ea0f86e60ab6dfd42663cfbf6de767ea2d3a\""
   },
   "author": "Javier Martín",
   "license": "ISC",
@@ -37,6 +39,7 @@
     "yaml": "^2.5.1"
   },
   "devDependencies": {
+    "@stryker-mutator/jest-runner": "^8.6.0",
     "@types/jest": "^29.5.13",
     "@types/supertest": "^6.0.2",
     "eslint": "^9.11.1",
