@@ -1,8 +1,9 @@
 // eslint-disable-next-line node/no-unpublished-require
 const request = require('supertest');
 const app = require('../src/app');
+const { testPlantillaHTML } = require('../src/app');
 
-describe("Test the root path", () => {
+describe("Pruebas de integración: Rutas", () => {
   let spy
   beforeAll(() => {
     spy = jest.spyOn(console, 'info');
@@ -77,7 +78,7 @@ describe("Test the root path", () => {
     await request(app)
       .get("/api-docs/")
       .expect(200)
-      .expect('Content-Type', /html/);
+      .expect('Content-Type', /html/)
   });
   it("/api-docs/v1/openapi.json", async () => {
     await request(app)

@@ -51,3 +51,5 @@ testem.log
 /typings
 .scannerwork/*
 /log
+# stryker temp files
+.stryker-tmp
