@@ -8,8 +8,8 @@
     "restart": "nodemon server.js",
     "lint": "eslint **/*.js",
     "test": "jest --collectCoverage",
-    "mutation-test": "stryker run",
-    "mutation-test-trace": "stryker run --logLevel trace",
+    "test:mutation": "stryker run",
+    "test:mutation-trace": "stryker run --logLevel trace",
     "sonar": "sonar-scanner.bat -D\"sonar.projectKey=MOCKWebServer\" -D\"sonar.sources=./src\" -D\"sonar.tests=./spec\" -D\"sonar.javascript.lcov.reportPaths=./coverage/lcov.info\" -D\"sonar.host.url=http://localhost:9000\" -D\"sonar.login=sqp_f467ea0f86e60ab6dfd42663cfbf6de767ea2d3a\""
   },
   "author": "Javier Martín",
