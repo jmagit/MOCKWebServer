@@ -1,3 +1,4 @@
+/* global jest */
 const fs = jest.createMockFromModule('fs/promises');
 
 let mockFiles = Object.create(null);

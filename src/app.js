@@ -125,9 +125,9 @@ app.use(
     validateResponses: true, // false by default
     validateSecurity: false,
     ignoreUndocumented: true,
-    formats: [
-      { name: 'nif', type: 'string', validate: (v) => validator.isIdentityCard(v, 'ES') },
-    ]
+    formats: { 
+      'nif': { type: 'string', validate: (v) => validator.isIdentityCard(v, 'ES') },
+    }
   })
 )
 
@@ -209,7 +209,7 @@ app.all('/form', function (req, res) {
 })
 
 // Eco de la petición
-app.all('/eco(/*)?', function (req, res) {
+app.all('/eco{/*splat}', function (req, res) {
   res.status(200).json({
     url: req.url,
     method: req.method,
@@ -234,7 +234,6 @@ app.get('/', function (req, res) {
   })
   let token = ''
   if (VALIDATE_XSRF_TOKEN) {
-    // eslint-disable-next-line no-undef
     token = `<input type="hidden" name="xsrftoken" value="${seguridad.generateXsrfToken(req)}">`
   }
   rslt = `<h1>MOCK Server</h1>
@@ -306,7 +305,7 @@ app.all('/favicon.ico', function (_req, res) {
 });
 
 // PushState de HTML5
-app.get('/*', function (req, res, next) {
+app.get('/*splat', function (req, res, next) {
   const fn = async () => {
       try {
         console.info('NOT FOUND 1: %s', req.originalUrl)
@@ -320,7 +319,6 @@ app.get('/*', function (req, res, next) {
   fn()
 });
 
-// eslint-disable-next-line no-unused-vars
 app.use(function (err, req, res, _next) {
   const status = err.status ?? err.statusCode ?? 500
   if (req.accepts('application/json') || req.originalUrl.startsWith(`${config.API_REST}/`)) {

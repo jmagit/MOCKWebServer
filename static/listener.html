@@ -73,38 +73,38 @@
     <input autocomplete="off" placeholder="Nombre del canal por el que filtrar" title="connect" /><button
       type="submit">connect</button>
   </form>
-  <ol id="messages">
-    </ul>
-    <script>
-      let socket
-      let messages = document.querySelector('#messages');
-      let input = document.querySelector('#publish input');
+  <ul id="messages">
+  </ul>
+  <script>
+    let socket
+    let messages = document.querySelector('#messages');
+    let input = document.querySelector('#publish input');
 
-      const show = msg => {
-        var item = document.createElement('li');
-        item.textContent = msg;
-        messages.appendChild(item);
-        window.scrollTo(0, document.body.scrollHeight);
-      }
-      const toggle = () => {
-        messages.className = messages.className === '' ? 'oculto' : ''
-        document.forms.connect.className = messages.className === '' ? 'oculto' : ''
-      }
-      messages.className = 'oculto'
-      document.forms.connect.addEventListener('submit', e => {
-        e.preventDefault();
-        let input = document.querySelector('#connect>input');
-        socket = new WebSocket(`ws://${location.host}${location.pathname}/${input.value}`);
-        socket.onopen = () => show("[open] Conexión establecida");
-        socket.onmessage = event => show(`[message] ${input.value}: ${JSON.stringify(event.data)}`)
-        socket.onclose = event => {
-          show(`[close] Conexión cerrada ${event.wasClean ? 'limpiamente' : 'con problemas'}, código: ${event.code}${event.reason ? ` motivo=${event.reason}` : ''}.`);
-          toggle()
-        }
-        socket.onerror = event => show(`[error]: ${JSON.stringify(error)}`);
+    const show = msg => {
+      var item = document.createElement('li');
+      item.textContent = msg;
+      messages.appendChild(item);
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+    const toggle = () => {
+      messages.className = messages.className === '' ? 'oculto' : ''
+      document.forms.connect.className = messages.className === '' ? 'oculto' : ''
+    }
+    messages.className = 'oculto'
+    document.forms.connect.addEventListener('submit', e => {
+      e.preventDefault();
+      let input = document.querySelector('#connect>input');
+      socket = new WebSocket(`ws://${location.host}${location.pathname}/${input.value}`);
+      socket.onopen = () => show("[open] Conexión establecida");
+      socket.onmessage = event => show(`[message] ${input.value}: ${JSON.stringify(event.data)}`)
+      socket.onclose = event => {
+        show(`[close] Conexión cerrada ${event.wasClean ? 'limpiamente' : 'con problemas'}, código: ${event.code}${event.reason ? ` motivo=${event.reason}` : ''}.`);
         toggle()
-      });
-    </script>
+      }
+      socket.onerror = event => show(`[error]: ${JSON.stringify(error)}`);
+      toggle()
+    });
+  </script>
 </body>
 
 </html>

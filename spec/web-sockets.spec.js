@@ -1,6 +1,3 @@
-/* eslint-disable jest/no-hooks */
-/* eslint-disable jest/prefer-lowercase-title */
-/* eslint-disable node/no-unpublished-require */
 const request = require('superwstest');
 const app = require('../src/app');
 

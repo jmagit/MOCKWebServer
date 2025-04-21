@@ -1,6 +1,3 @@
-/* eslint-disable jest/no-hooks */
-/* eslint-disable jest/prefer-lowercase-title */
-/* eslint-disable node/no-unpublished-require */
 const request = require('supertest');
 const cookieParser = require('cookie-parser');
 const express = require('express')
@@ -44,7 +41,6 @@ const usuarioBorrado = {
 }
 const contraseña = 'P@$$w0rd'
 
-// eslint-disable-next-line no-unused-vars
 const errorMiddleware = (err, _req, res, _next) => {
     // console.error('ERROR: %s', req.originalUrl, err)
     if (err.payload) {
@@ -399,7 +395,7 @@ describe('Seguridad', () => {
                         .send({ "username": "admin@kk.kk", "password": "P@$Sw0rd" })
                         .expect(200)
                         .expect('Content-Type', /json/)
-                        .expect('{"success":false}')
+                        .expect('{"success":false}');
                 });
                 it('POST: formato invalido de password', () => {
                     return request(app)

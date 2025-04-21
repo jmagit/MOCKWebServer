@@ -1,7 +1,5 @@
-// eslint-disable-next-line node/no-unpublished-require
 const request = require('supertest');
 const app = require('../src/app');
-const { testPlantillaHTML } = require('../src/app');
 
 describe("Pruebas de integración: Rutas", () => {
   let spy

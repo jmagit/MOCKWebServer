@@ -35,6 +35,25 @@
 			"node": {
 				"enableDebugging": true
 			}
-		}
+		},
+		{
+			"type": "npm",
+			"script": "test:mutation",
+			"problemMatcher": [],
+			"label": "app: test:mutation",
+			"detail": "stryker run"
+		},
+		{
+			"type": "npm",
+			"script": "start",
+			"problemMatcher": [],
+			"label": "app: start",
+			"detail": "node server.js"
+		},
+		{
+            "type": "shell",
+            "label": "SonarQube Scan",
+            "command": "sonar-scanner.bat -D\"sonar.projectKey=MOCKWebServer\" -D\"sonar.sources=./src\" -D\"sonar.tests=./spec\" -D\"sonar.javascript.lcov.reportPaths=./coverage/lcov.info\" -D\"sonar.host.url=http://localhost:9000\" -D\"sonar.login=sqp_f467ea0f86e60ab6dfd42663cfbf6de767ea2d3a\""
+        }
 	]
 }

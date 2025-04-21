@@ -40,7 +40,8 @@ class DbJSON {
     }
 
     __comparaValores(a, b) {
-        return a == b ? 0 : (a < b ? -1 : 1)
+        if(a == b) return 0
+        return a < b ? -1 : 1
     }
     __comparaMultiplesPropiedades(a, b, properties, index) {
         let result = properties[index].dir * this.__comparaValores(a[properties[index].cmp], b[properties[index].cmp])

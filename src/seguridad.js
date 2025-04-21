@@ -170,6 +170,19 @@ module.exports.useXSRF = (req, res, next) => {
     res.XsrfToken = module.exports.generateXsrfToken(req)
     next()
 }
+// Auxiliares
+async function getUserElementAndList(username) {
+    const data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
+    const list = JSON.parse(data)
+    const element = list.find(item => item[config.security.PROP_USERNAME] == username)  
+    return { element, list }
+}
+async function getUserIndexAndList(username) {
+    const data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
+    const list = JSON.parse(data)
+    const index = list.findIndex(item => item[config.security.PROP_USERNAME] == username)  
+    return { index, list }
+}
 
 // Rutas: Control de acceso
 /**
@@ -289,10 +302,8 @@ router.post('/login', function (req, res, next) {
     }
     (async () => {
         try {
-            let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-            let list = JSON.parse(data)
-            let element = list.find(item => item[config.security.PROP_USERNAME] == usr && item.activo)
-            if (element && await bcrypt.compare(pwd, element[config.security.PROP_PASSWORD])) {
+            const {element} = await getUserElementAndList(usr)
+            if (element && element.activo && (await bcrypt.compare(pwd, element[config.security.PROP_PASSWORD]))) {
                 sendLogin(req, res, element)
             } else {
                 res.status(200).json({ success: false })
@@ -346,10 +357,8 @@ router.post('/login/refresh', function (req, res, next) {
     (async () => {
         try {
             let decoded = RefreshTokenHMAC256.decode(req.body.token);
-            let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-            let list = JSON.parse(data)
-            let element = list.find(item => item[config.security.PROP_USERNAME] == decoded.usr && item.activo)
-            if (element) {
+            const {element} = await getUserElementAndList(decoded.usr)
+            if (element && element.activo) {
                 sendLogin(req, res, element)
             } else {
                 res.status(200).json({ success: false })
@@ -486,7 +495,7 @@ router.post('/register', function (req, res, next) {
             fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
                 .then(() => {
                     const token = CreatedTokenHMAC256.generar(element)
-                    const location = `${req.protocol}://${req.hostname}:${req.connection.localPort}${req.originalUrl}`
+                    const location = `${req.protocol}://${req.hostname}:${req.socket.localPort}${req.originalUrl}`
                     res.status(202).json({
                         statusGetUri: `${location}/status?instance=${token}`,
                         confirmGetUri: `${location}/confirm?instance=${token}`,
@@ -556,14 +565,12 @@ router.get('/register/status', function (req, res, next) {
     let usr;
     try {
         usr = CreatedTokenHMAC256.decode(req.query.instance).usr
-    } catch (ex) {
+    } catch {
         res.status(200).json({ status: 'canceled', result: 'timeout' }).end()
         return
     }
     (async () => {
-        let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-        let list = JSON.parse(data)
-        let element = list.find(item => item[config.security.PROP_USERNAME] == usr)
+        const {element} = await getUserElementAndList(usr)
         if (!element) {
             res.status(200).json({ status: 'complete', result: 'reject' }).end()
         } else if (typeof (element.activo) === 'undefined') {
@@ -598,17 +605,14 @@ router.get('/register/confirm', function (req, res, next) {
     let usr;
     try {
         usr = CreatedTokenHMAC256.decode(req.query.instance).usr
-    } catch (ex) {
+    } catch {
         return next(generateError(req, 'Ya no existe la instancia.', 400))
     }
     (async () => {
-        let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-        let list = JSON.parse(data)
-        let index = list.findIndex(row => row[config.security.PROP_USERNAME] == usr)
-        if (index == -1) {
+        const {element, list} = await getUserElementAndList(usr)
+        if (!element) {
             return next(generateErrorByStatus(req, 404))
         }
-        let element = list.find(item => item[config.security.PROP_USERNAME] == usr)
         if (!element.activo) {
             element.activo = true
             fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
@@ -643,13 +647,11 @@ router.get('/register/reject', function (req, res, next) {
     let usr;
     try {
         usr = CreatedTokenHMAC256.decode(req.query.instance).usr
-    } catch (ex) {
+    } catch {
         return next(generateError(req, 'Ya no existe la instancia.', 400))
     }
     (async () => {
-        let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-        let list = JSON.parse(data)
-        let index = list.findIndex(row => row[config.security.PROP_USERNAME] == usr)
+        const {index, list} = await getUserIndexAndList(usr)
         if (index == -1) {
             return next(generateErrorByStatus(req, 404))
         }
@@ -737,9 +739,7 @@ autenticados.use(module.exports.onlySelf)
 autenticados.get('/', function (req, res, next) {
     let usr = res.locals.usr;
     (async () => {
-        let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-        let list = JSON.parse(data)
-        let element = list.find(item => item[config.security.PROP_USERNAME] == usr)
+        const {element} = await getUserElementAndList(usr)
         if (element) {
             delete element[config.security.PROP_PASSWORD]
             res.status(200).json(element)
@@ -784,9 +784,7 @@ autenticados.put('/', function (req, res, next) {
         return next(generateErrorByStatus(req, 403))
     let element = req.body;
     (async () => {
-        let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-        let list = JSON.parse(data)
-        let index = list.findIndex(row => row[config.security.PROP_USERNAME] == res.locals.usr)
+        const {index, list} = await getUserIndexAndList(res.locals.usr)
         if (index == -1) {
             return next(generateErrorByStatus(req, 404))
         } else {
@@ -837,12 +835,10 @@ autenticados.put('/', function (req, res, next) {
 autenticados.put('/password', function (req, res, next) {
     let element = req.body;
     (async () => {
-        let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-        let list = JSON.parse(data)
-        let index = list.findIndex(row => row[config.security.PROP_USERNAME] == res.locals.usr)
+        const {index, list} = await getUserIndexAndList(res.locals.usr)
         if (index == -1) {
             return next(generateErrorByStatus(req, 404))
-        } else if (config.security.PASSWORD_PATTERN.test(element.newPassword) && await bcrypt.compare(element.oldPassword, list[index][config.security.PROP_PASSWORD])) {
+        } else if (config.security.PASSWORD_PATTERN.test(element.newPassword) && (await bcrypt.compare(element.oldPassword, list[index][config.security.PROP_PASSWORD]))) {
             list[index][config.security.PROP_PASSWORD] = await encriptaPassword(element.newPassword)
             fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
                 .then(() => { res.sendStatus(204) })

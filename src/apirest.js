@@ -2,7 +2,7 @@ const express = require('express');
 const config = require('../config')
 const DbJSON = require('./dbJSON')
 const { useAuthentication, onlyAuthenticated, onlyInRole, readOnly } = require('./seguridad')
-const { formatLocation, generateError, generateErrorByStatus, generateErrorByError, getServiciosConfig } = require('./utils');
+const { formatLocation, generateError, generateErrorByStatus, generateErrorByError, getServiciosConfig, parseBoolFromString } = require('./utils');
 
 const router = express.Router();
 const serviciosConfig = getServiciosConfig();
@@ -20,13 +20,9 @@ const generaFiltro = (req) => {
   const q = Object.keys(req.query).filter(item => !item.startsWith('_'));
   if (q.length === 0)
     return null
-  for (let cmp in q) {
-    if (req.query[q[cmp]] === 'true') req.query[q[cmp]] = true;
-    if (req.query[q[cmp]] === 'false') req.query[q[cmp]] = false;
-  }
   return item => {
     for (let cmp in q) {
-      if (item[q[cmp]] != req.query[q[cmp]]) return false;
+      if (item[q[cmp]] != parseBoolFromString(req.query[q[cmp]])) return false;
     }
     return true;
   }
