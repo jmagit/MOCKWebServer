@@ -26,13 +26,17 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
+      - name: Extract version from Git tag
+        id: get_version
+        run: echo "version=${GITHUB_RUN_NUMBER}" >> $GITHUB_OUTPUT
+
       - name: Build and push Docker image latest
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ GITHUB_RUN_NUMBER }}
+            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ steps.get_version.outputs.version }}
             ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
           # tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
 
