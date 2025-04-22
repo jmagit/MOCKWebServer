@@ -6,6 +6,8 @@ on:
   push:
     branches: 
       - 'master'
+    tags-ignore:
+      - 'v*.*.*' # Se salta las versiones etiquetadas
 
 env:
   IMAGE_NAME: mock-web-server
