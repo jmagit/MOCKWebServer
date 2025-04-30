@@ -54,6 +54,11 @@
             "type": "shell",
             "label": "SonarQube Scan",
             "command": "sonar-scanner.bat -D\"sonar.projectKey=MOCKWebServer\" -D\"sonar.sources=./src\" -D\"sonar.tests=./spec\" -D\"sonar.javascript.lcov.reportPaths=./coverage/lcov.info\" -D\"sonar.host.url=http://localhost:9000\" -D\"sonar.login=sqp_f467ea0f86e60ab6dfd42663cfbf6de767ea2d3a\""
+        },
+		{
+            "type": "shell",
+            "label": "Deploy",
+            "command": "docker run -d --name mock-web-server -p 4321:4321 -v C:\\Archivos\\docker\\volumes\\mock\\data:/app/data -v C:\\Archivos\\docker\\volumes\\mock\\uploads:/app/uploads -v C:\\Archivos\\docker\\volumes\\mock\\log:/app/log jamarton/mock-web-server"
         }
 	]
 }

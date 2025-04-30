@@ -10,4 +10,3 @@ CMD [ "node", "server.js" ]
 
 # docker build --rm -t jamarton/mock-web-server .
 # docker run -d --name mock-web-server -p 4321:4321 jamarton/mock-web-server
-# docker run -d --name mock-web-server -p 4321:4321 -v C:\Archivos\docker\volumes\mock\data:/app/data -v C:\Archivos\docker\volumes\mock\uploads:/app/uploads -v C:\Archivos\docker\volumes\mock\log:/app/log jamarton/mock-web-server
