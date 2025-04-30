@@ -58,7 +58,7 @@
 		{
             "type": "shell",
             "label": "Deploy",
-            "command": "docker run -d --name mock-web-server -p 4321:4321 -v C:\\Archivos\\docker\\volumes\\mock\\data:/app/data -v C:\\Archivos\\docker\\volumes\\mock\\uploads:/app/uploads -v C:\\Archivos\\docker\\volumes\\mock\\log:/app/log jamarton/mock-web-server"
+            "command": "docker run -d --name mock-web-server -p 4321:4321 -v C:\\Archivos\\docker\\volumes\\mock-web-server\\data:/app/data -v C:\\Archivos\\docker\\volumes\\mock-web-server\\uploads:/app/uploads -v C:\\Archivos\\docker\\volumes\\mock-web-server\\log:/app/log jamarton/mock-web-server"
         }
 	]
 }
