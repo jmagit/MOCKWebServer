@@ -453,7 +453,7 @@
           <div class="flr">
             <div class="messages">
               <p class="msg">
-                ${msg}
+                ${filterXSS(msg)}
               </p>
             </div>
             <span class="timestamp"><span class="username">${usuarios[userId].nombre} ${usuarios[userId].apellidos}</span>&bull;

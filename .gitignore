@@ -20,10 +20,10 @@
 
 # IDE - VSCode
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+# !.vscode/settings.json
+# !.vscode/tasks.json
+# !.vscode/launch.json
+# !.vscode/extensions.json
 
 # misc
 /.sass-cache
@@ -45,11 +45,13 @@ Thumbs.db
 /.sass-cache
 /connect.lock
 /coverage
+/log
 /libpeerconnection.log
 npm-debug.log
 testem.log
 /typings
 .scannerwork/*
-/log
+.vs/**
+
 # stryker temp files
 .stryker-tmp

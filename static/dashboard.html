@@ -76,11 +76,25 @@
     </thead>
     <tbody id="cpu"></tbody>
   </table>
+  <h2>servers</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>name</th>
+        <th>cpu</th>
+        <th>memory</th>
+        <th>disk</th>
+        <th>network</th>
+      </tr>
+    </thead>
+    <tbody id="servers"></tbody>
+  </table>
   <h2>resources</h2>
   <dl id="resources"></dl>
   <div>
     <output id="message"></output>
   </div>
+  <script src="xss.min.js"></script>
   <script>
 
     let status = document.querySelector('#status');
@@ -88,21 +102,33 @@
     let cpu = document.querySelector('#cpu');
     let memory = document.querySelector('#memory');
     let resources = document.querySelector('#resources');
+    let servers = document.querySelector('#servers');
     let socket = new WebSocket(`ws://${location.host}${location.pathname}`);
     socket.onopen = function (e) {
       status.textContent = "[open] Conexión establecida"
     };
     socket.onmessage = event => {
       let content = ''
-      const data = JSON.parse(event.data)
+      const data = JSON.parse(filterXSS(event.data))
       message.textContent = `[message] ${JSON.stringify(data)}`
-      for (let key in data.memory)
-        content += `<dt>${key}</dt><dd>${data.memory[key]}</dd>`
-      memory.innerHTML = content
-      content = ''
-      for (let item of data.cpu)
-        content += `<tr><th>${item.model}</th><td>${item.speed}</td><td>${item.times.user}</td><td>${item.times.nice}</td><td>${item.times.sys}</td><td>${item.times.idle}</td><td>${item.times.irq}</td></tr>`
-      cpu.innerHTML = content
+      if(data[0]){
+        content = ''
+        for (let item of data)
+          content += `<tr><th>${item.name}</th><td>${item.cpu} %</td><td>${item.memory} %</td><td>${item.disk} %</td><td>${item.network} %</td></tr>`
+        servers.innerHTML = filterXSS(content)
+      } else {
+        if(data.memory) {
+          for (let key in data.memory)
+            content += `<dt>${key}</dt><dd>${data.memory[key]}</dd>`
+          memory.innerHTML = filterXSS(content)
+        }
+        if(data.cpu) {
+          content = ''
+          for (let item of data.cpu)
+            content += `<tr><th>${item.model}</th><td>${item.speed}</td><td>${item.times.user}</td><td>${item.times.nice}</td><td>${item.times.sys}</td><td>${item.times.idle}</td><td>${item.times.irq}</td></tr>`
+          cpu.innerHTML = content
+        }
+      }
       // content = ''
       // for (let key in data.resources)
       //   content += `<dt>${key}</dt><dd>${data.resources[key]}</dd>`
