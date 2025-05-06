@@ -474,7 +474,7 @@
           <img class="user-img" src="${usuarios[id].avatar}" alt="${usuarios[id].nombre} ${usuarios[id].apellidos}" />
           <div class="flr">
             <div class="messages">
-              <p class="msg">${msg}</p>
+              <p class="msg">${filterXSS(msg)}</p>
             </div>
             <span class="timestamp"><span class="username">${usuarios[id].nombre} ${usuarios[id].apellidos}</span>&bull;<span class="posttime">
             ${(new Date()).toLocaleTimeString('es-ES')}</span></span>
