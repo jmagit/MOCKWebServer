@@ -8,6 +8,7 @@
     "restart": "nodemon server.js",
     "lint": "eslint",
     "test": "jest --collectCoverage",
+    "test:snapshot": "jest --updateSnapshot",
     "test:mutation": "stryker run",
     "test:mutation-trace": "stryker run --logLevel trace",
     "sonar": "sonar-scanner.bat -D\"sonar.projectKey=MOCKWebServer\" -D\"sonar.sources=./src\" -D\"sonar.tests=./spec\" -D\"sonar.javascript.lcov.reportPaths=./coverage/lcov.info\" -D\"sonar.host.url=http://localhost:9000\" -D\"sonar.login=sqp_f467ea0f86e60ab6dfd42663cfbf6de767ea2d3a\""
@@ -50,6 +51,7 @@
     "@stryker-mutator/jest-runner": "^8.7.1",
     "@types/express": "^5.0.1",
     "@types/jest": "^29.5.14",
+    "@types/node": "^24.0.10",
     "@types/supertest": "^6.0.3",
     "eslint": "^9.25.0",
     "eslint-plugin-jest": "^28.11.0",

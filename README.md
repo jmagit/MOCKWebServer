@@ -85,7 +85,7 @@ Los detalles del problema puede tener las siguientes propiedades:
    | *pk* | string |  Propiedad del objeto que actúa como primary key *(Obligatoria)* |
    | *fichero* | string |  Referencia al fichero que actúa de contenedor *(Obligatoria)* |
    | readonly | boolean | `true` cuando requiera autenticación para los métodos de escritura (POST, PUT, DELETE, PATCH) |
-   | operations | array[string] |  Lista de operaciones `["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]` disponibles para el servicio, si está vacía, estarán todas disponibles |
+   | operations | array[*string*] |  Lista de operaciones `["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]` disponibles para el servicio, si está vacía, estarán todas disponibles |
    | security | boolean o string | `true` para indicar que el usuario debe estar autenticado para acceder al servicio. Acepta una cadena con los roles, separados por comas, a los que se autoriza el acceso (requiere autenticación). |
    | schema | string | Esquema OpenApi para la validación y definición de la documentación |
 
@@ -133,8 +133,7 @@ Por ejemplo: <http://localhost:4321/eco/personas/1?_page=1&_rows=10>
         },
         "authentication": {
             "isAuthenticated": true,
-            "usr": "admin",
-            "name": "Administrador",
+            "usr": "adm@example.com",
             "roles": [
                 "Usuarios",
                 "Administradores"
@@ -166,6 +165,8 @@ Por ejemplo: <http://localhost:4321/eco/personas/1?_page=1&_rows=10>
 
 ### Autenticación
 
+Permite simular un autenticación sin estado basada en tokens, tanto de acceso como de refresco, siguiendo el marco de autorización OAuth 2.0 ([RFC 6750](https://datatracker.ietf.org/doc/html/rfc6750)) de uso del token bearer (portador).
+
 Para simular la autenticación con token JWT de cabecera está disponible el servicio `http://localhost:4321/login` con el método POST.
 
 * **Formularios**
@@ -180,8 +181,9 @@ Para simular la autenticación con token JWT de cabecera está disponible el ser
 
     {
         "success": true,
-        "token": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1AZXhhbXBsZS5jb20iLCJuYW1lIjoiQWRtaW5pc3RyYWRvciIsInJvbGVzIjpbIlVzdWFyaW9zIiwiQWRtaW5pc3RyYWRvcmVzIl0sImlhdCI6MTY3MDM0MjE3MiwiZXhwIjoxNjcwMzQyNDcyLCJhdWQiOiJhdXRob3JpemF0aW9uIiwiaXNzIjoiTWljcm9zZXJ2aWNpb3NKV1QifQ.dlt-d1K6wGoe-VBsPtE6SYx25wPgR0k7RwVdkdzMRKoZxYjVjUCAl9P1o4yd4pemG2B2jVu5cq4birz5EqBRy4cgVeNxD86E9f89QwOimNDr3dKGxbVbiS40RyJ1cm9qJ5_aEiBA-LZunByWp5OOtPf1Eq6Hs-AJoDWxidS0kgdjSZmeojzzzcZiE_sb8AoFhKiWC_UXpJr880YQ1jceqQ-qQmD_WCf6JICDqN-cv9Z4uMtdBCFWuMtc_6RCEd38iURtiDYS1a_oSKEZyQTf7cc3etA-4MuckdIItCRqDLiuUyJcuaJV1ODw0dI40MDU2a6Ju0LVB8QPQyNTNLKQvQ",
-        "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1AZXhhbXBsZS5jb20iLCJpYXQiOjE2NzAzNDIxNzIsIm5iZiI6MTY3MDM0MjQ3MiwiZXhwIjoxNjcwMzQzMzcyLCJhdWQiOiJhdXRob3JpemF0aW9uIiwiaXNzIjoiTWljcm9zZXJ2aWNpb3NKV1QifQ.8q1Nwd9E6ZgpMyOPGUTFrv7EGRwvk_6J-J6Uzvk4o_A",
+        "token_type": "Bearer",
+        "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1AZXhhbXBsZS5jb20iLCJuYW1lIjoiQWRtaW5pc3RyYWRvciIsInJvbGVzIjpbIlVzdWFyaW9zIiwiQWRtaW5pc3RyYWRvcmVzIl0sImlhdCI6MTY3MDM0MjE3MiwiZXhwIjoxNjcwMzQyNDcyLCJhdWQiOiJhdXRob3JpemF0aW9uIiwiaXNzIjoiTWljcm9zZXJ2aWNpb3NKV1QifQ.dlt-d1K6wGoe-VBsPtE6SYx25wPgR0k7RwVdkdzMRKoZxYjVjUCAl9P1o4yd4pemG2B2jVu5cq4birz5EqBRy4cgVeNxD86E9f89QwOimNDr3dKGxbVbiS40RyJ1cm9qJ5_aEiBA-LZunByWp5OOtPf1Eq6Hs-AJoDWxidS0kgdjSZmeojzzzcZiE_sb8AoFhKiWC_UXpJr880YQ1jceqQ-qQmD_WCf6JICDqN-cv9Z4uMtdBCFWuMtc_6RCEd38iURtiDYS1a_oSKEZyQTf7cc3etA-4MuckdIItCRqDLiuUyJcuaJV1ODw0dI40MDU2a6Ju0LVB8QPQyNTNLKQvQ",
+        "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1AZXhhbXBsZS5jb20iLCJpYXQiOjE2NzAzNDIxNzIsIm5iZiI6MTY3MDM0MjQ3MiwiZXhwIjoxNjcwMzQzMzcyLCJhdWQiOiJhdXRob3JpemF0aW9uIiwiaXNzIjoiTWljcm9zZXJ2aWNpb3NKV1QifQ.8q1Nwd9E6ZgpMyOPGUTFrv7EGRwvk_6J-J6Uzvk4o_A",
         "name": "Administrador",
         "roles": [
             "Usuarios",
@@ -205,9 +207,21 @@ Se obtiene un token de acceso (RS256), un token de refresco (HMAC256) y la expir
         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1AZXhhbXBsZS5jb20iLCJpYXQiOjE2NzAzNDIxNzIsIm5iZiI6MTY3MDM0MjQ3MiwiZXhwIjoxNjcwMzQzMzcyLCJhdWQiOiJhdXRob3JpemF0aW9uIiwiaXNzIjoiTWljcm9zZXJ2aWNpb3NKV1QifQ.8q1Nwd9E6ZgpMyOPGUTFrv7EGRwvk_6J-J6Uzvk4o_A"
     }
 
-#### Obtener la clave publica para validar el token JWT (text/plain)
+#### Obtener la clave publica para validar el token JWT (application/pem-certificate-chain)
 
     GET http://localhost:4321/login/signature
+
+En texto plano con formato Privacy Enhanced Mail (PEM).
+
+    -----BEGIN PUBLIC KEY-----
+    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAx6fiUffy32QLV3iRS0QD
+    TP49x756BKmHit8NveL3hdHFGb8mvbF6E2EeD5bP8MuSBSFvIMYw9+Zl1JqN3DLH
+    5tCoMXUA0A9FvKsedmxPBoebsMOCx0pSMM8J5BxR5oGLYNZOenfbPnvJGC0ZKtwx
+    sWe0sCoMzYUF1FVKDS27D6+IVWWHewQAQuSgjh4XeqwcWciuhwy3KDcn5pKLKTSU
+    B6bP0mJm7fjJck6bxV1q3I+LbVSyl8I3n8ZGsReGDa2azuGgl7jniRvEPSDl8XV5
+    HbD+ViRFJ1j+tyXGvHMiTAkuNRgKMG/a2rY5tHnkwNd9HhwTCbicldlLSnKAf9CK
+    FwIDAQAB
+    -----END PUBLIC KEY-----
 
 ### Gestión de usuarios
 

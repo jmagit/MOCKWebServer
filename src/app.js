@@ -210,6 +210,7 @@ app.all('/form', function (req, res) {
 
 // Eco de la petición
 app.all('/eco{/*splat}', function (req, res) {
+  seguridad.useAuthentication(req, res, () => {})
   res.status(200).json({
     url: req.url,
     method: req.method,

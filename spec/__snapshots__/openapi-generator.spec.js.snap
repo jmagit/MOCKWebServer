@@ -70,7 +70,7 @@ exports[`Pruebas unitarias Generar OpenApi 1`] = `
     "responses": {
       "BadRequest": {
         "content": {
-          "application/json": {
+          "application/problem+json": {
             "schema": {
               "$ref": "#/components/schemas/ErrorMessage",
             },
@@ -92,20 +92,28 @@ exports[`Pruebas unitarias Generar OpenApi 1`] = `
       },
       "Forbidden": {
         "content": {
-          "application/json": {
+          "application/problem+json": {
             "schema": {
               "$ref": "#/components/schemas/ErrorMessage",
             },
           },
         },
         "description": "Forbidden",
+        "headers": {
+          "www-authenticate": {
+            "description": "Información de autenticación",
+            "schema": {
+              "type": "string",
+            },
+          },
+        },
       },
       "NoContent": {
         "description": "No content",
       },
       "NotFound": {
         "content": {
-          "application/json": {
+          "application/problem+json": {
             "schema": {
               "$ref": "#/components/schemas/ErrorMessage",
             },
@@ -115,13 +123,21 @@ exports[`Pruebas unitarias Generar OpenApi 1`] = `
       },
       "Unauthorized": {
         "content": {
-          "application/json": {
+          "application/problem+json": {
             "schema": {
               "$ref": "#/components/schemas/ErrorMessage",
             },
           },
         },
         "description": "Unauthorized",
+        "headers": {
+          "www-authenticate": {
+            "description": "Información de autenticación",
+            "schema": {
+              "type": "string",
+            },
+          },
+        },
       },
     },
     "schemas": {
@@ -632,7 +648,7 @@ exports[`Pruebas unitarias Generar OpenApi 1`] = `
         "description": "Credenciales de autenticación",
         "properties": {
           "password": {
-            "example": "P@$$w0rd",
+            "example": "P@$$$w0rd",
             "format": "password",
             "type": "string",
           },
@@ -943,6 +959,9 @@ exports[`Pruebas unitarias Generar OpenApi 1`] = `
       },
       "RespuestaLogin": {
         "properties": {
+          "access_token": {
+            "type": "string",
+          },
           "expires_in": {
             "format": "int32",
             "type": "integer",
@@ -950,7 +969,7 @@ exports[`Pruebas unitarias Generar OpenApi 1`] = `
           "name": {
             "type": "string",
           },
-          "refresh": {
+          "refresh_token": {
             "type": "string",
           },
           "roles": {
@@ -962,7 +981,7 @@ exports[`Pruebas unitarias Generar OpenApi 1`] = `
           "success": {
             "type": "boolean",
           },
-          "token": {
+          "token_type": {
             "type": "string",
           },
         },

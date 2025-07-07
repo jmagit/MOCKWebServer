@@ -186,7 +186,7 @@ const swaggerDocument = {
             "BadRequest": {
                 "description": "Invalid data",
                 "content": {
-                    "application/json": {
+                    "application/problem+json": {
                         "schema": {
                             "$ref": "#/components/schemas/ErrorMessage"
                         }
@@ -195,8 +195,14 @@ const swaggerDocument = {
             },
             "Unauthorized": {
                 "description": "Unauthorized",
+                "headers": {
+                    "www-authenticate": {
+                        "description": "Información de autenticación",
+                        "schema": { "type": "string" }
+                    }
+                },
                 "content": {
-                    "application/json": {
+                    "application/problem+json": {
                         "schema": {
                             "$ref": "#/components/schemas/ErrorMessage"
                         }
@@ -205,8 +211,14 @@ const swaggerDocument = {
             },
             "Forbidden": {
                 "description": "Forbidden",
+                "headers": {
+                    "www-authenticate": {
+                        "description": "Información de autenticación",
+                        "schema": { "type": "string" }
+                    }
+                },
                 "content": {
-                    "application/json": {
+                    "application/problem+json": {
                         "schema": {
                             "$ref": "#/components/schemas/ErrorMessage"
                         }
@@ -216,7 +228,7 @@ const swaggerDocument = {
             "NotFound": {
                 "description": "Not found",
                 "content": {
-                    "application/json": {
+                    "application/problem+json": {
                         "schema": {
                             "$ref": "#/components/schemas/ErrorMessage"
                         }

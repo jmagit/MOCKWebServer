@@ -833,10 +833,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -871,10 +871,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       }
@@ -930,10 +930,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -971,10 +971,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       }
@@ -1029,10 +1029,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -1067,10 +1067,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -1092,10 +1092,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       }
@@ -1151,10 +1151,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -1192,10 +1192,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -1217,10 +1217,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -1265,10 +1265,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -1293,10 +1293,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       }
@@ -1351,10 +1351,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -1389,10 +1389,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -1414,10 +1414,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       }
@@ -1473,10 +1473,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -1514,10 +1514,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -1539,10 +1539,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -1587,10 +1587,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -1615,10 +1615,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       }
@@ -1703,10 +1703,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -1812,10 +1812,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -1877,10 +1877,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -1905,10 +1905,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       }
@@ -1963,10 +1963,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -2001,10 +2001,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -2026,10 +2026,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       }
@@ -2085,10 +2085,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -2126,10 +2126,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -2151,10 +2151,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -2199,10 +2199,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       },
@@ -2227,10 +2227,10 @@
         },
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ]
       }
@@ -2560,10 +2560,10 @@
         "summary": "Consultar su usuario",
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ],
         "responses": {
@@ -2604,10 +2604,10 @@
         "summary": "Modificar el nombre de su usuario",
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ],
         "requestBody": {
@@ -2756,10 +2756,10 @@
         "summary": "Obtener estado de sesión",
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ],
         "responses": {
@@ -2801,10 +2801,10 @@
         "summary": "Cambiar su contraseña",
         "security": [
           {
-            "bearerAuth": [ ]
+            "bearerAuth": []
           },
           {
-            "cookieAuth": [ ]
+            "cookieAuth": []
           }
         ],
         "description": "Es necesario conocer la contraseña actual antes de cambiarla",
@@ -3954,7 +3954,7 @@
           "password": {
             "type": "string",
             "format": "password",
-            "example": "P@$$w0rd"
+            "example": "P@$$$w0rd"
           }
         }
       },
@@ -3965,10 +3965,13 @@
           "success": {
             "type": "boolean"
           },
-          "token": {
+          "access_token": {
             "type": "string"
           },
-          "refresh": {
+          "token_type": {
+            "type": "string"
+          },
+          "refresh_token": {
             "type": "string"
           },
           "name": {
@@ -4020,7 +4023,7 @@
         }
       }
     },
-    "requestBodies": { },
+    "requestBodies": {},
     "responses": {
       "Created": {
         "description": "Created",
@@ -4040,7 +4043,7 @@
       "BadRequest": {
         "description": "Invalid data",
         "content": {
-          "application/json": {
+          "application/problem+json": {
             "schema": {
               "$ref": "#/components/schemas/ErrorMessage"
             }
@@ -4049,8 +4052,16 @@
       },
       "Unauthorized": {
         "description": "Unauthorized",
+        "headers": {
+          "www-authenticate": {
+            "description": "Información de autenticación",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
         "content": {
-          "application/json": {
+          "application/problem+json": {
             "schema": {
               "$ref": "#/components/schemas/ErrorMessage"
             }
@@ -4059,8 +4070,16 @@
       },
       "Forbidden": {
         "description": "Forbidden",
+        "headers": {
+          "www-authenticate": {
+            "description": "Información de autenticación",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
         "content": {
-          "application/json": {
+          "application/problem+json": {
             "schema": {
               "$ref": "#/components/schemas/ErrorMessage"
             }
@@ -4070,7 +4089,7 @@
       "NotFound": {
         "description": "Not found",
         "content": {
-          "application/json": {
+          "application/problem+json": {
             "schema": {
               "$ref": "#/components/schemas/ErrorMessage"
             }

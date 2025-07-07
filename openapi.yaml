@@ -2509,16 +2509,18 @@ components:
         password:
           type: string
           format: password
-          example: P@$$w0rd
+          example: P@$$$w0rd
     RespuestaLogin:
       type: object
       title: Respuesta Login
       properties:
         success:
           type: boolean
-        token:
+        access_token:
           type: string
-        refresh:
+        token_type:
+          type: string
+        refresh_token:
           type: string
         name:
           type: string
@@ -2568,25 +2570,35 @@ components:
     BadRequest:
       description: Invalid data
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: "#/components/schemas/ErrorMessage"
     Unauthorized:
       description: Unauthorized
+      headers:
+        www-authenticate:
+          description: Información de autenticación
+          schema:
+            type: string
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: "#/components/schemas/ErrorMessage"
     Forbidden:
       description: Forbidden
+      headers:
+        www-authenticate:
+          description: Información de autenticación
+          schema:
+            type: string
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: "#/components/schemas/ErrorMessage"
     NotFound:
       description: Not found
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: "#/components/schemas/ErrorMessage"
   parameters:

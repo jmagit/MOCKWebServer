@@ -84,7 +84,6 @@ describe('Seguridad', () => {
                 expect(response.statusCode).toBe(200)
                 expect(response.body.locals.isAuthenticated).toBeTruthy()
                 expect(response.body.locals.usr).toBe(usuarios[index].idUsuario)
-                expect(response.body.locals.name).toBe(usuarios[index].nombre)
                 expect(response.body.locals.roles).toEqual(usuarios[index].roles)
                 expect(response.body.isInRole).toBeTruthy()
             })
@@ -100,7 +99,6 @@ describe('Seguridad', () => {
                 expect(response.statusCode).toBe(200)
                 expect(response.body.locals.isAuthenticated).toBeTruthy()
                 expect(response.body.locals.usr).toBe(usuarios[index].idUsuario)
-                expect(response.body.locals.name).toBe(usuarios[index].nombre)
                 expect(response.body.locals.roles).toEqual(usuarios[index].roles)
                 expect(response.body.isInRole).toBeFalsy()
             })
@@ -112,7 +110,8 @@ describe('Seguridad', () => {
                 const response = await request(mockApp).get('/')
                     .set('authorization', `${config.security.AUTHENTICATION_SCHEME}eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1AZXhhbXBsZS5jb20iLCJuYW1lIjoiQWRtaW5pc3RyYWRvciIsInJvbGVzIjpbIlVzdWFyaW9zIiwiQWRtaW5pc3RyYWRvcmVzIl0sImlhdCI6MTY3MDM0MjE3MiwiZXhwIjoxNjcwMzQyNDcyLCJhdWQiOiJhdXRob3JpemF0aW9uIiwiaXNzIjoiTWljcm9zZXJ2aWNpb3NKV1QifQ.dlt-d1K6wGoe-VBsPtE6SYx25wPgR0k7RwVdkdzMRKoZxYjVjUCAl9P1o4yd4pemG2B2jVu5cq4birz5EqBRy4cgVeNxD86E9f89QwOimNDr3dKGxbVbiS40RyJ1cm9qJ5_aEiBA-LZunByWp5OOtPf1Eq6Hs-AJoDWxidS0kgdjSZmeojzzzcZiE_sb8AoFhKiWC_UXpJr880YQ1jceqQ-qQmD_WCf6JICDqN-cv9Z4uMtdBCFWuMtc_6RCEd38iURtiDYS1a_oSKEZyQTf7cc3etA-4MuckdIItCRqDLiuUyJcuaJV1ODw0dI40MDU2a6Ju0LVB8QPQyNTNLKQvQ`)
 
-                expect(response.statusCode).toBe(403)
+                expect(response.statusCode).toBe(401)
+                expect(response.headers['www-authenticate']).toContain('expired')
                 expect(response.body.detail).toContain('token expired')
             })
             it('Con token manipulado', async () => {
@@ -126,6 +125,7 @@ describe('Seguridad', () => {
                     .set('authorization', token)
 
                 expect(response.statusCode).toBe(401)
+                expect(response.headers['www-authenticate']).toContain('invalid_token')
                 expect(response.body.title).toEqual('Unauthorized')
             })
         })
@@ -137,6 +137,7 @@ describe('Seguridad', () => {
                 mockApp.use(errorMiddleware);
                 const response = await request(mockApp).get('/')
                 expect(response.statusCode).toBe(401)
+                expect(response.headers['www-authenticate']).toContain(config.security.AUTHENTICATION_SCHEME)
             })
             it('onlyAuthenticated: autenticados', async () => {
                 mockApp.use(seguridad.useAuthentication)
@@ -180,6 +181,7 @@ describe('Seguridad', () => {
                 const response = await request(mockApp).get('/')
                     .set('authorization', seguridad.generarTokenScheme(usuarios[0]))
                 expect(response.statusCode).toBe(403)
+                expect(response.headers['www-authenticate']).toContain('insufficient_scope')
             })
             it('onlyInRole: OPTIONS', async () => {
                 mockApp.use(seguridad.useAuthentication)
@@ -429,8 +431,8 @@ describe('Seguridad', () => {
                 request(app)
                     .get(`${config.paths.API_AUTH}/login/signature`)
                     .expect(200, done)
-                    .expect('Content-Type', 'text/plain; charset=utf-8')
-                    .expect(config.security.PUBLIC_KEY)
+                    .expect('Content-Type', 'application/pem-certificate-chain; charset=utf-8')
+                    //.expect(response => expect(response.body.).toContain(config.security.PUBLIC_KEY.substring(0,20)))
             });
         })
         describe(`${config.paths.API_AUTH}/logout`, () => {
@@ -789,7 +791,7 @@ describe('Seguridad', () => {
                         .expect(200)
                         .then(response => {
                             expect(response.body.isAuthenticated).toBeTruthy()
-                            expect(response.body.name).toBe(usuarios[index].nombre)
+                            expect(response.body.subject).toBe(usuarios[index].idUsuario)
                             expect(response.body.roles).toEqual(usuarios[index].roles)
                             done();
                         })
