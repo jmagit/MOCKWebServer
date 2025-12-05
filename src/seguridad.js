@@ -82,6 +82,10 @@ module.exports.useCORS = (req, res, next) => {
 module.exports.useAuthentication = (req, res, next) => {
     res.locals.isAuthenticated = false;
     let token = ''
+    if (req.url.includes('/logout')) {
+        next();
+        return;
+    }
     if (!req.headers['authorization']) {
         if (!req.cookies['Authorization']) {
             next();
