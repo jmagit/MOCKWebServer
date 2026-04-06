@@ -30,11 +30,15 @@ Para no crear dependencias de bases de datos los servicios utilizan ficheros com
 
 Se han incorporado una serie de parámetros (querystring) para ampliar el control de los resultados del GET:
 
-* ***propiedad=valor*:** Selecciona solo aquellos que el valor de la propiedad dada coincida con el valor proporcionado. Se pueden utilizar varios pares propiedad=valor, en cuyo caso deben cumplirse todos.
+* ***propiedad=valor*:** Selecciona solo aquellos cuyo valor de la propiedad dada coincida, según el *_mode* de comparación, con el valor proporcionado (números y booleanos se tratan como cadenas). Se pueden utilizar varios pares propiedad=valor, en cuyo caso deben cumplirse todos.
+* **_mode=(strict|start|include):** Establece el modo de comparación en los filtros de propiedades:
+  * **strict**: Estricto, el valor es igual (por defecto)
+  * **start**: Que comience por (no distingue entre mayúsculas y minúsculas).
+  * **include**: Que incluya (no distingue entre mayúsculas y minúsculas).
 * **_search=*valor*:** Selecciona todos aquellos que en alguna de sus propiedades contenga el valor proporcionado. Invalida las búsquedas por propiedades individuales.
 * **_sort=*propiedad*:** Indica la lista de propiedades (separadas por comas) por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.
 * **_projection=*propiedades*:** Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.
-* **_page=*número*:** Número de página empezando en 0 (primera página). Si se omite, pero aparece el parámetro *_rows*, tomara el valor 0 por defecto. La estructura devuelta es:
+* **_page=*número*:** Número de página empezando en 0 (primera página). Si se omite, pero aparece el parámetro *_rows*, tomara el valor 0 por defecto. Si la página solicitada es superior al total de páginas, devuelve la última. La estructura devuelta es:
 
     | Propiedad             | Tipo                  | Descripción                               |
     | --------------------- | --------------------- | ----------------------------------------- |

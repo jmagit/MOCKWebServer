@@ -20,19 +20,34 @@ const generaFiltro = (req) => {
   const q = Object.keys(req.query).filter(item => !item.startsWith('_'));
   if (q.length === 0)
     return null
+  const mode = req.query._mode ?? 'strict'
   return item => {
     for (let cmp in q) {
-      if (item[q[cmp]] != parseBoolFromString(req.query[q[cmp]])) return false;
+      switch (mode) {
+        case 'include':
+          if (!item[q[cmp]].toString().toLowerCase().includes(req.query[q[cmp]].toLowerCase())) return false;
+          break;
+        case 'start':
+          if (!item[q[cmp]].toString().toLowerCase().startsWith(req.query[q[cmp]].toLowerCase())) return false;
+          break;
+        case 'strict':
+        default:
+          if (item[q[cmp]] != parseBoolFromString(req.query[q[cmp]])) return false;
+          break;
+      }
     }
     return true;
   }
 }
 const generaPagina = (req, list, rows) => {
-  const page = req.query._page && !isNaN(+req.query._page) ? Math.abs(+req.query._page) : 0;
+  const totalPages = Math.ceil(list.length / rows)
+  let page = req.query._page && !isNaN(+req.query._page) ? Math.abs(+req.query._page) : 0;
+  if (page >= totalPages)
+    page = totalPages - 1
   list = {
     content: list.slice(page * rows, page * rows + rows),
     totalElements: list.length,
-    totalPages: Math.ceil(list.length / rows),
+    totalPages,
     number: list.length === 0 ? 0 : page,
     size: rows,
   }
@@ -49,7 +64,7 @@ apis.getAll = async (servicio, req, res, next) => {
       req.query._sort ? req.query._sort : servicio.pk)
     if (req.query._page != undefined || req.query._rows != undefined) {
       const rows = req.query._rows && !isNaN(+req.query._rows) ? Math.abs(+req.query._rows) : 20;
-      if (req.query._page && typeof(req.query._page) === "string" && req.query._page.toUpperCase() == "COUNT") {
+      if (req.query._page && typeof (req.query._page) === "string" && req.query._page.toUpperCase() == "COUNT") {
         res.json({ pages: Math.ceil(list.length / rows), rows: list.length }).end()
         return;
       }
