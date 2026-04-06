@@ -753,16 +753,39 @@ exports[`Pruebas unitarias Generar OpenApi 1`] = `
             "$ref": "#/components/schemas/PeliculaProjection",
           },
         ],
+        "required": [
+          "id",
+          "titulo",
+        ],
         "title": "Pelicula (Modelo)",
       },
       "PeliculaProjection": {
+        "additionalProperties": false,
         "minProperties": 1,
         "properties": {
+          "año": {
+            "type": "number",
+          },
+          "director": {
+            "type": "string",
+          },
+          "duración": {
+            "type": "number",
+          },
+          "genero": {
+            "type": "string",
+          },
           "id": {
-            "description": "El 0 actúa como autonumérico en la creación",
-            "format": "int32",
-            "minimum": 0,
-            "type": "integer",
+            "type": "number",
+          },
+          "idioma": {
+            "type": "string",
+          },
+          "precio": {
+            "type": "number",
+          },
+          "titulo": {
+            "type": "string",
           },
         },
         "title": "Pelicula (Proyección)",
@@ -1092,6 +1115,95 @@ exports[`Pruebas unitarias Generar OpenApi 1`] = `
           },
         },
         "title": "Tarjetas (Página)",
+        "type": "object",
+      },
+      "Todo": {
+        "items": {
+          "$ref": "#/components/schemas/TodoProjection",
+        },
+        "title": "Todo (Listado)",
+        "type": "array",
+      },
+      "TodoModel": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/TodoProjection",
+          },
+        ],
+        "required": [
+          "id",
+          "todo",
+        ],
+        "title": "Todo (Modelo)",
+      },
+      "TodoPage": {
+        "properties": {
+          "content": {
+            "$ref": "#/components/schemas/Todo",
+          },
+          "empty": {
+            "description": "Si la página está vacía",
+            "type": "boolean",
+          },
+          "first": {
+            "description": "Si la página es la primera",
+            "type": "boolean",
+          },
+          "last": {
+            "description": "Si la página es la última",
+            "type": "boolean",
+          },
+          "number": {
+            "description": "Número de página actual",
+            "type": "integer",
+          },
+          "numberOfElements": {
+            "description": "Número total de elementos en la página",
+            "type": "integer",
+          },
+          "size": {
+            "description": "Tamaño de página en elementos",
+            "type": "integer",
+          },
+          "totalElements": {
+            "description": "Número total de elementos",
+            "type": "integer",
+          },
+          "totalPages": {
+            "description": "Número total de páginas",
+            "type": "integer",
+          },
+        },
+        "title": "Todo (Página)",
+        "type": "object",
+      },
+      "TodoProjection": {
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "completed": {
+            "example": true,
+            "type": "boolean",
+          },
+          "id": {
+            "description": "El 0 actúa como autonumérico en la creación",
+            "example": 1,
+            "title": "Id",
+            "type": "integer",
+          },
+          "todo": {
+            "example": "Pendiente de hacer",
+            "maxLength": 200,
+            "title": "ToDo",
+            "type": "string",
+          },
+          "userId": {
+            "example": 1,
+            "title": "UserId",
+            "type": "number",
+          },
+        },
+        "title": "Todo (Proyección)",
         "type": "object",
       },
       "VehiculoModel": {
@@ -2888,23 +3000,6 @@ exports[`Pruebas unitarias Generar OpenApi 1`] = `
           "peliculas",
         ],
       },
-      "options": {
-        "responses": {
-          "200": {
-            "description": "OK",
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized",
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden",
-          },
-        },
-        "summary": "Sondeo CORS",
-        "tags": [
-          "peliculas",
-        ],
-      },
       "post": {
         "requestBody": {
           "content": {
@@ -2995,23 +3090,6 @@ exports[`Pruebas unitarias Generar OpenApi 1`] = `
           "peliculas",
         ],
       },
-      "options": {
-        "responses": {
-          "200": {
-            "description": "OK",
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized",
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden",
-          },
-        },
-        "summary": "Sondeo CORS",
-        "tags": [
-          "peliculas",
-        ],
-      },
       "parameters": [
         {
           "description": "Identificador del recurso",
@@ -3019,50 +3097,10 @@ exports[`Pruebas unitarias Generar OpenApi 1`] = `
           "name": "id",
           "required": true,
           "schema": {
-            "type": "integer",
+            "type": "number",
           },
         },
       ],
-      "patch": {
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PeliculaProjection",
-              },
-            },
-          },
-          "required": true,
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PeliculaProjection",
-                },
-              },
-            },
-            "description": "OK",
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest",
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized",
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden",
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound",
-          },
-        },
-        "summary": "Actualizar parcialmente pelicula",
-        "tags": [
-          "peliculas",
-        ],
-      },
       "put": {
         "requestBody": {
           "content": {
@@ -3789,6 +3827,264 @@ exports[`Pruebas unitarias Generar OpenApi 1`] = `
         ],
       },
     },
+    "/api/todo": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pagina",
+          },
+          {
+            "$ref": "#/components/parameters/filas",
+          },
+          {
+            "$ref": "#/components/parameters/ordenar",
+          },
+          {
+            "$ref": "#/components/parameters/buscar",
+          },
+          {
+            "$ref": "#/components/parameters/proyeccion",
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Todo",
+                    },
+                    {
+                      "$ref": "#/components/schemas/TodoPage",
+                    },
+                  ],
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "summary": "Listar todo",
+        "tags": [
+          "todo",
+        ],
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "summary": "Sondeo CORS",
+        "tags": [
+          "todo",
+        ],
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TodoModel",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "summary": "Crear todo",
+        "tags": [
+          "todo",
+        ],
+      },
+    },
+    "/api/todo/{id}": {
+      "delete": {
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "summary": "Borrar todo",
+        "tags": [
+          "todo",
+        ],
+      },
+      "get": {
+        "parameters": [
+          {
+            "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+            "in": "query",
+            "name": "_projection",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TodoProjection",
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "summary": "Recuperar todo",
+        "tags": [
+          "todo",
+        ],
+      },
+      "options": {
+        "responses": {
+          "200": {
+            "description": "OK",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+        },
+        "summary": "Sondeo CORS",
+        "tags": [
+          "todo",
+        ],
+      },
+      "parameters": [
+        {
+          "description": "Identificador del recurso",
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "integer",
+          },
+        },
+      ],
+      "patch": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TodoProjection",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TodoProjection",
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "summary": "Actualizar parcialmente todo",
+        "tags": [
+          "todo",
+        ],
+      },
+      "put": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TodoModel",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized",
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "summary": "Reemplazar todo",
+        "tags": [
+          "todo",
+        ],
+      },
+    },
     "/api/vehiculos": {
       "get": {
         "parameters": [
@@ -4166,6 +4462,10 @@ exports[`Pruebas unitarias Generar OpenApi 1`] = `
     {
       "description": "Mantenimiento de vehiculos",
       "name": "vehiculos",
+    },
+    {
+      "description": "Mantenimiento de todo",
+      "name": "todo",
     },
     {
       "description": "Login",

@@ -7,7 +7,7 @@
         "model": "Contacto",
         "pk": "id",
         "file": "contactos.json",
-        "operations": [],
+        "operations": [ ],
         "security": false,
         "readonly": false,
         "schema": {
@@ -151,7 +151,47 @@
         "endpoint": "peliculas",
         "model": "Pelicula",
         "pk": "id",
-        "file": "peliculas.json"
+        "file": "peliculas.json",
+        "operations": [
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE"
+        ],
+        "schema": {
+            "title": "Pelicula",
+            "type": "object",
+            "required": [
+                "id",
+                "titulo"
+            ],
+            "properties": {
+                "id": {
+                    "type": "number"
+                },
+                "titulo": {
+                    "type": "string"
+                },
+                "director": {
+                    "type": "string"
+                },
+                "duración": {
+                    "type": "number"
+                },
+                "genero": {
+                    "type": "string"
+                },
+                "idioma": {
+                    "type": "string"
+                },
+                "precio": {
+                    "type": "number"
+                },
+                "año": {
+                    "type": "number"
+                }
+            }
+        }
     },
     {
         "endpoint": "personas",
@@ -581,6 +621,42 @@
                         "type": "string",
                         "example": "Giulietta"
                     }
+                }
+            }
+        }
+    },
+    {
+        "endpoint": "todo",
+        "model": "Todo",
+        "pk": "id",
+        "file": "todo.json",
+        "schema": {
+            "title": "ToDo",
+            "type": "object",
+            "required": [
+                "id",
+                "todo"
+            ],
+            "properties": {
+                "id": {
+                    "title": "Id",
+                    "type": "integer",
+                    "example": 1
+                },
+                "todo": {
+                    "title": "ToDo",
+                    "type": "string",
+                    "maxLength": 200,
+                    "example": "Pendiente de hacer"
+                },
+                "completed": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "userId": {
+                    "title": "UserId",
+                    "type": "number",
+                    "example": 1
                 }
             }
         }

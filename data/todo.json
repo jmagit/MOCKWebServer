@@ -1,0 +1,62 @@
+[
+    {
+        "id": 1,
+        "todo": "Haz algo bonito por alguien que te importa",
+        "completed": true,
+        "userId": 1
+    },
+    {
+        "id": 2,
+        "todo": "Memorizar un poema",
+        "completed": false,
+        "userId": 1
+    },
+    {
+        "id": 3,
+        "todo": "Ver una película",
+        "completed": true,
+        "userId": 1
+    },
+    {
+        "id": 4,
+        "todo": "Ver un documental",
+        "completed": false,
+        "userId": 1
+    },
+    {
+        "id": 5,
+        "todo": "Invertir en criptomonedas",
+        "completed": false,
+        "userId": 2
+    },
+    {
+        "id": 7,
+        "todo": "Consulta los mensajes del móvil",
+        "completed": true,
+        "userId": 3
+    },
+    {
+        "id": 8,
+        "todo": "Consulta tus redes sociales",
+        "completed": true,
+        "userId": 3
+    },
+    {
+        "id": 10,
+        "todo": "Invita a algunos amigos a una noche de juegos",
+        "completed": false,
+        "userId": 1
+    },
+    {
+        "id": 11,
+        "todo": "Jugar al fútbol con algunos amigos",
+        "completed": false,
+        "userId": 2
+    },
+    {
+        "id": 12,
+        "todo": "Ir al gimnasio",
+        "completed": true,
+        "userId": 1
+    }
+]
