@@ -2,12 +2,31 @@ const request = require('superwstest');
 const app = require('../src/app');
 
 describe('Web Sockets', () => {
+    let spy;
+
+    beforeAll(() => {
+        spy = jest.spyOn(console, 'log');
+        spy.mockImplementation(() => {});
+    });
+
+    afterAll(() => {
+        spy.mockRestore();
+    });
+
     beforeEach((done) => {
         app.server.listen(4444, done);
     });
 
     afterEach((done) => {
-        app.server.close(done);
+        app.wss.clients.forEach((client) => client.terminate());
+        const waitForClientsToClose = () => {
+            if (app.wss.clients.size === 0) {
+                app.server.close(done);
+                return;
+            }
+            setTimeout(waitForClientsToClose, 10);
+        };
+        waitForClientsToClose();
     });
 
     it('dashboard', async () => {

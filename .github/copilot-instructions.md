@@ -15,6 +15,7 @@ Estas instrucciones describen las convenciones de este proyecto para que las sug
 - El punto de entrada es [`server.js`](/c:/Cursos/MOCKWebServer/server.js).
 - La lógica principal está en [`src/`](/c:/Cursos/MOCKWebServer/src).
 - La configuración del servicio y de datos vive en [`config.js`](/c:/Cursos/MOCKWebServer/config.js) y [`data/`](/c:/Cursos/MOCKWebServer/data).
+- Ignorar el contenido de los directorios `tmp`, `uploads`, `reports` y `coverage`.
 
 ## General Architecture & Structure
 

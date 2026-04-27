@@ -302,7 +302,7 @@ app.get('/', function (req, res) {
 
 // favicon.ico por defecto 
 app.all('/favicon.ico', function (_req, res) {
-  res.download(__dirname + '/favicon.ico')
+  res.sendFile(path.join(__dirname, 'favicon.ico'), { dotfiles: 'allow' })
 });
 
 // PushState de HTML5
