@@ -16,7 +16,7 @@
   "author": "Javier Martín",
   "license": "ISC",
   "engines": {
-    "node": ">=18.4.0"
+    "node": ">=24.11.0"
   },
   "dependencies": {
     "@faker-js/faker": "^9.9.0",
