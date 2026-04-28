@@ -1131,7 +1131,6 @@ exports[`Pruebas unitarias Generar OpenApi 1`] = `
           },
         ],
         "required": [
-          "id",
           "todo",
         ],
         "title": "Todo (Modelo)",

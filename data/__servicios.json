@@ -634,7 +634,6 @@
             "title": "ToDo",
             "type": "object",
             "required": [
-                "id",
                 "todo"
             ],
             "properties": {

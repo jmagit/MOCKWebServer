@@ -482,6 +482,21 @@ describe('API Rest: Ficheros simulados', () => {
                     .expect('Content-Type', /json/)
                     .then(response => {
                         expect(response.body.content.length).toBe(1)
+                        expect(response.body.totalPages).toBe(2)
+                        expect(response.body.number).toBe(1)
+                        done();
+                    })
+                    .catch(err => done(err))
+            });
+            it('Paginar a pagina que no existe', done => {
+                request(app)
+                    .get(`${config.paths.API_REST}/fake?_page=10&_rows=10`)
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .then(response => {
+                        expect(response.body.content.length).toBe(10)
+                        expect(response.body.totalPages).toBe(2)
+                        expect(response.body.number).toBe(1)
                         done();
                     })
                     .catch(err => done(err))
@@ -509,7 +524,7 @@ describe('API Rest: Ficheros simulados', () => {
                     })
                     .catch(err => done(err))
             });
-            it('Filtrar', done => {
+            it('Filtrar con diferentes tipos', done => {
                 request(app)
                     .get(`${config.paths.API_REST}/fake?gender=Female&booleano=true`)
                     .expect(200)
@@ -517,6 +532,50 @@ describe('API Rest: Ficheros simulados', () => {
                     .then(response => {
                         // console.log(response.body)
                         expect(response.body.length).toBe(7)
+                        done();
+                    })
+                    .catch(err => done(err))
+            });
+            it('Filtrar con _mode=include', done => {
+                request(app)
+                    .get(`${config.paths.API_REST}/fake?name=AN&_mode=include`)
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .then(response => {
+                        expect(response.body.map(item => item.id)).toEqual([3, 5, 9, 14])
+                        done();
+                    })
+                    .catch(err => done(err))
+            });
+            it('Filtrar con _mode=start', done => {
+                request(app)
+                    .get(`${config.paths.API_REST}/fake?name=a&_mode=start`)
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .then(response => {
+                        expect(response.body.map(item => item.id)).toEqual([6, 7, 8, 18, 19, 29])
+                        done();
+                    })
+                    .catch(err => done(err))
+            });
+            it('Filtrar con _mode desconocido que usa strict', done => {
+                request(app)
+                    .get(`${config.paths.API_REST}/fake?gender=Female&_mode=unknown`)
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .then(response => {
+                        expect(response.body.length).toBe(10)
+                        done();
+                    })
+                    .catch(err => done(err))
+            });
+            it('Buscar tiene prioridad sobre filtros de campos', done => {
+                request(app)
+                    .get(`${config.paths.API_REST}/fake?_search=Zamora&gender=Male`)
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .then(response => {
+                        expect(response.body.map(item => item.id)).toEqual([3, 7])
                         done();
                     })
                     .catch(err => done(err))

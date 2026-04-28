@@ -19,22 +19,22 @@ module.exports.createWSServer = app => {
     app.get('/ws/xss.min.js', async (_req, res) => {
         try {
             await access(config.paths.APP_ROOT + '/node_modules/xss/dist/xss.min.js', constants.R_OK);
-            res.sendFile(config.paths.APP_ROOT + '/node_modules/xss/dist/xss.min.js');
+            res.sendFile(config.paths.APP_ROOT + '/node_modules/xss/dist/xss.min.js', { dotfiles: 'allow' });
         } catch {
-            res.sendFile('/node_modules/xss/dist/xss.min.js');
+            res.sendFile('/node_modules/xss/dist/xss.min.js', { dotfiles: 'allow' });
         }
     });
     app.get('/ws/chat', (_req, res) => {
-        res.sendFile(config.paths.APP_ROOT + '/static/chat.html');
+        res.sendFile(config.paths.APP_ROOT + '/static/chat.html', { dotfiles: 'allow' });
     });
     app.get('/ws/auto-chat', (_req, res) => {
-        res.sendFile(config.paths.APP_ROOT + '/static/chat.html');
+        res.sendFile(config.paths.APP_ROOT + '/static/chat.html', { dotfiles: 'allow' });
     });
     app.get('/ws/dashboard', (_req, res) => {
-        res.sendFile(config.paths.APP_ROOT + '/static/dashboard.html');
+        res.sendFile(config.paths.APP_ROOT + '/static/dashboard.html', { dotfiles: 'allow' });
     });
     app.get('/ws/listener', (_req, res) => {
-        res.sendFile(config.paths.APP_ROOT + '/static/listener.html');
+        res.sendFile(config.paths.APP_ROOT + '/static/listener.html', { dotfiles: 'allow' });
     });
 
     const wss = new WebSocketServer({ server: app.server });

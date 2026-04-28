@@ -26,6 +26,10 @@ describe('utils', () => {
         expect(result.nulo).toBeNull()
         expect(result.blanco).toBeNull()
     })
+    it('emptyPropertiesToNull empty', () => {
+        const result = utils.emptyPropertiesToNull()
+        expect(result).toBeUndefined()
+    })
 
     it('generateProjection', () => {
         const result = utils.generateProjection({ lleno: 'dato', nulo: null, blanco: '', dato: true }, 'nulo, dato,desconocido')
@@ -34,5 +38,9 @@ describe('utils', () => {
         expect(result.nulo).toBeNull()
         expect(result.blanco).toBeUndefined()
         expect(result.dato).toBeTruthy()
+    })
+    it('generateProjection empty', () => {
+        const result = utils.generateProjection()
+        expect(result).toBeUndefined()
     })
 });
