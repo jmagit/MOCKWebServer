@@ -11,6 +11,7 @@ const YAML = require('yaml')
 const OpenApiValidator = require('express-openapi-validator');
 const validator = require('validator');
 const xss = require('xss')
+const { randomUUID } = require('crypto');
 const config = require('../config')
 const { generaSwaggerSpecification } = require('./openapi-generator');
 const { generateErrorByError } = require('./utils')
@@ -24,6 +25,8 @@ let VALIDATE_XSRF_TOKEN = false;
 
 const app = express()
 app.disable('x-powered-by');
+// Respect X-Forwarded-* headers when running behind a gateway/reverse proxy.
+// app.set('trust proxy', true);
 app.PUERTO = process.env.PORT || '4321';
 app.URL_SERVER = ''
 app.DIR_API_REST = config.paths.API_REST
@@ -189,14 +192,13 @@ function formatColeccion(titulo, col) {
   return rslt
 }
 app.all('/form', function (req, res) {
-  let rslt = ''
   let volver = ''
   let peticion = {};
   peticion['Method'] = req.method + ' ' + req.protocol + ' ' + req.httpVersion
   peticion['AJAX'] = req.xhr
   if (req.header('referer'))
     volver = `<center><a href="${req.header('referer')}">Volver</a></center>`
-  rslt = `<h1>Datos de la petición</h1>
+  let resultado = `<h1>Datos de la petición</h1>
   <table border="1">
   ${formatColeccion('Petici&oacuten', peticion)}
   ${formatColeccion('Cabeceras', req.headers)}
@@ -205,7 +207,7 @@ app.all('/form', function (req, res) {
   </table>
   ${volver}
   `
-  res.status(200).end(plantillaHTML('Petición', xss(rslt)))
+  res.status(200).end(plantillaHTML('Petición', xss(resultado)))
 })
 
 // Eco de la petición
@@ -227,7 +229,6 @@ app.all('/eco{/*splat}', function (req, res) {
 
 // Página principal
 app.get('/', function (req, res) {
-  let rslt = ''
   let srv = app.URL_SERVER
   let apis = `<li><a href='${srv}/eco'>${srv}/eco</a>`
   serviciosConfig.forEach(servicio => {
@@ -237,7 +238,7 @@ app.get('/', function (req, res) {
   if (VALIDATE_XSRF_TOKEN) {
     token = `<input type="hidden" name="xsrftoken" value="${seguridad.generateXsrfToken(req)}">`
   }
-  rslt = `<h1>MOCK Server</h1>
+  let resultado = `<h1>MOCK Server</h1>
   <div class="flex-container">
   <div class="flex-item-left">
     <h2>Servicios REST</h2>
@@ -297,7 +298,7 @@ app.get('/', function (req, res) {
           rel="noopener">Documentación</a>
   </footer>
 `
-  res.status(200).end(plantillaHTML('MOCK Server', rslt))
+  res.status(200).end(plantillaHTML('MOCK Server', resultado))
 })
 
 // favicon.ico por defecto 
@@ -333,5 +334,18 @@ app.use(function (err, req, res, _next) {
   res.render('error');
 
 });
+if (process.env.NODE_ENV !== 'production') {
+  app.get('/.well-known/appspecific/com.chrome.devtools.json', (req, res) => {
+    const projectRoot = path.resolve(__dirname);
+    const workspaceUuid = randomUUID();
+
+    res.json({
+      workspace: {
+        root: projectRoot,
+        uuid: workspaceUuid,
+      },
+    });
+  });
+}
 
 module.exports = app;

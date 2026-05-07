@@ -53,7 +53,6 @@ export default defineConfig([
       "n/prefer-promises/dns": "error",
       "n/prefer-promises/fs": "error",
       "n/no-unpublished-require": "off",
-      "no-unused-vars": ["error", { argsIgnorePattern: "^_", }],
     },
   },
   { files: ["**/*.json"], ignores: ["package-lock.json"], plugins: { json }, language: "json/json", extends: ["json/recommended"] },
