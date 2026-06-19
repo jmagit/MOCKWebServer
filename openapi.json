@@ -74,6 +74,10 @@
       "description": "Mantenimiento de vehiculos"
     },
     {
+      "name": "todo",
+      "description": "Mantenimiento de todo"
+    },
+    {
       "name": "autenticación",
       "description": "Login"
     },
@@ -419,23 +423,6 @@
             "$ref": "#/components/responses/Forbidden"
           }
         }
-      },
-      "options": {
-        "tags": [
-          "peliculas"
-        ],
-        "summary": "Sondeo CORS",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          }
-        }
       }
     },
     "/api/peliculas/{id}": {
@@ -446,7 +433,7 @@
           "required": true,
           "description": "Identificador del recurso",
           "schema": {
-            "type": "integer"
+            "type": "number"
           }
         }
       ],
@@ -506,63 +493,6 @@
         "responses": {
           "204": {
             "$ref": "#/components/responses/NoContent"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          }
-        }
-      },
-      "options": {
-        "tags": [
-          "peliculas"
-        ],
-        "summary": "Sondeo CORS",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "peliculas"
-        ],
-        "summary": "Actualizar parcialmente pelicula",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PeliculaProjection"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PeliculaProjection"
-                }
-              }
-            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -833,10 +763,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -871,10 +801,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       }
@@ -930,10 +860,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -971,10 +901,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       }
@@ -1029,10 +959,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1067,10 +997,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1092,10 +1022,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       }
@@ -1151,10 +1081,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1192,10 +1122,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1217,10 +1147,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1265,10 +1195,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1293,10 +1223,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       }
@@ -1351,10 +1281,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1389,10 +1319,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1414,10 +1344,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       }
@@ -1473,10 +1403,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1514,10 +1444,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1539,10 +1469,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1587,10 +1517,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1615,10 +1545,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       }
@@ -1703,10 +1633,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1812,10 +1742,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1877,10 +1807,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -1905,10 +1835,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       }
@@ -1963,10 +1893,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -2001,10 +1931,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -2026,10 +1956,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       }
@@ -2085,10 +2015,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -2126,10 +2056,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -2151,10 +2081,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -2199,10 +2129,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       },
@@ -2227,10 +2157,10 @@
         },
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ]
       }
@@ -2323,6 +2253,264 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/todo": {
+      "get": {
+        "tags": [
+          "todo"
+        ],
+        "summary": "Listar todo",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pagina"
+          },
+          {
+            "$ref": "#/components/parameters/filas"
+          },
+          {
+            "$ref": "#/components/parameters/ordenar"
+          },
+          {
+            "$ref": "#/components/parameters/buscar"
+          },
+          {
+            "$ref": "#/components/parameters/proyeccion"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Todo"
+                    },
+                    {
+                      "$ref": "#/components/schemas/TodoPage"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "todo"
+        ],
+        "summary": "Crear todo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TodoModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      },
+      "options": {
+        "tags": [
+          "todo"
+        ],
+        "summary": "Sondeo CORS",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/api/todo/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Identificador del recurso",
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "todo"
+        ],
+        "summary": "Recuperar todo",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "_projection",
+            "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TodoProjection"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "todo"
+        ],
+        "summary": "Reemplazar todo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TodoModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "options": {
+        "tags": [
+          "todo"
+        ],
+        "summary": "Sondeo CORS",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "todo"
+        ],
+        "summary": "Actualizar parcialmente todo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TodoProjection"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TodoProjection"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "todo"
+        ],
+        "summary": "Borrar todo",
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent"
           },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
@@ -2560,10 +2748,10 @@
         "summary": "Consultar su usuario",
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ],
         "responses": {
@@ -2604,10 +2792,10 @@
         "summary": "Modificar el nombre de su usuario",
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ],
         "requestBody": {
@@ -2699,7 +2887,7 @@
             "name": "instance",
             "in": "query",
             "required": true,
-            "description": "Identificador la instancia",
+            "description": "Identificador de la instancia",
             "schema": {
               "type": "string"
             }
@@ -2729,7 +2917,7 @@
             "name": "instance",
             "in": "query",
             "required": true,
-            "description": "Identificador la instancia",
+            "description": "Identificador de la instancia",
             "schema": {
               "type": "string"
             }
@@ -2748,6 +2936,43 @@
         }
       }
     },
+    "/api/register/encode": {
+      "get": {
+        "tags": [
+          "registro"
+        ],
+        "summary": "Obtiene la hash de una contraseña",
+        "parameters": [
+          {
+            "name": "password",
+            "in": "query",
+            "required": true,
+            "description": "Contraseña",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
     "/api/auth": {
       "get": {
         "tags": [
@@ -2756,10 +2981,10 @@
         "summary": "Obtener estado de sesión",
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ],
         "responses": {
@@ -2801,10 +3026,10 @@
         "summary": "Cambiar su contraseña",
         "security": [
           {
-            "bearerAuth": []
+            "bearerAuth": [ ]
           },
           {
-            "cookieAuth": []
+            "cookieAuth": [ ]
           }
         ],
         "description": "Es necesario conocer la contraseña actual antes de cambiarla",
@@ -3096,20 +3321,43 @@
           {
             "$ref": "#/components/schemas/PeliculaProjection"
           }
+        ],
+        "required": [
+          "id",
+          "titulo"
         ]
       },
       "PeliculaProjection": {
+        "title": "Pelicula (Proyección)",
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer",
-            "format": "int32",
-            "minimum": 0,
-            "description": "El 0 actúa como autonumérico en la creación"
+            "type": "number"
+          },
+          "titulo": {
+            "type": "string"
+          },
+          "director": {
+            "type": "string"
+          },
+          "duración": {
+            "type": "number"
+          },
+          "genero": {
+            "type": "string"
+          },
+          "idioma": {
+            "type": "string"
+          },
+          "precio": {
+            "type": "number"
+          },
+          "año": {
+            "type": "number"
           }
         },
-        "minProperties": 1,
-        "title": "Pelicula (Proyección)"
+        "additionalProperties": false,
+        "minProperties": 1
       },
       "Peliculas": {
         "type": "array",
@@ -3938,6 +4186,94 @@
           }
         }
       },
+      "TodoModel": {
+        "title": "Todo (Modelo)",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/TodoProjection"
+          }
+        ],
+        "required": [
+          "todo"
+        ]
+      },
+      "TodoProjection": {
+        "title": "Todo (Proyección)",
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer",
+            "example": 1,
+            "description": "El 0 actúa como autonumérico en la creación"
+          },
+          "todo": {
+            "title": "ToDo",
+            "type": "string",
+            "maxLength": 200,
+            "example": "Pendiente de hacer"
+          },
+          "completed": {
+            "type": "boolean",
+            "example": true
+          },
+          "userId": {
+            "title": "UserId",
+            "type": "number",
+            "example": 1
+          }
+        },
+        "additionalProperties": false,
+        "minProperties": 1
+      },
+      "Todo": {
+        "type": "array",
+        "title": "Todo (Listado)",
+        "items": {
+          "$ref": "#/components/schemas/TodoProjection"
+        }
+      },
+      "TodoPage": {
+        "type": "object",
+        "title": "Todo (Página)",
+        "properties": {
+          "content": {
+            "$ref": "#/components/schemas/Todo"
+          },
+          "totalElements": {
+            "type": "integer",
+            "description": "Número total de elementos"
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "Número total de páginas"
+          },
+          "size": {
+            "type": "integer",
+            "description": "Tamaño de página en elementos"
+          },
+          "number": {
+            "type": "integer",
+            "description": "Número de página actual"
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "description": "Número total de elementos en la página"
+          },
+          "empty": {
+            "type": "boolean",
+            "description": "Si la página está vacía"
+          },
+          "first": {
+            "type": "boolean",
+            "description": "Si la página es la primera"
+          },
+          "last": {
+            "type": "boolean",
+            "description": "Si la página es la última"
+          }
+        }
+      },
       "Login": {
         "description": "Credenciales de autenticación",
         "type": "object",
@@ -4023,7 +4359,7 @@
         }
       }
     },
-    "requestBodies": {},
+    "requestBodies": { },
     "responses": {
       "Created": {
         "description": "Created",

@@ -3476,7 +3476,7 @@ exports[`Pruebas unitarias Generar OpenApi 1`] = `
       "get": {
         "parameters": [
           {
-            "description": "Identificador la instancia",
+            "description": "Identificador de la instancia",
             "in": "query",
             "name": "instance",
             "required": true,
@@ -3497,6 +3497,43 @@ exports[`Pruebas unitarias Generar OpenApi 1`] = `
           },
         },
         "summary": "Confirmar el email y activar al usuario",
+        "tags": [
+          "registro",
+        ],
+      },
+    },
+    "/api/register/encode": {
+      "get": {
+        "parameters": [
+          {
+            "description": "Contraseña",
+            "in": "query",
+            "name": "password",
+            "required": true,
+            "schema": {
+              "type": "string",
+            },
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                },
+              },
+            },
+            "description": "OK",
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest",
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound",
+          },
+        },
+        "summary": "Obtiene la hash de una contraseña",
         "tags": [
           "registro",
         ],
@@ -3560,7 +3597,7 @@ exports[`Pruebas unitarias Generar OpenApi 1`] = `
       "get": {
         "parameters": [
           {
-            "description": "Identificador la instancia",
+            "description": "Identificador de la instancia",
             "in": "query",
             "name": "instance",
             "required": true,

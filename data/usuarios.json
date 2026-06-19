@@ -1,7 +1,7 @@
 [
     {
         "idUsuario": "admin",
-        "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
+        "password": "$argon2id$v=19$m=65536,t=3,p=4$/dEqY56MqzmkuidNOAJM/A$Yeldqjpo6FWUB4Pe3lQRk8wCTPfeSAwxOZeWTHugRYk",
         "nombre": "Administrador",
         "roles": [
             "Usuarios",
@@ -11,7 +11,7 @@
     },
     {
         "idUsuario": "adm@example.com",
-        "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
+        "password": "$argon2id$v=19$m=65536,t=3,p=4$/dEqY56MqzmkuidNOAJM/A$Yeldqjpo6FWUB4Pe3lQRk8wCTPfeSAwxOZeWTHugRYk",
         "nombre": "Administrador",
         "roles": [
             "Usuarios",
@@ -21,7 +21,7 @@
     },
     {
         "idUsuario": "usr@example.com",
-        "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
+        "password": "$argon2id$v=19$m=65536,t=3,p=4$u+q+b7nJlLPcdfGRwli8TA$y65VOgKLYVelOAecFGgbTUacZcLq/VHbENITcfemV/8",
         "nombre": "Usuario registrado",
         "roles": [
             "Usuarios"
@@ -30,7 +30,7 @@
     },
     {
         "idUsuario": "emp@example.com",
-        "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
+        "password": "$argon2id$v=19$m=65536,t=3,p=4$/dEqY56MqzmkuidNOAJM/A$Yeldqjpo6FWUB4Pe3lQRk8wCTPfeSAwxOZeWTHugRYk",
         "nombre": "Empleado",
         "roles": [
             "Usuarios",
@@ -40,7 +40,7 @@
     },
     {
         "idUsuario": "test@example.com",
-        "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
+        "password": "$argon2id$v=19$m=65536,t=3,p=4$/dEqY56MqzmkuidNOAJM/A$Yeldqjpo6FWUB4Pe3lQRk8wCTPfeSAwxOZeWTHugRYk",
         "nombre": "Tester",
         "roles": [
             "Usuarios",

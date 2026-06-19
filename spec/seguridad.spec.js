@@ -12,28 +12,28 @@ const sendOK = (_req, res) => res.sendStatus(200)
 const usuarios = [
     {
         "idUsuario": "admin@kk.kk",
-        "password": "$2b$10$7EHNhM3dTSyGenDgmxzub.IfYloVNJrbvdjAF5LsrNBpu57JuNV1W",
+        "password": "$argon2id$v=19$m=65536,t=3,p=4$/dEqY56MqzmkuidNOAJM/A$Yeldqjpo6FWUB4Pe3lQRk8wCTPfeSAwxOZeWTHugRYk",
         "nombre": "Administrador",
         "roles": ["Usuarios", "Administradores"],
         "activo": true
     },
     {
         "idUsuario": "fake@kk.kk",
-        "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
+        "password": "$argon2id$v=19$m=65536,t=3,p=4$u+q+b7nJlLPcdfGRwli8TA$y65VOgKLYVelOAecFGgbTUacZcLq/VHbENITcfemV/8",
         "nombre": "Usuario registrado",
         "roles": ["Usuarios", "Empleados"],
         "activo": false
     },
     {
         "idUsuario": "pending@kk.kk",
-        "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
+        "password": "$argon2id$v=19$m=65536,t=3,p=4$u+q+b7nJlLPcdfGRwli8TA$y65VOgKLYVelOAecFGgbTUacZcLq/VHbENITcfemV/8",
         "nombre": "Usuario registrado",
         "roles": ["Usuarios", "Empleados"]
     },
 ]
 const usuarioBorrado = {
     "idUsuario": "_borrado_",
-    "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
+    "password": "$argon2id$v=19$m=65536,t=3,p=4$u+q+b7nJlLPcdfGRwli8TA$y65VOgKLYVelOAecFGgbTUacZcLq/VHbENITcfemV/8",
     "nombre": "Usuario registrado",
     "roles": [
         "Usuarios"

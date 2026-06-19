@@ -385,8 +385,8 @@
             "properties": {
                 "idLibro": {
                     "title": "Idlibro",
-                    "type": "string",
-                    "example": "1"
+                    "type": "number",
+                    "example": 1
                 },
                 "titulo": {
                     "title": "Titulo",
@@ -408,13 +408,13 @@
                 },
                 "fecha": {
                     "title": "Fecha",
-                    "type": "string",
-                    "example": "1605"
+                    "type": "number",
+                    "example": 1605
                 },
                 "paginas": {
                     "title": "Paginas",
-                    "type": "string",
-                    "example": "377"
+                    "type": "number",
+                    "example": 377
                 },
                 "wiki": {
                     "title": "Wiki",
